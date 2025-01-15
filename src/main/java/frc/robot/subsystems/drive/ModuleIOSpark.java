@@ -148,7 +148,7 @@ public class ModuleIOSpark implements ModuleIO {
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
     var canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
+    canCoderConfig.MagnetSensor.withMagnetOffset(zeroRotation.getRotations());
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
     turnConfig
