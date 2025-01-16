@@ -1,5 +1,10 @@
 package frc.robot.subsystems.endEffector;
 
+<<<<<<< HEAD
+=======
+import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
+
+>>>>>>> 6b3d42003a1784306096c7e3e65dc759e772bfe0
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
