@@ -1,11 +1,15 @@
 package frc.robot.subsystems.endEffector;
 
+import edu.wpi.first.math.system.LinearSystem;
+import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class EndEffectorIOSim implements EndEffectorIO {
+
 
     private final DCMotorSim leftMotorSim;
     private final DCMotorSim rightMotorSim;
@@ -50,5 +54,4 @@ public class EndEffectorIOSim implements EndEffectorIO {
         this.leftVolts = leftVolts;
         this.rightVolts = rightVolts;
     }
-
 }
