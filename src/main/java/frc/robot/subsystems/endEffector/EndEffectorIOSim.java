@@ -1,7 +1,10 @@
 package frc.robot.subsystems.endEffector;
 
+<<<<<<< HEAD
+=======
 import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
 
+>>>>>>> 6b3d42003a1784306096c7e3e65dc759e772bfe0
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -15,15 +18,18 @@ public class EndEffectorIOSim implements EndEffectorIO {
     private double leftVolts;
     private double rightVolts;
 
+    
+
     public EndEffectorIOSim() {
         this.leftMotorSim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), rollerWheelMOI * 3, 1), 
-            DCMotor.getNeoVortex(1));
-
-        this.rightMotorSim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), rollerWheelMOI * 3, 1), 
-            DCMotor.getNeoVortex(1));
+            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
+            DCMotor.getNeoVortex(1)
             
+        );
+        this.rightMotorSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
+            DCMotor.getNeoVortex(1)
+        );
         leftVolts = 0.0;
         rightVolts = 0.0;
     }
@@ -35,11 +41,14 @@ public class EndEffectorIOSim implements EndEffectorIO {
 
         inputs.leftAppliedVolts = 0.0;
         inputs.rightAppliedVolts = 0.0;
+
         inputs.leftRPM = leftMotorSim.getAngularVelocityRPM();
         inputs.rightRPM = rightMotorSim.getAngularVelocityRPM();
+
         inputs.leftCurrentAmps = leftMotorSim.getCurrentDrawAmps();
         inputs.rightCurrentAmps = rightMotorSim.getCurrentDrawAmps();
-    }
+
+    } 
 
     @Override
     public void runVoltage(double leftVolts, double rightVolts) {
