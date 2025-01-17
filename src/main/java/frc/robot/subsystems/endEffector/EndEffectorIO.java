@@ -17,7 +17,7 @@ public interface EndEffectorIO {
 
     }
     // Functions
-    public default void updateInputs(EndEffectorIOInputs inputs) {};
+
 
     public default void runVoltage(double leftVolts, double rightVolts) {};
 
