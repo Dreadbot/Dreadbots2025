@@ -258,7 +258,6 @@ public class ModuleIOSpark implements ModuleIO {
         ffVolts,
         ArbFFUnits.kVoltage);
   }
-
   @Override
   public void setTurnPosition(Rotation2d rotation) {
     double setpoint =

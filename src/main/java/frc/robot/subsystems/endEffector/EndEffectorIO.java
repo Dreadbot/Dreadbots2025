@@ -15,8 +15,8 @@ public interface EndEffectorIO {
         public double leftAppliedVolts = 0.0;
         public double rightAppliedVolts = 0.0;
 
-        public double leftCurrentApps = 0.0;
-        public double rightCurrentApps = 0.0;
+        public double leftCurrentAmps = 0.0;
+        public double rightCurrentAmps = 0.0;
 
         public double speed = 0.0;
         public double current = 0.0;

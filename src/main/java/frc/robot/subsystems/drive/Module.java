@@ -63,15 +63,19 @@ public class Module {
     turnDisconnectedAlert.set(!inputs.turnConnected);
   }
 
-  /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
-  public void runSetpoint(SwerveModuleState state) {
+  /** Runs the module with the specified setpoint state and torque feedforward. Mutates the state to optimize it. */
+  public void runSetpoint(SwerveModuleState state, double wheelTorqueNm) {
     // Optimize velocity setpoint
     state.optimize(getAngle());
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVelocity(state.speedMetersPerSecond / wheelRadiusMeters);
+    io.setDriveVelocity(state.speedMetersPerSecond / wheelRadiusMeters, wheelTorqueNm);
     io.setTurnPosition(state.angle);
+  }
+  /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
+  public void runSetpoint(SwerveModuleState state) {
+   runSetpoint(state, 0);
   }
 
   /** Runs the module with the specified output while controlling to zero degrees. */
