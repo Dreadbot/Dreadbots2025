@@ -12,10 +12,8 @@ public class ElevatorIOInputs {
 
     public double PositionMeters = 0.0;
        
-
     public double VelocityMPS = 0.0;
    
-
     public double CurrentAmps = 0.0;
 
     public double current = 0.0;
