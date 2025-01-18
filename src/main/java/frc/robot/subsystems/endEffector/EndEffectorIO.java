@@ -22,11 +22,11 @@ public interface EndEffectorIO {
         public double current = 0.0;
         public double voltage = 0.0;
 
-
-
     }
     public default void updateInputs(EndEffectorIOInputs inputs) {}
+
     public default void runVoltage(double leftVolts, double rightVolts) {};
+    
     public default void changeCurrentLimit(double current) {};
     
 }
