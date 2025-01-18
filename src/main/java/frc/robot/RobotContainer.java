@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.rmi.server.ExportException;
 
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -114,7 +116,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     try {
-        autoChooser.addDefaultOption("Choreo Test Auto", AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory("Middle-E2F2-FarPickup")));
+        autoChooser.addDefaultOption("Choreo Test Auto", AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory("Middle-F2F1E2E1-FarPickup")));
     } catch(Exception e) {
         autoInitFaliure.setText("Failed to Init Choreo Test Auto!");
         autoInitFaliure.set(true);
@@ -138,15 +140,10 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    // Lock to 0° when A button is held
     controller
         .a()
         .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d()));
+            DriveCommands.driveToPosition(drive, () -> drive.getPose().nearest(AutoAlignConstants.POIs)).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignConstants.POIs))));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

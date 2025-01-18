@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import java.text.DecimalFormat;
@@ -37,11 +38,13 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
+  private static final double ANGLE_MAX_VELOCITY = 20.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
@@ -103,6 +106,60 @@ public class DriveCommands {
         drive);
   }
 
+  /**
+   * Drives to given Pose
+   */
+  public static Command driveToPosition(Drive drive, Supplier<Pose2d> position) {
+    ProfiledPIDController xController =
+        new ProfiledPIDController(
+            AutoAlignConstants.TRANSLATION_KP,
+            0.0,
+            AutoAlignConstants.TRANSLATION_KD,
+            new TrapezoidProfile.Constraints(AutoAlignConstants.TRANSLATION_ACCELERATION, AutoAlignConstants.TRANSLATION_ACCELERATION));
+    ProfiledPIDController yController =
+        new ProfiledPIDController(
+            AutoAlignConstants.TRANSLATION_KP,
+            0.0,
+            AutoAlignConstants.TRANSLATION_KD,
+            new TrapezoidProfile.Constraints(AutoAlignConstants.TRANSLATION_ACCELERATION, AutoAlignConstants.TRANSLATION_JERK));
+    ProfiledPIDController angleController =
+          new ProfiledPIDController(
+              AutoAlignConstants.ROTATION_KP,
+              0.0,
+              AutoAlignConstants.ROTATION_KD,
+              new TrapezoidProfile.Constraints(AutoAlignConstants.ROTATION_MAX_VELOCITY, AutoAlignConstants.ROTATION_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    return Commands.run(
+      () -> {
+
+        double xVelocity = xController.calculate(drive.getPose().getX(), position.get().getX());
+        double yVelocity = yController.calculate(drive.getPose().getY(), position.get().getY());
+
+        double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), position.get().getRotation().getRadians());
+
+        ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      xVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
+                      yVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
+                      omega);
+
+        boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
+
+        drive.runVelocity(
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  speeds,
+                  isFlipped
+                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      : drive.getRotation()));
+        
+    }, drive).beforeStarting(() -> {
+      xController.reset(drive.getPose().getX());
+      yController.reset(drive.getPose().getY());
+      angleController.reset(drive.getRotation().getRadians());
+    });
+  }
   /**
    * Field relative drive command using joystick for linear control and PID for angular control.
    * Possible use cases include snapping to an angle, aiming at a vision target, or controlling

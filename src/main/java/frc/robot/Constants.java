@@ -13,6 +13,11 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -34,4 +39,20 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final class AutoAlignConstants {
+    public static final double TRANSLATION_KP = 5.0;
+    public static final double TRANSLATION_KD = 0.0;
+    public static final double TRANSLATION_VELOCITY = 2.0; // Meters/Sec
+    public static final double TRANSLATION_ACCELERATION = 8.0; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 10.0; // Meters/Sec^3
+    public static final double ROTATION_KP = 10.0;
+    public static final double ROTATION_KD = 0.0;
+    public static final double ROTATION_MAX_VELOCITY = 10.0;
+    public static final double ROTATION_MAX_ACCELERATION = 20.0;
+    public static final List<Pose2d> POIs = List.of(
+      new Pose2d(3.170, 4.018, Rotation2d.fromDegrees(0)),
+      new Pose2d(3.822, 5.166, Rotation2d.fromDegrees(-60))
+    );
+    }
 }
