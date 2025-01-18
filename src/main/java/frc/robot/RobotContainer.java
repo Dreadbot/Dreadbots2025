@@ -37,6 +37,8 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOSim;
 
 import java.io.IOException;
 import java.rmi.server.ExportException;
@@ -54,6 +56,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final EndEffector endEffector;
+  private final Wrist wrist;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -75,6 +78,7 @@ public class RobotContainer {
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
         endEffector = new EndEffector(new EndEffectorIO() {});
+        wrist = new Wrist(new WristIOSim());
         break;
 
       case SIM:
@@ -87,6 +91,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
+        wrist = new Wrist(new WristIOSim());
         break;
 
       default:
@@ -99,6 +104,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         endEffector = new EndEffector(new EndEffectorIO() {});
+        wrist = new Wrist(new WristIOSim() {});
         break;
     }
 
@@ -171,7 +177,8 @@ public class RobotContainer {
 
     controller.a().whileTrue(endEffector.intake());
     controller.b().whileTrue(endEffector.outtake());
-
+    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
 
   /**
