@@ -20,11 +20,10 @@ public class ElevatorIOInputs {
     
     public double voltage = 0.0;
     
-
 }
 
  public default void updateInputs(ElevatorIOInputs inputs) {}
- public default void runVoltage(double volts) {};
 
+ public default void runVoltage(double volts) {};
 
 }
