@@ -34,4 +34,9 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+  public static class EndEffectorConstants {
+    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double OUTAKE_VOLTAGE = 5.0;
+
+  }
 }
