@@ -14,7 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.*;
-import static frc.robot.util.SparkUtil.*;
+import static frc.robot.util.misc.SparkUtil.*;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;

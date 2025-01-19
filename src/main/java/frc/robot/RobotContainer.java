@@ -40,6 +40,8 @@ import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOSim;
 
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -59,6 +61,7 @@ public class RobotContainer {
   private final Drive drive;
   private final EndEffector endEffector;
   private final Elevator elevator;
+  private final Wrist wrist;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -81,6 +84,7 @@ public class RobotContainer {
                 new ModuleIOSpark(3));
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIOSim());
         break;
 
       case SIM:
@@ -94,6 +98,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        wrist = new Wrist(new WristIOSim());
         break;
 
       default:
@@ -107,6 +112,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIOSim() {});
         break;
     }
 
@@ -184,7 +190,9 @@ public class RobotContainer {
     // Elevator buttons
     controller.rightTrigger().onTrue(elevator.riseTo(.75));
 
-
+    // Wrist buttons
+    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
 
   /**

@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface WristIO {
     
     @AutoLog
-    public static class EndEffectorIOInputs {
+    public static class WristIOInputs {
         public double RPS = 0.0; 
         public double appliedVolts = 0.0;
         public double currentAmps = 0.0;
@@ -14,7 +14,7 @@ public interface WristIO {
     }
 
     // functions
-    public default void updateInputs(EndEffectorIOInputs inputs) {}
+    public default void updateInputs(WristIOInputs inputs) {}
 
     public default void runVoltage(double Volts) {}
 
