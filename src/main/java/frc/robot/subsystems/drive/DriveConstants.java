@@ -41,8 +41,6 @@ public class DriveConstants {
   public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
 
   // Device CAN IDs
-  public static final int pigeonCanId = 20; //not yet determined/ not needed;
-
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 7;
   public static final int frontRightDriveCanId = 3;
@@ -64,7 +62,7 @@ public class DriveConstants {
   public static final double wheelRadiusMeters = Units.inchesToMeters(2.0);
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
-  public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
+  public static final DCMotor driveGearbox = DCMotor.getNEO(1);
 
   // Drive encoder configuration
   public static final double driveEncoderPositionFactor =

@@ -20,10 +20,12 @@ public class VisionIONetworkTables implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        VisionObservation[] tmp = {};
-        for (var i = 0; i < visionPositions.get().length; i++) {
-            var currentPosition = visionPositions.get()[i];
-            tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.kZero), visionPositions.getAtomic().timestamp, currentPosition.ID);
+        VisionObservation[] tmp = new VisionObservation[visionPositions.get().length];
+        if(visionPositions.get().length > 0) {
+            for (int i = 0; i < visionPositions.get().length; i++) {
+                var currentPosition = visionPositions.get()[i];
+                tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.kZero), visionPositions.getAtomic().timestamp, currentPosition.ID);
+            }
         }
         inputs.detections = tmp;
     }

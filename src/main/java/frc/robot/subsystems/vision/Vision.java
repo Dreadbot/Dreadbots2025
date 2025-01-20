@@ -35,17 +35,20 @@ public class Vision extends SubsystemBase {
 	public void periodic() {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
-		for(VisionObservation detection : inputs.detections) {
-			Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
-				new Pose3d(detection.pose()), 
-				VisionUtil.getApriltagPose(detection.tagId())
-			);
-			Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
+		if(inputs.detections.length > 0) {
+			for(VisionObservation detection : inputs.detections) {
+				Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
+					new Pose3d(detection.pose()), 
+					VisionUtil.getApriltagPose(detection.tagId())
+				);
+				Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
 
-			// std dev scaling goes here
+				// std dev scaling goes here
 
-			consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
+				consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
+			}
 		}
+		
 	}
 
 
