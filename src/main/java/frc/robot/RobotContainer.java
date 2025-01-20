@@ -15,16 +15,13 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -34,16 +31,18 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOSim;
 
-import java.io.IOException;
-import java.rmi.server.ExportException;
-
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -55,8 +54,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
   private final EndEffector endEffector;
+  private final Elevator elevator;
   private final Wrist wrist;
+
+  //wrist
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -78,7 +81,9 @@ public class RobotContainer {
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
         endEffector = new EndEffector(new EndEffectorIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
+        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         break;
 
       case SIM:
@@ -91,7 +96,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
+        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         break;
 
       default:
@@ -104,7 +111,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         endEffector = new EndEffector(new EndEffectorIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
         break;
     }
 
@@ -175,8 +184,15 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
 
+    // End Effector buttons
     controller.a().whileTrue(endEffector.intake());
     controller.b().whileTrue(endEffector.outtake());
+
+    // Elevator buttons
+    controller.rightTrigger().onTrue(elevator.riseTo(.75));
+
+    // Wrist buttons
+    controller.y().whileTrue(wrist.setAngleDegrees(0));
     controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
