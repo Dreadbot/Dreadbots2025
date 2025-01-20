@@ -25,9 +25,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -35,6 +37,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -131,7 +134,6 @@ public class DriveCommands {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
     return Commands.run(
       () -> {
-
         double xVelocity = xController.calculate(drive.getPose().getX(), position.get().getX());
         double yVelocity = yController.calculate(drive.getPose().getY(), position.get().getY());
 
@@ -159,6 +161,20 @@ public class DriveCommands {
       yController.reset(drive.getPose().getY());
       angleController.reset(drive.getRotation().getRadians());
     });
+  }
+
+  public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
+    Pose2d closestPose = robotPos.get().nearest(AutoAlignConstants.POIs);
+    Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
+    Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
+
+    if(leftTrim.getAsBoolean()) {
+      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+    } else if(rightTrim.getAsBoolean()) {
+      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+    }
+    Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
+    return closestPose;
   }
   /**
    * Field relative drive command using joystick for linear control and PID for angular control.
