@@ -188,7 +188,7 @@ public class RobotContainer {
     controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    controller.rightTrigger().onTrue(elevator.riseTo(.75));
+    controller.x().onTrue(elevator.riseTo(.75));
 
     // Wrist buttons
     controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
