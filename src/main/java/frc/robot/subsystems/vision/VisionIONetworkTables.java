@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,13 +20,11 @@ public class VisionIONetworkTables implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        VisionPosition[] positions = visionPositions.get();
-        inputs.poses = new Translation2d[positions.length];
-        inputs.tagIds = new int[positions.length];
-        for (int i = 0; i < positions.length; i++) {
-            VisionPosition position = positions[i];
-            inputs.poses[i] = new Translation2d(position.x, position.y);
-            inputs.tagIds[i] = position.ID;
+        VisionObservation[] tmp = {};
+        for (var i = 0; i < visionPositions.get().length; i++) {
+            var currentPosition = visionPositions.get()[i];
+            tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.kZero), visionPositions.getAtomic().timestamp, currentPosition.ID);
         }
+        inputs.detections = tmp;
     }
 }
