@@ -29,6 +29,9 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
@@ -51,6 +54,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final EndEffector endEffector;
+  private final Elevator elevator;
   private final Wrist wrist;
 
   // Controller
@@ -73,6 +77,7 @@ public class RobotContainer {
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
         endEffector = new EndEffector(new EndEffectorIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         break;
@@ -87,6 +92,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         break;
@@ -101,6 +107,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         endEffector = new EndEffector(new EndEffectorIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
         break;
@@ -173,8 +180,14 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
 
+    // End Effector buttons
     controller.a().whileTrue(endEffector.intake());
     controller.b().whileTrue(endEffector.outtake());
+
+    // Elevator buttons
+    controller.rightTrigger().onTrue(elevator.riseTo(.75));
+
+    // Wrist buttons
     controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
