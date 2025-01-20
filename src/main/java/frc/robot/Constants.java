@@ -39,4 +39,16 @@ public final class Constants {
     public static final double OUTAKE_VOLTAGE = 5.0;
 
   }
+  public static class ElevatorConstants {
+    // fix numbers later
+    public static final double RISE_VOLTAGE = 5.0;
+    public static final double DROP_VOLTAGE = -5.0;
+    public static final double DCMOTOR_MASS = 2;
+    public static final double ELEVATOR_MASS = 7;
+    public static final double DRIVING_DRUM_RADIUS = .5;
+    public static final double GEARING = 3;
+    public static final double MIN_HEIGHT = .5;
+    public static final double MAX_HEIGHT = 1;
+    public static final double STARTING_HEIGHT = .5;
+  }
 }

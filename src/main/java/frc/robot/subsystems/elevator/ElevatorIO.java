@@ -10,17 +10,16 @@ public interface ElevatorIO {
 @AutoLog
 public class ElevatorIOInputs {
 
-    public double PositionMeters = 0.0;
+    public double positionMeters = 0.0;
        
-    public double VelocityMPS = 0.0;
+    public double velocityMPS = 0.0;
    
-    public double CurrentAmps = 0.0;
-
-    public double current = 0.0;
+    public double currentAmps = 0.0;
     
     public double voltage = 0.0;
     
 }
+
 
  public default void updateInputs(ElevatorIOInputs inputs) {}
 
