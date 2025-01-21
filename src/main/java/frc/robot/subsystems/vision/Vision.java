@@ -2,20 +2,15 @@ package frc.robot.subsystems.vision;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.VisionObservation;
-import frc.robot.util.vision.VisionPosition;
 import frc.robot.util.vision.VisionUtil;
 
 public class Vision extends SubsystemBase {
@@ -35,18 +30,21 @@ public class Vision extends SubsystemBase {
 	public void periodic() {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
-		if(inputs.detections.length > 0) {
-			for(VisionObservation detection : inputs.detections) {
-				Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
-					new Pose3d(detection.pose()), 
-					VisionUtil.getApriltagPose(detection.tagId())
-				);
-				Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
+		for(VisionObservation detection : inputs.detections) {
+			Logger.recordOutput("Vision/tagAxisDetection", detection.pose());
+			Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
+				new Pose3d(detection.pose()), 
+				VisionUtil.getApriltagPose(detection.tagId())
+			);
+			Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
+			Logger.recordOutput("Vision/TagID", detection.tagId());
+			Logger.recordOutput("Vision/Pose", poseEstimate);
+			Logger.recordOutput("Vision/worldAxisDetection", detectionInWorldAxis);
 
-				// std dev scaling goes here
 
-				consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
-			}
+			// std dev scaling goes here
+
+			consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
 		}
 		
 	}

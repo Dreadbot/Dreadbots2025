@@ -4,6 +4,10 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 public class VisionUtil {
     public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
@@ -24,7 +28,8 @@ public class VisionUtil {
     
     */
     public static Pose2d tagAxisToWorldAxis(Pose3d offset, Pose3d tagPose) {
-        return new Pose2d(offset.getTranslation().rotateAround(tagPose.getTranslation(), tagPose.getRotation()).toTranslation2d(), offset.getRotation().toRotation2d()); // Convert to world axes + ignore Z travel
+        Translation3d poseInWorldAxis = offset.getTranslation().rotateAround(tagPose.getTranslation(), tagPose.getRotation().plus(new Rotation3d(0, 0, 180)));
+        return new Pose2d(poseInWorldAxis.toTranslation2d(), offset.getRotation().toRotation2d()); // Convert to world axes + ignore Z travel
     }
 
     /**
