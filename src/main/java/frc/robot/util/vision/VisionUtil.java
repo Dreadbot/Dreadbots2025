@@ -4,9 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class VisionUtil {
@@ -28,7 +26,7 @@ public class VisionUtil {
     
     */
     public static Pose2d tagAxisToWorldAxis(Pose3d offset, Pose3d tagPose) {
-        Translation3d poseInWorldAxis = offset.getTranslation().rotateAround(tagPose.getTranslation(), tagPose.getRotation().plus(new Rotation3d(0, 0, 180)));
+        Translation3d poseInWorldAxis = offset.getTranslation().rotateBy(tagPose.getRotation().plus(new Rotation3d(0, 0, Math.PI))); //Rotate 180 degrees, as April Tag rotation differs from our implmentation
         return new Pose2d(poseInWorldAxis.toTranslation2d(), offset.getRotation().toRotation2d()); // Convert to world axes + ignore Z travel
     }
 
