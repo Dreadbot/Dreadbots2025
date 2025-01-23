@@ -1,0 +1,29 @@
+{
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "127.0.0.1"
+  },
+  "retained": {
+    "SmartDashboard": {
+      "open": true
+    }
+  },
+  "transitory": {
+    "AdvantageKit": {
+      "RealOutputs": {
+        "Odometry": {
+          "Pose2d##v_/AdvantageKit/RealOutputs/Odometry/Robot": {
+            "open": true
+          },
+          "open": true
+        }
+      }
+    },
+    "SmartDashboard": {
+      "double[]##v_/SmartDashboard/TagOffset": {
+        "open": true
+      },
+      "open": true
+    }
+  }
+}
