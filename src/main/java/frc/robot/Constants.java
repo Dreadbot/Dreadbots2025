@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -44,11 +46,11 @@ public final class Constants {
     public static final double RISE_VOLTAGE = 5.0;
     public static final double DROP_VOLTAGE = -5.0;
     public static final double DCMOTOR_MASS = 2;
-    public static final double ELEVATOR_MASS = 7;
-    public static final double DRIVING_DRUM_RADIUS = .5;
+    public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
+    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.12); 
     public static final double GEARING = 3;
-    public static final double MIN_HEIGHT = .5;
-    public static final double MAX_HEIGHT = 1;
-    public static final double STARTING_HEIGHT = .5;
+    public static final double MIN_HEIGHT = Units.inchesToMeters(0);
+    public static final double MAX_HEIGHT = Units.inchesToMeters(70);
+    public static final double STARTING_HEIGHT = MIN_HEIGHT;
   }
 }

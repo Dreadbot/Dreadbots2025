@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -189,7 +190,7 @@ public class RobotContainer {
     controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    controller.x().onTrue(elevator.riseTo(.75));
+    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
 
     // Wrist buttons
     controller.y().whileTrue(wrist.setAngleDegrees(0));
