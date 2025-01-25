@@ -2,13 +2,21 @@ package frc.robot.subsystems.wrist;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants.WristConstants;
 
 
 public class WristIOSim implements WristIO {
 
     private final SingleJointedArmSim wrist;
     private double volts;
+    private DigitalInput leftTopSwitch;
+    private DigitalInput leftBottomSwitch;
+    private DigitalInput rightTopSwitch;
+    private DigitalInput rightBottomSwitch;
+    
 
     public WristIOSim() {
         this.wrist = new SingleJointedArmSim(
@@ -22,8 +30,14 @@ public class WristIOSim implements WristIO {
             Units.degreesToRadians(0)
             );
 
+        this.leftTopSwitch = new DigitalInput(WristConstants.TOP_LEFT_LIMIT_SWITCH_ID);
+        this.rightTopSwitch = new DigitalInput(WristConstants.TOP_RIGHT_LIMIT_SWITCH_ID);
+        this.leftBottomSwitch = new DigitalInput(WristConstants.BOTTOM_LEFT_LIMIT_SWITCH_ID);
+        this.rightBottomSwitch = new DigitalInput(WristConstants.BOTTOM_RIGHT_LIMIT_SWITCH_ID);
         volts = 0.0;
     }
+
+
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
@@ -36,6 +50,7 @@ public class WristIOSim implements WristIO {
         inputs.currentAmps = wrist.getCurrentDrawAmps();
 
         inputs.rotationDegrees = Units.radiansToDegrees(wrist.getAngleRads());
+
     } 
 
     @Override
@@ -44,4 +59,6 @@ public class WristIOSim implements WristIO {
         this.volts = volts;
     }
 
+    
+    
 }

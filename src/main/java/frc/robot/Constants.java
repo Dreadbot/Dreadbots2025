@@ -51,4 +51,17 @@ public final class Constants {
     public static final double MAX_HEIGHT = 1;
     public static final double STARTING_HEIGHT = .5;
   }
+
+  public static class WristConstants {
+    //all filler values
+    public static final double WRIST_ZERO = 0.0;
+    public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
+    public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
+    public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
+    public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
+    public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
+    public static final int WRIST_ENCODER_OFFSET = 1;
+    public static final int WRIST_ENCODER_SCALE = 1;
+    public static final double WRIST_MAX_ANGLE = 1.0;
+  }
 }

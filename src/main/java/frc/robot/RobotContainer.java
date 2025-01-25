@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -193,8 +192,9 @@ public class RobotContainer {
 
     // Wrist buttons
     controller.y().whileTrue(wrist.setAngleDegrees(0));
-    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    controller.rightBumper().onTrue(wrist.setAngleDegrees(60));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
+  
   }
 
   /**
