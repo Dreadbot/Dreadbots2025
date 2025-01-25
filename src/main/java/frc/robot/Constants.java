@@ -13,14 +13,6 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -42,7 +34,11 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+  public static class EndEffectorConstants {
+    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double OUTAKE_VOLTAGE = 5.0;
 
+  }
   public static final class AutoAlignConstants {
     public static final double TRANSLATION_KP = 5.0;
     public static final double TRANSLATION_KD = 0.0;

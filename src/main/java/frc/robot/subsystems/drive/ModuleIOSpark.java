@@ -104,7 +104,7 @@ public class ModuleIOSpark implements ModuleIO {
                     case 1 -> frontRightCanCoderId;
                     case 2 -> backLeftCanCoderId;
                     case 3 -> backRightCanCoderId;
-                    default ->0;
+                    default -> 0;
                 }
             );
     driveEncoder = driveSpark.getEncoder();
