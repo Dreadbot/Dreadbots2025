@@ -26,6 +26,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -59,6 +62,7 @@ public class RobotContainer {
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
+  private final SlapdownAlgae SlapdownAlgae;
 
   //wrist
 
@@ -85,7 +89,9 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
+        
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -100,6 +106,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
 
       default:
@@ -115,6 +122,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
     }
 
@@ -196,8 +204,14 @@ public class RobotContainer {
     controller.y().whileTrue(wrist.setAngleDegrees(0));
     controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
-  }
 
+    //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
+    controller.leftTrigger().whileTrue(SlapdownAlgae.intake());
+    controller.rightTrigger().whileTrue(SlapdownAlgae.outtake());
+    controller.povUp().toggleOnTrue(SlapdownAlgae.setAngleDegrees(90));
+    controller.povDown().toggleOnTrue(SlapdownAlgae.setAngleDegrees(0));
+
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
