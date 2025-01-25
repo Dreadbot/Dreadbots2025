@@ -2,6 +2,8 @@ package frc.robot.subsystems.SlapdownAlgae;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 public interface SlapdownAlgaeIO {
     
     @AutoLog
@@ -20,13 +22,30 @@ public interface SlapdownAlgaeIO {
         
         //RPM
         public double intakeRPM = 0.0;
+        public double absolutePosition;
+
+        //Temp
+        //public Object intakeTemperature;
+        //public Object pivotTemperature;
 
     }
 
 
     // functions
-    public default void updateInputs(SlapdownAlgaeIOInputs inputs) {}
+    public default void updateInputs(SlapdownAlgaeIOInputs inputs) {};
 
-    public default void runVoltage(double volts) {}
 
+    public default void close(SlapdownAlgaeIOInputs inputs) {};
+
+
+    public default void runVoltage(double voltage) {};
+
+
+    public default void setIdleMode(IdleMode idleMode) {};
+
+  
+    public default void close(){};
+        
+   
+    public default void stopMotors() {};
 }
