@@ -2,20 +2,15 @@ package frc.robot.subsystems.vision;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.VisionObservation;
-import frc.robot.util.vision.VisionPosition;
 import frc.robot.util.vision.VisionUtil;
 
 public class Vision extends SubsystemBase {
@@ -29,7 +24,6 @@ public class Vision extends SubsystemBase {
 		NetworkTableInstance ntinst = NetworkTableInstance.getDefault();
 		NetworkTable visionTable = ntinst.getTable(VisionConstants.FRONT_CAMERA_NAME);
 	}
-
 
 	@Override
 	public void periodic() {

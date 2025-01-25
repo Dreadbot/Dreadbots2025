@@ -15,6 +15,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,6 +26,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -56,6 +62,9 @@ public class RobotContainer {
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
+  private final SlapdownAlgae SlapdownAlgae;
+
+  //wrist
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -80,7 +89,9 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
+        
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -95,6 +106,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
 
       default:
@@ -110,6 +122,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
     }
 
@@ -185,13 +198,21 @@ public class RobotContainer {
     controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    controller.rightTrigger().onTrue(elevator.riseTo(.75));
+    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
 
     // Wrist buttons
-    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    controller.y().whileTrue(wrist.setAngleDegrees(0));
+    controller.rightBumper().onTrue(wrist.setAngleDegrees(60));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
-  }
 
+    //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
+    controller.leftTrigger().whileTrue(SlapdownAlgae.intake());
+    controller.rightTrigger().whileTrue(SlapdownAlgae.outtake());
+    controller.povUp().toggleOnTrue(SlapdownAlgae.setAngleDegrees(90));
+    controller.povDown().toggleOnTrue(SlapdownAlgae.setAngleDegrees(0));
+
+  
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
