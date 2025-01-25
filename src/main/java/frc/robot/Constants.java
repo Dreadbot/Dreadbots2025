@@ -53,4 +53,10 @@ public final class Constants {
     public static final double MAX_HEIGHT = Units.inchesToMeters(70);
     public static final double STARTING_HEIGHT = MIN_HEIGHT;
   }
+
+  public static class SlapdownAlgaeConstants {
+    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double OUTAKE_VOLTAGE = 5.0;
+
+  }
 }
