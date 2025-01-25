@@ -66,4 +66,24 @@ public final class Constants {
     public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
 
   }
+
+  public static class WristConstants {
+    //all filler values
+    public static final double WRIST_ZERO = 0.0;
+    public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
+    public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
+    public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
+    public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
+    public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
+    public static final int WRIST_ENCODER_OFFSET = 1;
+    public static final int WRIST_ENCODER_SCALE = 1;
+    public static final double WRIST_MAX_ANGLE = 1.0;
+    //Start Angle in Degrees
+    public static final double CORAL_POSITION_PICKUP = 35.0;
+    public static final double CORAL_POSITION_L1 = 0.0;
+    public static final double CORAL_POSITION_L2 = -55.0;
+    public static final double CORAL_POSITION_L3 = -55.0;
+    public static final double CORAL_POSITION_L4 = -40.0;
+    //End Angle in Degrees
+  }
 }

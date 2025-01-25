@@ -30,6 +30,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIO;
 import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -48,6 +50,8 @@ import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOSim;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -64,6 +68,7 @@ public class RobotContainer {
   private final Elevator elevator;
   private final Wrist wrist;
   private final SlapdownAlgae SlapdownAlgae;
+  private final Climb climb;
 
   //wrist
 
@@ -91,6 +96,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        climb = new Climb(new ClimbIO() {});
         break;
         
 
@@ -108,6 +114,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        climb = new Climb(new ClimbIO() {});
         break;
 
       default:
@@ -124,6 +131,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSim() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
         SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        climb = new Climb(new ClimbIO() {});
         break;
     }
 
@@ -203,7 +211,7 @@ public class RobotContainer {
 
     // Wrist buttons
     controller.y().whileTrue(wrist.setAngleDegrees(0));
-    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    controller.rightBumper().onTrue(wrist.setAngleDegrees(60));
     controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
@@ -218,6 +226,14 @@ public class RobotContainer {
 
 
     controller.povDown().onTrue(SlapdownAlgae.setAngleDegrees(0));
+    //climb/decend buttons
+    /* ---will work on this later --- 
+    controller.rightStick().onTrue(climb.swapStatusClimb() + 
+    climb.wait(50, 500) + 
+    climb.swapStatusLock() + 
+    climb.wait(50, 500) + 
+    climb.swapStatusClimb());
+    */
   
   }
 
