@@ -34,10 +34,9 @@ public class Wrist extends SubsystemBase {
        
         io.updateInputs(inputs);
         goal = new TrapezoidProfile.State(goalAngle, 0);
-        Logger.processInputs("Wrist", inputs);
-        Logger.recordOutput("SetpointPosition", setpoint.position);
-        Logger.recordOutput("GoalAngle", goalAngle);
-        Logger.recordOutput("GoalPosition", goal.position);
+        Logger.recordOutput("WristSetpointPosition", setpoint.position);
+        Logger.recordOutput("WristGoalAngle", goalAngle);
+        Logger.recordOutput("WristGoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
         io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
     }

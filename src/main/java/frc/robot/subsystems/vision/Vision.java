@@ -25,7 +25,6 @@ public class Vision extends SubsystemBase {
 		NetworkTable visionTable = ntinst.getTable(VisionConstants.FRONT_CAMERA_NAME);
 	}
 
-
 	@Override
 	public void periodic() {
 		io.updateInputs(inputs);

@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase{
     public ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    public PIDController pid = new PIDController(3, 0, 0);
-    public ElevatorFeedforward feedforward = new ElevatorFeedforward(2, 2, 2);
+    public PIDController pid = new PIDController(0, 0, 0);
+    public ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 2.105, 1.75, .15);
     public ElevatorIO io;
     public double goalHeight = 0;
     public double voltage = 0;
 
     private final TrapezoidProfile profile =
-        new TrapezoidProfile(new TrapezoidProfile.Constraints(.3, 0.3));
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     
@@ -33,7 +33,10 @@ public class Elevator extends SubsystemBase{
         goal = new TrapezoidProfile.State(goalHeight, 0);
         setpoint = profile.calculate(.02, setpoint, goal);
         voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-        + feedforward.calculate(setpoint.velocity);
+        + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
+        Logger.recordOutput("Elevator/Goal", goal.position);
+        Logger.recordOutput("Elevator/Setpoint", setpoint.position);
+
         io.runVoltage(voltage);
     }
 
