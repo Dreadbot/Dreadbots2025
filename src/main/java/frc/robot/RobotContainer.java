@@ -220,13 +220,9 @@ public class RobotContainer {
     controller.povDown().toggleOnTrue(SlapdownAlgae.setAngleDegrees(0));
 
     //climb/decend buttons
-    /* ---will work on this later --- 
-    controller.rightStick().onTrue(climb.swapStatusClimb() + 
-    climb.wait(50, 500) + 
-    climb.swapStatusLock() + 
-    climb.wait(50, 500) + 
-    climb.swapStatusClimb());
-    */
+
+    controller.rightStick().onTrue(climb.climbSequence());
+    
   
   }
   /**
