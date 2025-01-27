@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownAlgaeConstants;
@@ -55,9 +56,10 @@ public class SlapdownAlgae extends SubsystemBase {
 
     public Command setAngleDegrees(double angle) {
         
-        return run(
+        return runOnce(
             () -> {
                 goalAngle = angle;
+                System.out.println("Setting Angle " + angle);
              } );
     }
 }
