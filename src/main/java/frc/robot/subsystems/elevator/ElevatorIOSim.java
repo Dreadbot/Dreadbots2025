@@ -36,4 +36,9 @@ public class ElevatorIOSim implements ElevatorIO {
         this.volts = volts;
     }
 
+    @Override
+    public void setMinPosition() {
+        elevatorSim.setState(ElevatorConstants.END_EFFECTOR_MIN_HEIGHT, 0);
+    }
+
 }

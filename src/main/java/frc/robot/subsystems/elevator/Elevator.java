@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,6 +16,10 @@ public class Elevator extends SubsystemBase{
     public ElevatorIO io;
     public double goalHeight = 0;
     public double voltage = 0;
+    DigitalInput toplimitSwitch = new DigitalInput(0);
+    DigitalInput bottomlimitSwitch = new DigitalInput(1);
+    public boolean isZeroed;
+
 
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
@@ -28,6 +33,17 @@ public class Elevator extends SubsystemBase{
 
     @Override
     public void periodic(){
+        if (!isZeroed) {
+            io.runVoltage(-3);
+            if (!bottomlimitSwitch.get()) {
+                io.runVoltage(0);
+                isZeroed = true;
+                io.setMinPosition();
+            }
+          
+        }
+        
+        else {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
         goal = new TrapezoidProfile.State(goalHeight, 0);
@@ -36,8 +52,28 @@ public class Elevator extends SubsystemBase{
         + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
+        setMotorSpeed(voltage);
+        }
+    }
 
-        io.runVoltage(voltage);
+    public void setMotorSpeed(double voltage) {
+        if (voltage > 0) {
+            if (!toplimitSwitch.get()) {
+                io.runVoltage(0);
+            }
+            else {
+                io.runVoltage(voltage);
+            }
+        }
+
+        else {
+            if (!bottomlimitSwitch.get()) {
+                io.runVoltage(0);
+            }
+            else {
+                io.runVoltage(voltage);
+            }
+        }
     }
 
     // public Command rise(){
