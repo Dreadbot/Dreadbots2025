@@ -157,8 +157,8 @@ public class RobotContainer {
                         drive.setPose(
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
-                .ignoringDisable(true));
-  }
+                .ignoringDisable(true));   
+              }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
