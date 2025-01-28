@@ -143,7 +143,7 @@ public class RobotContainer {
     controller
         .a()
         .whileTrue(
-            DriveCommands.driveToPosition(drive, () -> drive.getPose().nearest(AutoAlignConstants.POIs)).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignConstants.POIs))));
+            DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignConstants.POIs))));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

@@ -15,9 +15,12 @@ package frc.robot;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -50,9 +53,19 @@ public final class Constants {
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 10.0;
     public static final double ROTATION_MAX_ACCELERATION = 20.0;
-    public static final List<Pose2d> POIs = List.of(
-      new Pose2d(3.170, 4.018, Rotation2d.fromDegrees(0)),
-      new Pose2d(3.822, 5.166, Rotation2d.fromDegrees(-60))
-    );
+    public static final double REEF_BRANCH_OFFSET = Units.inchesToMeters(12.938 / 2.0);
+    private static Pose2d[] tmp = new Pose2d[6];
+    static {
+      Translation2d reefCenter =
+        new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+      Translation2d firstSide =
+        new Translation2d(3.229, 4.026);
+      for(int i = 0; i < 6; i++) {
+        Translation2d side = firstSide.rotateAround(reefCenter, Rotation2d.fromDegrees(60 * (i - 1)));
+        tmp[i] = new Pose2d(side, Rotation2d.fromDegrees(60 * (i - 1)));
+        
+      }
     }
+    public static final List<Pose2d> POIs = List.of(tmp);
+  }
 }
