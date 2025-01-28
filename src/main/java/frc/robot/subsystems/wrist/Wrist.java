@@ -56,7 +56,7 @@ public class Wrist extends SubsystemBase {
             } );
     }
 
-  /*  public void move(double Volts) {
+    /*  public void move(double Volts) {
         if((inputs.leftBottomSwitch || inputs.rightBottomSwitch) && Volts < 0) {
             Volts = 0;
         }

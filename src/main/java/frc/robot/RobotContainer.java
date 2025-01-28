@@ -23,9 +23,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -38,15 +44,14 @@ import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.util.visualization.VisualizationManager;
+
+import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -213,10 +218,9 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(slapdownAlgae.intake());
     controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
     controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
-    controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));
-
-  
+    controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
