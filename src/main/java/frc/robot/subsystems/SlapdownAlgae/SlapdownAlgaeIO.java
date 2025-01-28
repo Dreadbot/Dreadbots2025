@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SlapdownAlgae;
+package frc.robot.subsystems.slapdownAlgae;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -8,15 +8,15 @@ public interface SlapdownAlgaeIO {
     public static class SlapdownAlgaeIOInputs {
 
         //The Volts
-        public double pivotappliedVolts = 0.0;
-        public double intakeappliedVolts = 0.0;
+        public double pivotAppliedVolts = 0.0;
+        public double intakeAppliedVolts = 0.0;
 
         //Current
-        public double pivotcurrentAmps = 0.0;
-        public double intakecurrentAmps = 0.0;
+        public double pivotCurrentAmps = 0.0;
+        public double intakeCurrentAmps = 0.0;
 
         //Rotating By Degrees
-        public double pivotrotationDegrees = 0.0;
+        public double pivotRotationDegrees = 0.0;
         
         //RPM
         public double intakeRPM = 0.0;
@@ -27,6 +27,8 @@ public interface SlapdownAlgaeIO {
     // functions
     public default void updateInputs(SlapdownAlgaeIOInputs inputs) {}
 
-    public default void runVoltage(double volts) {}
+    public default void runPivotVoltage(double volts) {}
+    public default void runIntakeVoltage(double volts) {}
+
 
 }
