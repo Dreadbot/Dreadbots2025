@@ -1,11 +1,10 @@
-package frc.robot.subsystems.SlapdownAlgae;
+package frc.robot.subsystems.slapdownAlgae;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,14 +13,13 @@ import frc.robot.Constants.SlapdownAlgaeConstants;
 
 public class SlapdownAlgae extends SubsystemBase {
     
-    private SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
-    private SlapdownAlgaeIO io;
-    public PIDController pid = new PIDController(1.5, 0.005, 0);
-    public ArmFeedforward feedforward = new ArmFeedforward(0.0, 1, 0.25);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(180, 180));
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+    private final SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
+    private final SlapdownAlgaeIO io;
+    public final PIDController pid = new PIDController(0.0, 0.0, 0);
+    public final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.3661, 0.0155);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(360, 360));
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    private double goalAngle;
 
     public SlapdownAlgae(SlapdownAlgaeIO io) {
         this.io = io;
@@ -29,37 +27,39 @@ public class SlapdownAlgae extends SubsystemBase {
 
     public Command intake() {
         return startEnd(
-        ()-> io.runVoltage(SlapdownAlgaeConstants.INTAKE_VOLTAGE),
-        ()->io.runVoltage(0.0)
-
+        () -> io.runIntakeVoltage(SlapdownAlgaeConstants.INTAKE_VOLTAGE),
+        () -> io.runIntakeVoltage(0.0)
         );
     }
 
     public Command outtake() {
         return startEnd(
-        ()-> io.runVoltage(SlapdownAlgaeConstants.OUTAKE_VOLTAGE),
-        ()->io.runVoltage(0.0)
+        () -> io.runIntakeVoltage(SlapdownAlgaeConstants.OUTAKE_VOLTAGE),
+        () -> io.runIntakeVoltage(0.0)
         );
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("SlapdownAlgaePivot", inputs);
-        goal = new TrapezoidProfile.State(goalAngle, 0);
-        Logger.recordOutput("AlgaeSetpointPosition", setpoint.position);
-        Logger.recordOutput("AlgaeGoalAngle", goalAngle);
-        Logger.recordOutput("AlgaeGoalPosition", goal.position);
+        Logger.processInputs("SlapdownIntake", inputs);
+        Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
+        Logger.recordOutput("Slapdown/GoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
-        io.runVoltage(pid.calculate(inputs.pivotrotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
+        io.runPivotVoltage(
+            pid.calculate(inputs.pivotRotationDegrees, setpoint.position) + 
+            feedforward.calculate(Units.degreesToRadians(inputs.pivotRotationDegrees), setpoint.velocity) // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
+        ); 
     }
 
     public Command setAngleDegrees(double angle) {
         
         return runOnce(
             () -> {
-                goalAngle = angle;
-                System.out.println("Setting Angle " + angle);
+                goal = new TrapezoidProfile.State(angle, 0);
              } );
+    }
+    public double getAngle() {
+        return inputs.pivotRotationDegrees;
     }
 }

@@ -16,8 +16,8 @@ public class Wrist extends SubsystemBase {
     
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
-    public PIDController pid = new PIDController(1.0, 0.0, 0);
-    public ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0.0);
+    private final PIDController pid = new PIDController(1.0, 0.0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0.0);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(180, 180));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -31,12 +31,12 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-       
         io.updateInputs(inputs);
+        Logger.processInputs("Wrist", inputs);
         goal = new TrapezoidProfile.State(goalAngle, 0);
-        Logger.recordOutput("WristSetpointPosition", setpoint.position);
-        Logger.recordOutput("WristGoalAngle", goalAngle);
-        Logger.recordOutput("WristGoalPosition", goal.position);
+        Logger.recordOutput("Wrist/SetpointPosition", setpoint.position);
+        Logger.recordOutput("Wirst/GoalAngle", goalAngle);
+        Logger.recordOutput("Wrist/GoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
         io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
     }
@@ -67,4 +67,8 @@ public class Wrist extends SubsystemBase {
         io.runVoltage(Volts);
     }
     */
+
+    public double getAngle() {
+        return inputs.rotationDegrees;
+    }
 }

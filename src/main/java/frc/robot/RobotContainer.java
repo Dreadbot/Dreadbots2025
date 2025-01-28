@@ -27,9 +27,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgae;
-import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.drive.Drive;
@@ -49,6 +49,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOSim;
+import frc.robot.util.visualization.VisualizationManager;
 
 import java.util.function.BooleanSupplier;
 
@@ -67,10 +68,8 @@ public class RobotContainer {
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
-  private final SlapdownAlgae SlapdownAlgae;
-  private final Climb climb;
-
-  //wrist
+  private final SlapdownAlgae slapdownAlgae;
+  private final VisualizationManager vizManager;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -95,8 +94,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-        climb = new Climb(new ClimbIO() {});
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
         
 
@@ -113,8 +111,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-        climb = new Climb(new ClimbIO() {});
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
 
       default:
@@ -130,10 +127,10 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
-        SlapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-        climb = new Climb(new ClimbIO() {});
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         break;
     }
+    vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -154,7 +151,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     try {
-        autoChooser.addDefaultOption("Choreo Test Auto", AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory("Middle-E2F2-FarPickup")));
+        autoChooser.addDefaultOption("Choreo Test Auto", AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory("Processor-A2-FarPickup")));
     } catch(Exception e) {
         autoInitFaliure.setText("Failed to Init Choreo Test Auto!");
         autoInitFaliure.set(true);
@@ -203,34 +200,25 @@ public class RobotContainer {
     //             .ignoringDisable(true));
 
     // End Effector buttons
-    controller.a().whileTrue(endEffector.intake());
-    controller.b().whileTrue(endEffector.outtake());
+    // controller.a().whileTrue(endEffector.intake());
+    // controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
     controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
+    controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+
 
     // Wrist buttons
     controller.y().whileTrue(wrist.setAngleDegrees(0));
-    controller.rightBumper().onTrue(wrist.setAngleDegrees(60));
-    controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
+    controller.b().onTrue(wrist.setAngleDegrees(-50));
+    controller.a().whileTrue(wrist.setAngleDegrees(90));
+
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-
-    controller.leftTrigger().whileTrue(SlapdownAlgae.intake());
-
-
-    controller.rightTrigger().whileTrue(SlapdownAlgae.outtake());
-
-
-    controller.povUp().onTrue(SlapdownAlgae.setAngleDegrees(90));
-
-
-    controller.povDown().onTrue(SlapdownAlgae.setAngleDegrees(0));
-    //climb/decend buttons
-
-    controller.rightStick().onTrue(climb.climbSequence());
-    
-  
+    controller.leftTrigger().whileTrue(slapdownAlgae.intake());
+    controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
+    controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
+    controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
 
   /**

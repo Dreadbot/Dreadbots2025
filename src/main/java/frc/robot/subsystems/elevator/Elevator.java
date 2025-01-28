@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase{
-    public ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    public PIDController pid = new PIDController(0, 0, 0);
-    public ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 2.105, 1.75, .15);
-    public ElevatorIO io;
-    public double goalHeight = 0;
-    public double voltage = 0;
+    private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+    private final PIDController pid = new PIDController(0, 0, 0);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.263, 2.91666667, 0.25);
+    private final ElevatorIO io;
+    private double goalHeight = 0;
+    private double voltage = 0;
     DigitalInput toplimitSwitch = new DigitalInput(0);
     DigitalInput bottomlimitSwitch = new DigitalInput(1);
     public boolean isZeroed;
@@ -92,7 +92,11 @@ public class Elevator extends SubsystemBase{
     public Command riseTo(double goalHeight){
         return run(() -> {
             this.goalHeight = goalHeight;
-    });
+        });
+    }
+
+    public double getHeight() {
+        return inputs.positionMeters;
     }
 
 }
