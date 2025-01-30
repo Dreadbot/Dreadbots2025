@@ -78,7 +78,7 @@ public class ModuleIOSpark implements ModuleIO {
           default -> new Rotation2d();
         };
     driveSpark =
-        new SparkMax(
+        new SparkFlex(
             switch (module) {
               case 0 -> frontLeftDriveCanId;
               case 1 -> frontRightDriveCanId;
@@ -88,7 +88,7 @@ public class ModuleIOSpark implements ModuleIO {
             },
             MotorType.kBrushless);
     turnSpark =
-        new SparkMax(
+        new SparkFlex(
             switch (module) {
               case 0 -> frontLeftTurnCanId;
               case 1 -> frontRightTurnCanId;
@@ -104,7 +104,7 @@ public class ModuleIOSpark implements ModuleIO {
                     case 1 -> frontRightCanCoderId;
                     case 2 -> backLeftCanCoderId;
                     case 3 -> backRightCanCoderId;
-                    default ->0;
+                    default -> 0;
                 }
             );
     driveEncoder = driveSpark.getEncoder();
@@ -147,8 +147,8 @@ public class ModuleIOSpark implements ModuleIO {
                 driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
-    var canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.withMagnetOffset(zeroRotation.getRotations());
+    // var canCoderConfig = new CANcoderConfiguration();
+    // canCoderConfig.MagnetSensor.withMagnetOffset(zeroRotation.getRotations());
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
     turnConfig
@@ -249,7 +249,7 @@ public class ModuleIOSpark implements ModuleIO {
   }
 
   @Override
-  public void setDriveVelocity(double velocityRadPerSec) {
+  public void setDriveVelocity(double velocityRadPerSec, double wheelTorqueNm) {
     double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
     driveController.setReference(
         velocityRadPerSec,

@@ -23,8 +23,8 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(30.0);
-  public static final double wheelBase = Units.inchesToMeters(30.0);
+  public static final double trackWidth = Units.inchesToMeters(25.0);
+  public static final double wheelBase = Units.inchesToMeters(25.0);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -35,10 +35,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-1.498 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.580 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(3.130);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(3.096 - Math.PI);
 
   // Device CAN IDs
   public static final int frontLeftDriveCanId = 1;
@@ -73,8 +73,8 @@ public class DriveConstants {
   // Drive PID configuration
   public static final double driveKp = 0.0;
   public static final double driveKd = 0.0;
-  public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKs = 0.12855;
+  public static final double driveKv = 0.11796;
   public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
