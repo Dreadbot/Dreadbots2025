@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.util.AutoAlignUtil;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -150,11 +152,10 @@ public class DriveCommands {
         boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
 
         drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+          speeds,
+          drive.getRotation())
+        );
         
     }, drive).beforeStarting(() -> {
       xController.reset(drive.getPose().getX());
@@ -164,10 +165,10 @@ public class DriveCommands {
   }
 
   public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
-    Pose2d closestPose = robotPos.get().nearest(AutoAlignConstants.POIs);
+    Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
     Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
     Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
-
+    
     if(leftTrim.getAsBoolean()) {
       closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
     } else if(rightTrim.getAsBoolean()) {

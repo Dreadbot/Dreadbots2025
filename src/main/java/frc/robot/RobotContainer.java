@@ -20,12 +20,14 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.commands.DriveCommands;
@@ -35,6 +37,7 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.util.AutoAlignUtil;
 
 import java.io.IOException;
 import java.rmi.server.ExportException;
@@ -143,7 +146,7 @@ public class RobotContainer {
     controller
         .a()
         .whileTrue(
-            DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignConstants.POIs))));
+            DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -158,6 +161,9 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+    // This trigger will run as soon as we can read alliance data, hopeful before the match starts
+    // Allows us to switch the POI to red side or blue side
+    new Trigger(() -> DriverStation.getAlliance().isPresent()).onTrue(AutoAlignUtil.createPOIListCommand());
   }
 
   /**
