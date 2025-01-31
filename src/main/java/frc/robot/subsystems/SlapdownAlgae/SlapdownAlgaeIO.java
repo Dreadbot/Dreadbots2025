@@ -1,7 +1,8 @@
-package frc.robot.subsystems.SlapdownAlgae;
+package frc.robot.subsystems.slapdownAlgae;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.Idle;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public interface SlapdownAlgaeIO {
@@ -10,15 +11,15 @@ public interface SlapdownAlgaeIO {
     public static class SlapdownAlgaeIOInputs {
 
         //The Volts
-        public double pivotappliedVolts = 0.0;
-        public double intakeappliedVolts = 0.0;
+        public double pivotAppliedVolts = 0.0;
+        public double intakeAppliedVolts = 0.0;
 
         //Current
-        public double pivotcurrentAmps = 0.0;
-        public double intakecurrentAmps = 0.0;
+        public double pivotCurrentAmps = 0.0;
+        public double intakeCurrentAmps = 0.0;
 
         //Rotating By Degrees
-        public double pivotrotationDegrees = 0.0;
+        public double pivotRotationDegrees = 0.0;
         
         //RPM
         public double intakeRPM = 0.0;
@@ -34,18 +35,11 @@ public interface SlapdownAlgaeIO {
     // functions
     public default void updateInputs(SlapdownAlgaeIOInputs inputs) {};
 
+    public default void runPivotVoltage(double volts) {}
 
-    public default void close(SlapdownAlgaeIOInputs inputs) {};
+    public default void runIntakeVoltage(double volts) {}
 
+    public default void setIdleMode(IdleMode pivotIdleMode, IdleMode intakeIdleMode) {};
 
-    public default void runVoltage(double voltage) {};
-
-
-    public default void setIdleMode(IdleMode idleMode) {};
-
-  
-    public default void close(){};
-        
-   
     public default void stopMotors() {};
 }

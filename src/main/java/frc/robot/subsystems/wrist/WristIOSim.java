@@ -11,12 +11,7 @@ import frc.robot.Constants.WristConstants;
 public class WristIOSim implements WristIO {
 
     private final SingleJointedArmSim wrist;
-    private double volts;
-    private DigitalInput leftTopSwitch;
-    private DigitalInput leftBottomSwitch;
-    private DigitalInput rightTopSwitch;
-    private DigitalInput rightBottomSwitch;
-    
+    private double volts;    
 
     public WristIOSim() {
         this.wrist = new SingleJointedArmSim(
@@ -29,15 +24,8 @@ public class WristIOSim implements WristIO {
             true,
             Units.degreesToRadians(0)
             );
-
-        this.leftTopSwitch = new DigitalInput(WristConstants.TOP_LEFT_LIMIT_SWITCH_ID);
-        this.rightTopSwitch = new DigitalInput(WristConstants.TOP_RIGHT_LIMIT_SWITCH_ID);
-        this.leftBottomSwitch = new DigitalInput(WristConstants.BOTTOM_LEFT_LIMIT_SWITCH_ID);
-        this.rightBottomSwitch = new DigitalInput(WristConstants.BOTTOM_RIGHT_LIMIT_SWITCH_ID);
         volts = 0.0;
     }
-
-
 
     @Override
     public void updateInputs(WristIOInputs inputs) {

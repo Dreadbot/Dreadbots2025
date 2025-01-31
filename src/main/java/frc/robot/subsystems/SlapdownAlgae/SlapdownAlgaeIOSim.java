@@ -1,47 +1,68 @@
-package frc.robot.subsystems.SlapdownAlgae;
+package frc.robot.subsystems.slapdownAlgae;
 
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants.SlapdownAlgaeConstants;
 
 
 public class SlapdownAlgaeIOSim implements SlapdownAlgaeIO {
 
-    private final SingleJointedArmSim SlapdownAlgae;
-    private double volts;
+    private final SingleJointedArmSim slapdownAlgae;
+    private final DCMotorSim intakeMotor;
+
+    private double pivotVolts;
+    private double intakeVolts;
+
 
     public SlapdownAlgaeIOSim() {
-        this.SlapdownAlgae = new SingleJointedArmSim(
-            DCMotor.getNEO(1), 
+        this.slapdownAlgae = new SingleJointedArmSim(
+            DCMotor.getNeoVortex(1), 
             50.0, 
-            SingleJointedArmSim.estimateMOI(0.15, Units.lbsToKilograms(10)), 
-            0.15, 
-            Units.degreesToRadians(-90), 
+            SlapdownAlgaeConstants.SIM_PIVOT_MOI, 
+            Units.inchesToMeters(16), 
+            Units.degreesToRadians(-20), 
             Units.degreesToRadians(90), 
             true,
             Units.degreesToRadians(0)
             );
+        this.intakeMotor = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), SlapdownAlgaeConstants.SIM_INTAKE_MOI, 2), 
+            DCMotor.getNEO(1)
+        );
+        pivotVolts = 0.0;
+        intakeVolts = 0.0;
 
-        volts = 0.0;
     }
 
     @Override
     public void updateInputs(SlapdownAlgaeIOInputs inputs) {
-        SlapdownAlgae.update(0.02);
+        slapdownAlgae.update(0.02);
+        intakeMotor.update(0.02);
 
-        inputs.pivotappliedVolts = 0.0;
-        inputs.intakeappliedVolts = 0.0;
+        inputs.pivotAppliedVolts = pivotVolts;
+        inputs.intakeAppliedVolts = intakeVolts;
        
-        inputs.pivotcurrentAmps = SlapdownAlgae.getCurrentDrawAmps();
-        inputs.intakecurrentAmps = SlapdownAlgae.getCurrentDrawAmps();
+        inputs.pivotCurrentAmps = slapdownAlgae.getCurrentDrawAmps();
+        inputs.intakeCurrentAmps = intakeMotor.getCurrentDrawAmps();
 
-        inputs.pivotrotationDegrees = Units.radiansToDegrees(SlapdownAlgae.getAngleRads());
+        inputs.pivotRotationDegrees = Units.radiansToDegrees(slapdownAlgae.getAngleRads());
+
+        inputs.intakeRPM = intakeMotor.getAngularVelocityRPM();
     } 
 
     @Override
-    public void runVoltage(double volts) {
-        SlapdownAlgae.setInputVoltage(volts);
-        this.volts = volts;
+    public void runPivotVoltage(double volts) {
+        slapdownAlgae.setInputVoltage(volts);
+        this.pivotVolts = volts;
+    }
+    @Override
+    public void runIntakeVoltage(double volts) {
+        intakeMotor.setInputVoltage(volts);
+        this.intakeVolts = volts;
     }
 
 }

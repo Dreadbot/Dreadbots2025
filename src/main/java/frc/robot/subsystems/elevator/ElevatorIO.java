@@ -24,4 +24,6 @@ public class ElevatorIOInputs {
 
  public default void runVoltage(double volts) {};
 
+ public default void setMinPosition() {};
+
 }

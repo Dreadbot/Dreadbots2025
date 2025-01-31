@@ -27,13 +27,18 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.positionMeters = elevatorSim.getPositionMeters();
         inputs.velocityMPS = elevatorSim.getVelocityMetersPerSecond();
         inputs.currentAmps = elevatorSim.getCurrentDrawAmps();
-        inputs.voltage = 0.0; 
+        inputs.voltage = volts; 
     } 
 
     @Override
     public void runVoltage(double volts) {
         elevatorSim.setInputVoltage(volts);
         this.volts = volts;
+    }
+
+    @Override
+    public void setMinPosition() {
+        elevatorSim.setState(ElevatorConstants.END_EFFECTOR_MIN_HEIGHT, 0);
     }
 
 }

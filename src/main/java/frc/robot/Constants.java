@@ -47,11 +47,12 @@ public final class Constants {
     public static final double DROP_VOLTAGE = -5.0;
     public static final double DCMOTOR_MASS = 2;
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
-    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.12); 
-    public static final double GEARING = 3;
+    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.44); 
+    public static final double GEARING = 5;
     public static final double MIN_HEIGHT = Units.inchesToMeters(0);
     public static final double MAX_HEIGHT = Units.inchesToMeters(70);
     public static final double STARTING_HEIGHT = MIN_HEIGHT;
+    public static final double END_EFFECTOR_MIN_HEIGHT = 0.6;
 
     public static final int MOTOR_ID = 0;
   }
@@ -67,6 +68,12 @@ public final class Constants {
     public static final String SLAPDOWNALGAE_PIVOT_MOTOR = null;
     public static final String PIVOT_SLAPDOWNALGAE_MOTOR = null;
     public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
+
+    /* 
+     * Taken from onshape in form m^2kg, 
+     */
+    public static final double SIM_INTAKE_MOI = 0.00011264;
+    public static final double SIM_PIVOT_MOI = 0.15180934;
 
   }
 

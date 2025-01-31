@@ -10,11 +10,6 @@ public interface WristIO {
         public double appliedVolts = 0.0;
         public double currentAmps = 0.0;
         public double rotationDegrees = 0.0;
-
-        public boolean leftTopSwitch;
-        public boolean leftBottomSwitch;
-        public boolean rightTopSwitch;
-        public boolean rightBottomSwitch;
     }
 
     // functions

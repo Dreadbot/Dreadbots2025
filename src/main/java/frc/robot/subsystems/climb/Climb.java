@@ -3,6 +3,7 @@ package frc.robot.subsystems.climb;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.climb.ClimbIO.ClimbIOInputs;
 
@@ -43,6 +44,12 @@ public class Climb extends SubsystemBase {
         solenoidLock.set(!solenoidLock.get());
         });
        
+   }
+
+   public Command climbSequence() {
+    return swapStatusLock()
+    .andThen(Commands.waitSeconds(1)
+    .andThen(swapStatusClimb()));
    }
     
 }

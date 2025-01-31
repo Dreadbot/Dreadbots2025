@@ -24,31 +24,31 @@
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-11 in",
-    "val":-0.2794
+    "exp":"-12.5 in",
+    "val":-0.3175
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"120 lbs",
+   "val":54.4310844
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"4.256 kg m ^ 2",
+   "val":4.256
   },
   "gearing":{
    "exp":"6.5",
@@ -59,12 +59,12 @@
    "val":0.0508
   },
   "vmax":{
-   "exp":"5750 RPM",
-   "val":602.1385919380436
+   "exp":"6400 RPM",
+   "val":670.2064327658225
   },
   "tmax":{
-   "exp":"1.2 N * m",
-   "val":1.2
+   "exp":"0.98 N * m",
+   "val":0.98
   },
   "cof":{
    "exp":"1.2",
@@ -72,16 +72,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    },
    "side":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    },
    "back":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    }
   },
   "differentialTrackWidth":{
