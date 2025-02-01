@@ -207,10 +207,8 @@ public class RobotContainer {
     // controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
-
-    controller.a().onTrue(elevator.setVoltage(3));
+    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
+    controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
 
     // Wrist buttons

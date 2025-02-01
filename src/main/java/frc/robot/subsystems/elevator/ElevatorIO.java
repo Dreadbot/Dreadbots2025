@@ -9,6 +9,7 @@ public interface ElevatorIO {
 @AutoLog
 public class ElevatorIOInputs {
 
+
     public double positionMeters = 0.0;
        
     public double velocityMPS = 0.0;
@@ -25,5 +26,13 @@ public class ElevatorIOInputs {
  public default void runVoltage(double volts) {};
 
  public default void setMinPosition() {};
+
+ public default boolean getBottomLimitSwitch() {
+    return true;
+}
+
+ public default boolean getTopLimitSwitch() {
+    return true;
+}
 
 }
