@@ -53,6 +53,7 @@ public final class Constants {
     public static final double MAX_HEIGHT = Units.inchesToMeters(70);
     public static final double STARTING_HEIGHT = MIN_HEIGHT;
     public static final double END_EFFECTOR_MIN_HEIGHT = 0.6;
+    public static final int DUTY_CYCLE_ENCODER = 1;
 
     public static final int MOTOR_ID = 1;
   }
