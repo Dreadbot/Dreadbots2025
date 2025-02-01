@@ -41,6 +41,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
@@ -82,20 +83,22 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Real robot, instantiate hardware IO implementations
+        // Sim
         drive =
-            new Drive(
-                new GyroIONavX(),
-                new ModuleIOSpark(0),
-                new ModuleIOSpark(1),
-                new ModuleIOSpark(2),
-                new ModuleIOSpark(3));
-        endEffector = new EndEffector(new EndEffectorIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIOSim());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-        break;
+        new Drive(
+            new GyroIO() {},
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
+      endEffector = new EndEffector(new EndEffectorIOSim());
+      wrist = new Wrist(new WristIOSim());
+      vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+
+      // Real part
+      elevator = new Elevator(new ElevatorIOSparkMax());
+      break;
         
 
       case SIM:

@@ -23,14 +23,14 @@ public class EndEffector extends SubsystemBase {
 
     public Command intake() {
         return startEnd(
-            () -> io.runVoltage(EndEffectorConstants.INTAKE_VOLTAGE, EndEffectorConstants.INTAKE_VOLTAGE),
-            () -> io.runVoltage(0.0, 0.0)
+            () -> io.runVoltage(EndEffectorConstants.INTAKE_VOLTAGE),
+            () -> io.runVoltage(0.0)
         );
     }
     public Command outtake() {
         return startEnd(
-            () -> io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE, EndEffectorConstants.OUTAKE_VOLTAGE),
-            () -> io.runVoltage(0.0, 0.0)
+            () -> io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE),
+            () -> io.runVoltage(0.0)
         );
     }
 

@@ -54,7 +54,7 @@ public final class Constants {
     public static final double STARTING_HEIGHT = MIN_HEIGHT;
     public static final double END_EFFECTOR_MIN_HEIGHT = 0.6;
 
-    public static final int MOTOR_ID = 0;
+    public static final int MOTOR_ID = 1;
   }
 
 
