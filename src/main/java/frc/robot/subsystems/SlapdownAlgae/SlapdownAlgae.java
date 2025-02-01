@@ -1,4 +1,4 @@
-package frc.robot.subsystems.slapdownAlgae;
+package frc.robot.subsystems.SlapdownAlgae;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,13 +10,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownAlgaeConstants;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOInputsAutoLogged;
 
 public class SlapdownAlgae extends SubsystemBase {
     
     private final SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
     private final SlapdownAlgaeIO io;
     public final PIDController pid = new PIDController(0.0, 0.0, 0);
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.3661, 0.0155);
+    //public final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.3661, 0.0155);
+    public final ArmFeedforward feedforward = new ArmFeedforward(0, 0.266, 0.0155);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(360, 360));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -56,6 +58,7 @@ public class SlapdownAlgae extends SubsystemBase {
         
         return runOnce(
             () -> {
+                System.out.println("&&&&&&&&&&Setting Degrees " + angle);
                 goal = new TrapezoidProfile.State(angle, 0);
              } );
     }

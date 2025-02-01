@@ -20,8 +20,8 @@ public class Elevator extends SubsystemBase{
     private final ElevatorIO io;
     private double goalHeight = 0;
     private double voltage = 0;
-    DigitalInput toplimitSwitch = new DigitalInput(0);
-    DigitalInput bottomlimitSwitch = new DigitalInput(1);
+    // DigitalInput toplimitSwitch = new DigitalInput(0);
+    // DigitalInput bottomlimitSwitch = new DigitalInput(1);
     public boolean isZeroed;
 
 
@@ -37,47 +37,47 @@ public class Elevator extends SubsystemBase{
 
     @Override
     public void periodic(){
-        if (!isZeroed) {
-            io.runVoltage(-3);
-            if (!bottomlimitSwitch.get()) {
-                io.runVoltage(0);
-                isZeroed = true;
-                io.setMinPosition();
-            }
+        // if (!isZeroed) {
+        //     io.runVoltage(-3);
+        //     if (!bottomlimitSwitch.get()) {
+        //         io.runVoltage(0);
+        //         isZeroed = true;
+        //         io.setMinPosition();
+          //  }
           
-        }
+        // }
         
-        else {
-        io.updateInputs(inputs);
-        Logger.processInputs("Elevator", inputs);
-        goal = new TrapezoidProfile.State(goalHeight, 0);
-        setpoint = profile.calculate(.02, setpoint, goal);
-        voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-        + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
-        Logger.recordOutput("Elevator/Goal", goal.position);
-        Logger.recordOutput("Elevator/Setpoint", setpoint.position);
-        setMotorSpeed(voltage);
-        }
+        // else {
+        // io.updateInputs(inputs);
+        // Logger.processInputs("Elevator", inputs);
+        // goal = new TrapezoidProfile.State(goalHeight, 0);
+        // setpoint = profile.calculate(.02, setpoint, goal);
+        // voltage = pid.calculate(inputs.positionMeters, setpoint.position)
+        // + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
+        // Logger.recordOutput("Elevator/Goal", goal.position);
+        // Logger.recordOutput("Elevator/Setpoint", setpoint.position);
+        // setMotorSpeed(voltage);
+        // }
     }
 
-    public void setMotorSpeed(double voltage) {
-        if (voltage > 0) {
-            if (!toplimitSwitch.get()) {
-                io.runVoltage(0);
-            }
-            else {
-                io.runVoltage(voltage);
-            }
-        }
+     public void setMotorSpeed(double voltage) {
+    //     if (voltage > 0) {
+    //         if (!toplimitSwitch.get()) {
+    //             io.runVoltage(0);
+    //         }
+    //         else {
+    //             io.runVoltage(voltage);
+    //         }
+    //     }
 
-        else {
-            if (!bottomlimitSwitch.get()) {
-                io.runVoltage(0);
-            }
-            else {
-                io.runVoltage(voltage);
-            }
-        }
+    //     else {
+    //         if (!bottomlimitSwitch.get()) {
+    //             io.runVoltage(0);
+    //         }
+    //         else {
+    //             io.runVoltage(voltage);
+    //         }
+    //     }
     }
 
     // public Command rise(){

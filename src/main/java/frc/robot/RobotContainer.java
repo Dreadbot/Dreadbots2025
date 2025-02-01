@@ -27,9 +27,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.SlapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.drive.Drive;
@@ -84,17 +85,17 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive =
-            new Drive(
-                new GyroIONavX(),
-                new ModuleIOSpark(0),
-                new ModuleIOSpark(1),
-                new ModuleIOSpark(2),
-                new ModuleIOSpark(3));
-        endEffector = new EndEffector(new EndEffectorIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
+        new Drive(
+            new GyroIO() {},
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
+        endEffector = new EndEffector(new EndEffectorIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
         break;
         
 
