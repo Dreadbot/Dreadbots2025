@@ -207,21 +207,23 @@ public class RobotContainer {
     // controller.b().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
+    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+
+    controller.a().onTrue(elevator.setVoltage(3));
 
 
     // Wrist buttons
-    controller.y().whileTrue(wrist.setAngleDegrees(0));
-    controller.b().onTrue(wrist.setAngleDegrees(-50));
-    controller.a().whileTrue(wrist.setAngleDegrees(90));
+    // controller.y().whileTrue(wrist.setAngleDegrees(0));
+    // controller.b().onTrue(wrist.setAngleDegrees(-50));
+    // controller.a().whileTrue(wrist.setAngleDegrees(90));
 
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    controller.leftTrigger().whileTrue(slapdownAlgae.intake());
-    controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
-    controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
-    controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
+    // controller.leftTrigger().whileTrue(slapdownAlgae.intake());
+    // controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
+    // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
+    // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
 
   /**

@@ -20,8 +20,8 @@ public class Elevator extends SubsystemBase{
     private final ElevatorIO io;
     private double goalHeight = 0;
     private double voltage = 0;
-    DigitalInput toplimitSwitch = new DigitalInput(0);
-    DigitalInput bottomlimitSwitch = new DigitalInput(1);
+    DigitalInput toplimitSwitch = new DigitalInput(8);
+    DigitalInput bottomlimitSwitch = new DigitalInput(9);
     public boolean isZeroed;
 
 
@@ -97,6 +97,13 @@ public class Elevator extends SubsystemBase{
         return run(() -> {
             this.goalHeight = goalHeight;
         });
+    }
+
+    public Command setVoltage(double volts){
+        return startEnd(
+            () -> io.runVoltage(volts),
+            () -> io.runVoltage(0.0)
+        );
     }
 
     public double getHeight() {
