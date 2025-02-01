@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
@@ -19,14 +20,15 @@ public class VisionUtil {
     }
 
     /**
-     * Converts Tag Pose to world coordinates 
+     * Converts Robot Relavtive Tag Cooridnates Pose to world coordinates 
      * @param offset Pose of Tag of from robot coorindate frame
-     * @param tagPose Pose of tag in world frame
+     * @param robotRotation rotation of robot
      * @return Pose converted to world axes
     
     */
-    public static Pose2d tagAxisToWorldAxis(Pose3d offset, Pose3d tagPose) {
-        Translation3d poseInWorldAxis = offset.getTranslation().rotateBy(tagPose.getRotation().plus(new Rotation3d(0, 0, Math.PI))); //Rotate 180 degrees, as April Tag rotation differs from our implmentation
+    public static Pose2d tagAxisToWorldAxis(Pose3d offset, Rotation2d robotRotation) {
+        Rotation3d robotAngle = new Rotation3d(robotRotation.plus(Rotation2d.kPi)); // Rotates angle so it is 180 offset
+        Translation3d poseInWorldAxis = offset.getTranslation().rotateBy(robotAngle);
         return new Pose2d(poseInWorldAxis.toTranslation2d(), offset.getRotation().toRotation2d()); // Convert to world axes + ignore Z travel
     }
 
