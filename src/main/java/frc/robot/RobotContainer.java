@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -62,7 +64,7 @@ public class RobotContainer {
   private final Wrist wrist;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandPS4Controller controller = new CommandPS4Controller(0);
   private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
 
   // Dashboard inputs
@@ -175,7 +177,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when B button is pressed
     controller
-        .b()
+        .circle()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -185,15 +187,15 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // End Effector buttons
-    controller.a().whileTrue(endEffector.intake());
-    controller.b().whileTrue(endEffector.outtake());
+    // controller.cross().whileTrue(endEffector.intake());
+    // controller.circle().whileTrue(endEffector.outtake());
 
     // Elevator buttons
-    controller.rightTrigger().onTrue(elevator.riseTo(.75));
+    // controller.rightTrigger().onTrue(elevator.riseTo(.75));
 
     // Wrist buttons
-    controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
-    controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
+    // controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
+    // controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
 
   /**
