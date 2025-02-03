@@ -1,0 +1,31 @@
+{
+ "name":"AutoAlignPoints",
+ "version":1,
+ "snapshot":{
+  "waypoints":[],
+  "constraints":[],
+  "targetDt":0.05
+ },
+ "params":{
+  "waypoints":[
+    {"x":{"exp":"3.2296810150146484 m", "val":3.2296810150146484}, "y":{"exp":"4.0259254 m", "val":4.0259254}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"LeftFarPickup.x", "val":1.6445536613464355}, "y":{"exp":"LeftFarPickup.y", "val":7.503785610198975}, "heading":{"exp":"LeftFarPickup.heading", "val":2.1864162373008917}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"LeftClosePickup.x", "val":0.583694577217102}, "y":{"exp":"LeftClosePickup.y", "val":6.705718040466309}, "heading":{"exp":"LeftFarPickup.heading", "val":2.1864162373008917}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"Processor.x", "val":5.97}, "y":{"exp":"Processor.y", "val":0.5098705887794495}, "heading":{"exp":"Processor.heading", "val":1.5707963267948966}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+  "constraints":[
+    {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"17.548 m", "val":17.548}, "h":{"exp":"8.052 m", "val":8.052}}}, "enabled":true}],
+  "targetDt":{
+   "exp":"0.05 s",
+   "val":0.05
+  }
+ },
+ "trajectory":{
+  "sampleType":null,
+  "waypoints":[],
+  "samples":[],
+  "splits":[]
+ },
+ "events":[]
+}

@@ -5,6 +5,34 @@
  "variables":{
   "expressions":{},
   "poses":{
+   "LeftClosePickup":{
+    "x":{
+     "exp":"0.583694577217102 m",
+     "val":0.583694577217102
+    },
+    "y":{
+     "exp":"6.705718040466309 m",
+     "val":6.705718040466309
+    },
+    "heading":{
+     "exp":"LeftFarPickup.heading",
+     "val":2.1864162373008917
+    }
+   },
+   "Processor":{
+    "x":{
+     "exp":"5.97 m",
+     "val":5.97
+    },
+    "y":{
+     "exp":"0.5098705887794495 m",
+     "val":0.5098705887794495
+    },
+    "heading":{
+     "exp":"(pi / 2) rad",
+     "val":1.5707963267948966
+    }
+   },
    "LeftFarPickup":{
     "x":{
      "exp":"1.6445536613464355 m",
@@ -24,22 +52,22 @@
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-11 in",
-    "val":-0.2794
+    "exp":"-12.5 in",
+    "val":-0.3175
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"12.5 in",
+    "val":0.3175
    }
   },
   "mass":{
