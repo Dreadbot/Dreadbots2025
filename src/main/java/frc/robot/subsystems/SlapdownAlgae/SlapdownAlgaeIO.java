@@ -23,7 +23,7 @@ public interface SlapdownAlgaeIO {
         
         //RPM
         public double intakeRPM = 0.0;
-        public double absolutePosition;
+        public double absolutePosition = 0.0;
 
         //Temp
         //public Object intakeTemperature;
