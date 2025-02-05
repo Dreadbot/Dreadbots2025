@@ -2,19 +2,27 @@ package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 public class Elevator extends SubsystemBase{
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0, 0, 0);
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.263, 2.91666667, 0.25);
+    private final PIDController pid = new PIDController(.5, 0, 0);
+    // private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.263, 2.91666667, 0.25);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0, 0);
     private final ElevatorIO io;
     private double goalHeight = 0;
     private double voltage = 0;
+    public boolean isZeroed;
+
 
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
@@ -28,16 +36,46 @@ public class Elevator extends SubsystemBase{
 
     @Override
     public void periodic(){
-        io.updateInputs(inputs);
-        Logger.processInputs("Elevator", inputs);
-        goal = new TrapezoidProfile.State(goalHeight, 0);
-        setpoint = profile.calculate(.02, setpoint, goal);
-        voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-        + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
-        Logger.recordOutput("Elevator/Goal", goal.position);
-        Logger.recordOutput("Elevator/Setpoint", setpoint.position);
+        if (!isZeroed) {
+            io.runVoltage(-3);
+            if (!io.getBottomLimitSwitch()) {
+                io.runVoltage(0);
+                isZeroed = true;
+                io.setMinPosition();
+            }
+          
+        }
+        else {
+            io.updateInputs(inputs);
+            Logger.processInputs("Elevator", inputs);
+            goal = new TrapezoidProfile.State(goalHeight, 0);
+            setpoint = profile.calculate(.02, setpoint, goal);
+            voltage = pid.calculate(inputs.positionMeters, setpoint.position)
+            + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
+            Logger.recordOutput("Elevator/Goal", goal.position);
+            Logger.recordOutput("Elevator/Setpoint", setpoint.position);
+            setMotorSpeed(voltage);
+        }
+    }
 
-        io.runVoltage(voltage);
+    public void setMotorSpeed(double voltage) {
+        if (voltage > 0) {
+            if (!io.getTopLimitSwitch()) {
+                io.runVoltage(0);
+            }
+            else {
+                io.runVoltage(voltage);
+            }
+        }
+
+        else {
+            if (!io.getBottomLimitSwitch()) {
+                io.runVoltage(0);
+            }
+            else {
+                io.runVoltage(voltage);
+            }
+        }
     }
 
     // public Command rise(){
@@ -57,6 +95,13 @@ public class Elevator extends SubsystemBase{
         return run(() -> {
             this.goalHeight = goalHeight;
         });
+    }
+
+    public Command setVoltage(double volts){
+        return startEnd(
+            () -> io.runVoltage(volts),
+            () -> io.runVoltage(0.0)
+        );
     }
 
     public double getHeight() {

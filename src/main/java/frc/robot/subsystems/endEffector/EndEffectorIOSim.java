@@ -11,47 +11,34 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class EndEffectorIOSim implements EndEffectorIO {
 
 
-    private final DCMotorSim leftMotorSim;
-    private final DCMotorSim rightMotorSim;
+    private final DCMotorSim motorSim;
     private final double rollerWheelMOI = 0.5 * Units.lbsToKilograms(0.12) * Units.inchesToMeters(1.5) * Units.inchesToMeters(1.5);
-    private double leftVolts;
-    private double rightVolts;
+    private double volts;
 
     public EndEffectorIOSim() {
-        this.leftMotorSim = new DCMotorSim(
+        this.motorSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
             DCMotor.getNeoVortex(1)
             
         );
-        this.rightMotorSim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
-            DCMotor.getNeoVortex(1)
-        );
-        leftVolts = 0.0;
-        rightVolts = 0.0;
+        volts = 0.0;
     }
 
     @Override
     public void updateInputs(EndEffectorIOInputs inputs) {
-        leftMotorSim.update(0.02);
-        rightMotorSim.update(0.02);
+        motorSim.update(0.02);
 
-        inputs.leftAppliedVolts = 0.0;
-        inputs.rightAppliedVolts = 0.0;
+        inputs.appliedVolts = 0.0;
 
-        inputs.leftRPM = leftMotorSim.getAngularVelocityRPM();
-        inputs.rightRPM = rightMotorSim.getAngularVelocityRPM();
+        inputs.RPM = motorSim.getAngularVelocityRPM();
 
-        inputs.leftCurrentAmps = leftMotorSim.getCurrentDrawAmps();
-        inputs.rightCurrentAmps = rightMotorSim.getCurrentDrawAmps();
-
+        inputs.currentAmps = motorSim.getCurrentDrawAmps();
+      
     } 
 
     @Override
-    public void runVoltage(double leftVolts, double rightVolts) {
-        leftMotorSim.setInputVoltage(leftVolts);
-        rightMotorSim.setInputVoltage(rightVolts);
-        this.leftVolts = leftVolts;
-        this.rightVolts = rightVolts;
+    public void runVoltage(double volts) {
+        motorSim.setInputVoltage(volts);
+        this.volts = volts;
     }
 }
