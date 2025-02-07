@@ -24,4 +24,15 @@ public class ElevatorIOInputs {
 
  public default void runVoltage(double volts) {};
 
+ public default void setMinPosition() {};
+
+ // Good use of true as default, if we fail to intialize this properly this will effectively lock the elevator in place.
+ public default boolean getBottomLimitSwitch() {
+    return true;
+}
+
+ public default boolean getTopLimitSwitch() {
+    return true;
+}
+
 }

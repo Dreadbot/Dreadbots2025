@@ -1,12 +1,16 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorIOSim implements ElevatorIO {
     private final ElevatorSim elevatorSim;
     private double volts;
+    boolean topLimitSwitch = true;
+    boolean bottomLimitSwitch = true;
     
     public ElevatorIOSim() {
         this.elevatorSim = new ElevatorSim(DCMotor.getNeoVortex(1), 
@@ -34,6 +38,22 @@ public class ElevatorIOSim implements ElevatorIO {
     public void runVoltage(double volts) {
         elevatorSim.setInputVoltage(volts);
         this.volts = volts;
+    }
+
+    @Override
+    public void setMinPosition() {
+        elevatorSim.setState(ElevatorConstants.END_EFFECTOR_MIN_HEIGHT, 0);
+    }
+
+    @Override
+    public boolean getBottomLimitSwitch(){
+        return !MathUtil.isNear(ElevatorConstants.MIN_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
+    }
+
+    @Override
+    public boolean getTopLimitSwitch(){
+        return !MathUtil.isNear(ElevatorConstants.MAX_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
+
     }
 
 }
