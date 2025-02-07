@@ -77,7 +77,8 @@ public class RobotContainer {
   private final Superstructure superstructure;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController primaryController = new CommandXboxController(0);
+  private final CommandXboxController secondaryController = new CommandXboxController(1);
   private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
 
   // Dashboard inputs
@@ -179,9 +180,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -primaryController.getLeftY(),
+            () -> -primaryController.getLeftX(),
+            () -> -primaryController.getRightX()));
 
     // Lock to 0° when A button is held
     // controller
@@ -207,28 +208,42 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
 
-    // End Effector buttons
-    // controller.a().whileTrue(endEffector.intake());
-    // controller.b().whileTrue(endEffector.outtake());
-    controller.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
-    controller.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
-    controller.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP));
-    controller.y().onTrue(elevator.requestZero());
+    /* 
+     * Keybinds for the secondary controller
+     * Focuses on the coral pieces
+     * Elevator / Wrist / Endeffector
+     */
+
+    //Home
+    secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
+
+    //L1 - L4
+    secondaryController.povUp().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
+    secondaryController.povLeft().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L3));
+    secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
+    secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
+
+    //intake sequence
+    secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
+        .alongWith(endEffector.intake()));
+    
+    //intake / outtake
+    secondaryController.leftBumper().onTrue(endEffector.intake());
+    secondaryController.rightBumper().onTrue(endEffector.outtake());
+
+    //Reset elevator / wrist
+    secondaryController.start().onTrue(elevator.requestZero());
+    secondaryController.back().onTrue(wrist.setAtZero());
+
 
 
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
-
-    // Wrist buttons
-    // controller.y().whileTrue(wrist.setAngleDegrees(0));
-    // controller.b().onTrue(wrist.setAngleDegrees(-50));
-    // controller.a().whileTrue(wrist.setAngleDegrees(90));
-
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    // controller.leftTrigger().whileTrue(slapdownAlgae.intake());
-    // controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
+    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));
+    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(80).andThen(slapdownAlgae.outtake()));
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
