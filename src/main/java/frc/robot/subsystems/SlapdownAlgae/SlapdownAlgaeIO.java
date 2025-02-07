@@ -2,7 +2,6 @@ package frc.robot.subsystems.slapdownAlgae;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.Idle;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public interface SlapdownAlgaeIO {

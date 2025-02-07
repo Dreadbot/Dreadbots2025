@@ -49,8 +49,8 @@ public final class Constants {
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.44); 
     public static final double GEARING = 5;
-    public static final double MIN_HEIGHT = Units.inchesToMeters(0);
-    public static final double MAX_HEIGHT = Units.inchesToMeters(70);
+    public static final double MIN_HEIGHT = Units.inchesToMeters(18);
+    public static final double MAX_HEIGHT = Units.inchesToMeters(70 + 18);
     public static final double STARTING_HEIGHT = MIN_HEIGHT;
   }
 
@@ -91,5 +91,16 @@ public final class Constants {
     public static final double CORAL_POSITION_L3 = -55.0;
     public static final double CORAL_POSITION_L4 = -40.0;
     //End Angle in Degrees
+
+    /* 
+    * DANGER ZONE EXPLANATION!!!!!
+    * With our robot layout, there is a crossbar on the first stage (we ony have 
+    * to care about this when we are going to max height)
+    * Because of this, there are a couple of specific situations in which we need to move the wrist FIRST, and then move elevator.
+    * Most of the time we can move both at same time
+    */ 
+    public static final double START_DANGER_ZONE = 15.0;
+    public static final double END_DANGER_ZONE = 90.0; // Basically starts at 15 degrees, and then can't rotate anymore
+
   }
 }

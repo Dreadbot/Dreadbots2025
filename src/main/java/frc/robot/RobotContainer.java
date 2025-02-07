@@ -30,6 +30,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.drive.Drive;
@@ -70,6 +72,7 @@ public class RobotContainer {
   private final Wrist wrist;
   private final SlapdownAlgae slapdownAlgae;
   private final VisualizationManager vizManager;
+  private final Superstructure superstructure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -131,6 +134,7 @@ public class RobotContainer {
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
+    superstructure = new Superstructure(elevator, wrist);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -202,16 +206,22 @@ public class RobotContainer {
     // End Effector buttons
     // controller.a().whileTrue(endEffector.intake());
     // controller.b().whileTrue(endEffector.outtake());
+    controller.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
+    controller.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
+    controller.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP));
+
 
     // Elevator buttons
-    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
+    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
 
     // Wrist buttons
-    controller.y().whileTrue(wrist.setAngleDegrees(0));
-    controller.b().onTrue(wrist.setAngleDegrees(-50));
-    controller.a().whileTrue(wrist.setAngleDegrees(90));
+    // controller.y().whileTrue(wrist.setAngleDegrees(0));
+    // controller.b().onTrue(wrist.setAngleDegrees(-50));
+    // controller.a().whileTrue(wrist.setAngleDegrees(90));
+
+
 
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
