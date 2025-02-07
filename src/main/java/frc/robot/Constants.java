@@ -51,8 +51,13 @@ public final class Constants {
     public static final double GEARING = 5;
     public static final double MIN_HEIGHT = Units.inchesToMeters(18);
     public static final double MAX_HEIGHT = Units.inchesToMeters(70 + 18);
-    public static final double STARTING_HEIGHT = MIN_HEIGHT;
+    public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence
+    public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
+    public static final int DUTY_CYCLE_ENCODER = 1;
+
+    public static final int MOTOR_ID = 1;
   }
+
 
   public static class SlapdownAlgaeConstants {
     public static final double INTAKE_VOLTAGE = -7.0;

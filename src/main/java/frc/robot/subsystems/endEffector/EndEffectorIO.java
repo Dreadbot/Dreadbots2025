@@ -6,19 +6,15 @@ public interface EndEffectorIO {
 
     @AutoLog
     public static class EndEffectorIOInputs {
-        public double leftRPM = 0.0;
-        public double rightRPM = 0.0;
+        public double RPM = 0.0;
 
-        public double leftAppliedVolts = 0.0;
-        public double rightAppliedVolts = 0.0;
+        public double appliedVolts = 0.0;
 
-        public double leftCurrentAmps = 0.0;
-        public double rightCurrentAmps = 0.0;
-
+        public double currentAmps = 0.0;
     }
     public default void updateInputs(EndEffectorIOInputs inputs) {}
 
-    public default void runVoltage(double leftVolts, double rightVolts) {};
+    public default void runVoltage(double volts) {};
     
     public default void changeCurrentLimit(double current) {};
     
