@@ -48,9 +48,10 @@ public class Elevator extends SubsystemBase {
                 setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
             }
         } else {
+            TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
             voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-            + feedforward.calculateWithVelocities(setpoint.velocity, profile.calculate(.02, setpoint, goal).velocity);
+            + feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             
             io.runVoltage(voltage);
         }
