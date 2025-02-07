@@ -41,7 +41,8 @@ public class VisualizationManager extends SubsystemBase {
             .getRoot("ElevatorBase", Units.inchesToMeters(30.0 - 8.0), 0)
             .append(new MechanismLigament2d("Elevator", ElevatorConstants.MIN_HEIGHT + Units.inchesToMeters(40), 90, 10, new Color8Bit(Color.kGray)));
         this.wristLigament = this.elevatorLigament
-            .append(new MechanismLigament2d("Wrist", Units.inchesToMeters(9.25 + 3.25), 90, 12, new Color8Bit(Color.kMaroon))); // start horizontal to elevator + account for extension from elevator
+            .append(new MechanismLigament2d("Pivot", Units.inchesToMeters(-3.25 - 1), 90))
+            .append(new MechanismLigament2d("Wrist", Units.inchesToMeters(9.25), 0, 12, new Color8Bit(Color.kMaroon))); // start horizontal to elevator + account for extension from elevator
         
         this.slapdownIntakeMechanism = new Mechanism2d(Units.inchesToMeters(30), 1);
         this.slapdownIntakeLigament = this.slapdownIntakeMechanism
@@ -53,7 +54,7 @@ public class VisualizationManager extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorLigament.setLength(elevatorHeight.getAsDouble());
-        wristLigament.setAngle(Rotation2d.fromDegrees(wristAngle.getAsDouble() - 90));
+        wristLigament.setAngle(Rotation2d.fromDegrees((wristAngle.getAsDouble()) + 180));
         slapdownIntakeLigament.setAngle(Rotation2d.fromDegrees(180 - slapdownAngle.getAsDouble()));
         SmartDashboard.putData("Mechanisms/Coral", coralMechanism);
         SmartDashboard.putData("Mechanisms/Algae", slapdownIntakeMechanism);
