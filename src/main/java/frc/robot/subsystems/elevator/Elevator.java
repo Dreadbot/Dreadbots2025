@@ -70,7 +70,7 @@ public class Elevator extends SubsystemBase {
                 MathUtil.clamp(
                     this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
                     0.000,
-                    ElevatorConstants.ELEVATOR_UPPER_LIMIT
+                    ElevatorConstants.MAX_HEIGHT
                 ),
                 0
             );

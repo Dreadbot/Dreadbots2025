@@ -55,7 +55,7 @@ public class Wrist extends SubsystemBase {
                 MathUtil.clamp(
                     this.desiredWristState.position + joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
                     0.000,
-                    WristConstants.WRIST_UPPER_LIMIT
+                    WristConstants.WRIST_MAX_ANGLE
                 ),
                 0
             );

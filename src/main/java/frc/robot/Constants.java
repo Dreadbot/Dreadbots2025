@@ -54,7 +54,6 @@ public final class Constants {
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final int DUTY_CYCLE_ENCODER = 1;
-    public static final double ELEVATOR_UPPER_LIMIT = 0.0;
     public static final double ELEVATOR_JOYSTICK_SLEW_VALUE = -0.00346;
     public static final int MOTOR_ID = 1;
   }
@@ -90,7 +89,6 @@ public final class Constants {
     public static final int WRIST_ENCODER_OFFSET = 1;
     public static final int WRIST_ENCODER_SCALE = 1;
     public static final double WRIST_MAX_ANGLE = 1.0;
-    public static final double WRIST_UPPER_LIMIT = 0.0;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
