@@ -27,13 +27,12 @@ public class Wrist extends SubsystemBase {
     private double startAngle;
     private State desiredWristState;
     public double joystickOverride;
-    
 
 
     public Wrist(WristIO io) {
         this.io = io;
         desiredWristState = new State(0, 0);
-        this.joystickOverride = joystickOverride;
+        this.joystickOverride = 0.0;
     } 
 
     @Override
@@ -48,15 +47,14 @@ public class Wrist extends SubsystemBase {
         Logger.recordOutput("Wrist/InDangerZone", isInDangerZone());
         setpoint = profile.calculate(0.02, setpoint, goal);
         io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
-
+        
         
         if (Math.abs(joystickOverride) > 0.08) {
             
             this.desiredWristState = new State(
                 MathUtil.clamp(
-                    this.desiredWristState.position + joystickOverride * -0.00346,
-                    0.000
-                    ,
+                    this.desiredWristState.position + joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
+                    0.000,
                     WristConstants.WRIST_UPPER_LIMIT
                 ),
                 0
@@ -70,6 +68,14 @@ public class Wrist extends SubsystemBase {
             () -> {
                 goalAngle = angle;
              } );
+    }
+
+    public Command setJoystickOverride(double joystickValue) {
+        return runOnce (
+            () -> {
+                joystickOverride = joystickValue;
+            }
+        );
     }
 
     public Command setAtZero() {

@@ -5,14 +5,19 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.WristConstants;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 
 public class Elevator extends SubsystemBase {
@@ -28,10 +33,13 @@ public class Elevator extends SubsystemBase {
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
-    
+    private State desiredElevatorState;
+    public double joystickOverride;
+
     public Elevator(ElevatorIO io){
         this.io = io;
-
+        this.joystickOverride = 0.0;
+        desiredElevatorState = new State(0, 0);
     }
 
     @Override
@@ -55,6 +63,19 @@ public class Elevator extends SubsystemBase {
             
             io.runVoltage(voltage);
         }
+
+         if (Math.abs(joystickOverride) > 0.08) {
+            
+            this.desiredElevatorState = new State(
+                MathUtil.clamp(
+                    this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
+                    0.000,
+                    ElevatorConstants.ELEVATOR_UPPER_LIMIT
+                ),
+                0
+            );
+        }
+
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         Logger.recordOutput("Elevator/Homed", isZeroed);
@@ -92,6 +113,14 @@ public class Elevator extends SubsystemBase {
     //     () -> elevatorIO.runVoltage(0)
     //     );
     // }
+
+    public Command setJoystickOverride(double joystickValue) {
+        return runOnce (
+            () -> {
+                joystickOverride = joystickValue;
+            }
+        );
+    }
 
     public Command riseTo(double goalHeight){
         return runOnce(() -> {
