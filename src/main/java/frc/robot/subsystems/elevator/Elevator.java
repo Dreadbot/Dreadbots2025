@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -46,25 +48,30 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        System.out.println(isZeroed + " Joystick: " + joystickOverride);
-        if (!isZeroed && !DriverStation.isDisabled()) { //isDisabled only needed for sim 
-            io.runVoltage(-0.1);
-            if (!io.getBottomLimitSwitch()) {
+        //System.out.println("Driver Station: " + DriverStation.isDisabled());
                 //If we reach bottom, zero encoder and reset goal;
-                io.runVoltage(0);
-                isZeroed = true;
-                io.setMinPosition();
-                setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
-                
+            //     io.runVoltage(0);
+            //     isZeroed = true;
+            //     io.setMinPosition();
+        System.out.println(isZeroed + " Joystick: " + joystickOverride);
+        if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
+           // io.runVoltage(-1);
+            voltage = -1;
+            if (!io.getBottomLimitSwitch()) {
+         setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
             }
+           // return;
         } else {
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
-            voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-            + feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
-            
-            io.runVoltage(voltage);
-            System.out.println("Voltage: " + voltage);
+           
+            System.out.println("Set: " + setpoint.position + " Goal: " + goal.position + " Position " + inputs.positionMeters);
+            double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
+            double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
+            voltage = pidValue + feedforwardValue;
+           // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
+           // io.runVoltage(voltage);
+           // System.out.println(" Voltage: " + voltage);
         }
 
          if (Math.abs(joystickOverride) > 0.08) {
@@ -77,17 +84,17 @@ public class Elevator extends SubsystemBase {
             //     ),
             //     0
             // );
-
-            this.setVoltage(joystickOverride * 5);
+            voltage = joystickOverride * 5;
         }
 
+        setMotorSpeed(voltage);
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         Logger.recordOutput("Elevator/Homed", isZeroed);
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
-        voltage = -voltage;
+
         if (voltage > 0) {
             if (!io.getTopLimitSwitch()) {
                 io.runVoltage(0);
@@ -120,10 +127,11 @@ public class Elevator extends SubsystemBase {
     //     );
     // }
 
-    public Command setJoystickOverride(double joystickValue) {
+    public Command setJoystickOverride(DoubleSupplier joystickValue) {
         return runOnce (
             () -> {
-                joystickOverride = joystickValue;
+                joystickOverride = joystickValue.getAsDouble();
+                System.out.println(joystickValue.getAsDouble());
             }
         );
     }
@@ -151,4 +159,8 @@ public class Elevator extends SubsystemBase {
         return inputs.positionMeters;
     }
 
-}
+    public void init() {
+        isZeroed = false;
+        voltage = 0;
+    }
+}   

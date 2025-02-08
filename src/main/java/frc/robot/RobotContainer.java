@@ -18,6 +18,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSparkFlex;
 import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
@@ -92,7 +94,7 @@ public class RobotContainer {
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
 
       // Real part
-      elevator = new Elevator(new ElevatorIOSparkMax());
+      elevator = new Elevator(new ElevatorIOSparkFlex());
       break;
         
 
@@ -222,10 +224,13 @@ public class RobotContainer {
     secondaryController.rightBumper().onTrue(endEffector.outtake());
 
     //Reset elevator / wrist
-    secondaryController.start().onTrue(elevator.requestZero());
+   // secondaryController.start().onTrue(elevator.requestZero());
     secondaryController.back().onTrue(wrist.setAtZero());
 
-    secondaryController.leftStick().whileTrue(elevator.setJoystickOverride(secondaryController.getLeftY()));
+   
+    secondaryController.leftStick().whileTrue(elevator.setJoystickOverride(
+      () -> secondaryController.getLeftY() 
+      ));
     
 
 
@@ -248,5 +253,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public void autonomousInit() {
+    elevator.init(); 
+  }
+
+  public void teleopInit() {
+    elevator.init();
   }
 }
