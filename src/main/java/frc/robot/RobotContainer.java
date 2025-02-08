@@ -225,6 +225,9 @@ public class RobotContainer {
     secondaryController.start().onTrue(elevator.requestZero());
     secondaryController.back().onTrue(wrist.setAtZero());
 
+    secondaryController.leftStick().whileTrue(elevator.setJoystickOverride(secondaryController.getLeftY()));
+    
+
 
 
     // Elevator buttons

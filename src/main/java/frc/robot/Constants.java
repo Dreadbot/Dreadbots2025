@@ -55,7 +55,7 @@ public final class Constants {
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final int DUTY_CYCLE_ENCODER = 1;
     public static final double ELEVATOR_JOYSTICK_SLEW_VALUE = -0.00346;
-    public static final int MOTOR_ID = 1;
+    public static final int MOTOR_ID = 2;
   }
 
 

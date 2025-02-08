@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.0, 0, 0);
+    private final PIDController pid = new PIDController(.5, 0, 0);
     private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
@@ -46,6 +46,7 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+        System.out.println(isZeroed + " Joystick: " + joystickOverride);
         if (!isZeroed && !DriverStation.isDisabled()) { //isDisabled only needed for sim 
             io.runVoltage(-0.1);
             if (!io.getBottomLimitSwitch()) {
@@ -54,6 +55,7 @@ public class Elevator extends SubsystemBase {
                 isZeroed = true;
                 io.setMinPosition();
                 setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+                
             }
         } else {
             TrapezoidProfile.State currentState = setpoint;
@@ -62,18 +64,21 @@ public class Elevator extends SubsystemBase {
             + feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             
             io.runVoltage(voltage);
+            System.out.println("Voltage: " + voltage);
         }
 
          if (Math.abs(joystickOverride) > 0.08) {
             
-            this.desiredElevatorState = new State(
-                MathUtil.clamp(
-                    this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
-                    0.000,
-                    ElevatorConstants.MAX_HEIGHT
-                ),
-                0
-            );
+            // this.desiredElevatorState = new State(
+            //     MathUtil.clamp(
+            //         this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
+            //         0.000,
+            //         ElevatorConstants.MAX_HEIGHT
+            //     ),
+            //     0
+            // );
+
+            this.setVoltage(joystickOverride * 5);
         }
 
         Logger.recordOutput("Elevator/Goal", goal.position);
@@ -82,6 +87,7 @@ public class Elevator extends SubsystemBase {
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
+        voltage = -voltage;
         if (voltage > 0) {
             if (!io.getTopLimitSwitch()) {
                 io.runVoltage(0);
