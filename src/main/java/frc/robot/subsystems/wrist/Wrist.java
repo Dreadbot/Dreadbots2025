@@ -71,7 +71,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public Command setJoystickOverride(double joystickValue) {
-        return runOnce (
+        return run (
             () -> {
                 joystickOverride = joystickValue;
             }
