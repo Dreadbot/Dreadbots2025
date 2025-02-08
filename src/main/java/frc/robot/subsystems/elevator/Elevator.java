@@ -115,7 +115,7 @@ public class Elevator extends SubsystemBase {
     // }
 
     public Command setJoystickOverride(double joystickValue) {
-        return runOnce (
+        return run (
             () -> {
                 joystickOverride = joystickValue;
             }
