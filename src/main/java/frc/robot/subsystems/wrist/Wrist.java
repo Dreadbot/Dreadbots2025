@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class Wrist extends SubsystemBase {
     
@@ -24,10 +25,15 @@ public class Wrist extends SubsystemBase {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private double goalAngle;
     private double startAngle;
+    private State desiredWristState;
+    public double joystickOverride;
     
+
 
     public Wrist(WristIO io) {
         this.io = io;
+        desiredWristState = new State(0, 0);
+        this.joystickOverride = joystickOverride;
     } 
 
     @Override
@@ -42,6 +48,20 @@ public class Wrist extends SubsystemBase {
         Logger.recordOutput("Wrist/InDangerZone", isInDangerZone());
         setpoint = profile.calculate(0.02, setpoint, goal);
         io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
+
+        
+        if (Math.abs(joystickOverride) > 0.08) {
+            
+            this.desiredWristState = new State(
+                MathUtil.clamp(
+                    this.desiredWristState.position + joystickOverride * -0.00346,
+                    0.000
+                    ,
+                    WristConstants.WRIST_UPPER_LIMIT
+                ),
+                0
+            );
+        }
     }
 
     public Command setAngleDegrees(double angle) {
@@ -85,4 +105,5 @@ public class Wrist extends SubsystemBase {
     public boolean isInDangerZone() {
         return getAngle() > WristConstants.START_DANGER_ZONE;
     }
+
 }

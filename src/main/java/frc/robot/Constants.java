@@ -89,6 +89,7 @@ public final class Constants {
     public static final int WRIST_ENCODER_OFFSET = 1;
     public static final int WRIST_ENCODER_SCALE = 1;
     public static final double WRIST_MAX_ANGLE = 1.0;
+    public static final double WRIST_UPPER_LIMIT = 0.0;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
     public static final double CORAL_POSITION_L1 = 0.0;
