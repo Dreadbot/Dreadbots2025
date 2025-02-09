@@ -16,25 +16,22 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
@@ -45,14 +42,15 @@ import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.endEffector.EndEffectorIOSparkFlex;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSim;
+import frc.robot.subsystems.wrist.WristIOSparkFlex;
 import frc.robot.util.visualization.VisualizationManager;
-
-import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -71,9 +69,11 @@ public class RobotContainer {
   private final Wrist wrist;
   private final SlapdownAlgae slapdownAlgae;
   private final VisualizationManager vizManager;
+  private final Superstructure superstructure;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController primaryController = new CommandXboxController(0);
+  private final CommandXboxController secondaryController = new CommandXboxController(1);
   private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
 
   // Dashboard inputs
@@ -87,16 +87,14 @@ public class RobotContainer {
         drive =
         new Drive(
             new GyroIO() {},
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim());
-      endEffector = new EndEffector(new EndEffectorIOSim());
-      wrist = new Wrist(new WristIOSim());
+            new ModuleIOSpark(0),
+            new ModuleIOSpark(1),
+            new ModuleIOSpark(2),
+            new ModuleIOSpark(3));
+      endEffector = new EndEffector(new EndEffectorIOSparkFlex());
+      wrist = new Wrist(new WristIOSparkFlex());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-
-      // Real part
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkMax());
       break;
         
@@ -128,12 +126,13 @@ public class RobotContainer {
                 new ModuleIO() {});
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
-        wrist = new Wrist(new WristIOSim() {});
+        wrist = new Wrist(new WristIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
+    superstructure = new Superstructure(elevator, wrist);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -174,9 +173,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -primaryController.getLeftY(),
+            () -> -primaryController.getLeftX(),
+            () -> -primaryController.getRightX()));
 
     // Lock to 0° when A button is held
     // controller
@@ -202,24 +201,42 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
 
-    // End Effector buttons
-    // controller.a().whileTrue(endEffector.intake());
-    // controller.b().whileTrue(endEffector.outtake());
+    /* 
+     * Keybinds for the secondary controller
+     * Focuses on the coral pieces
+     * Elevator / Wrist / Endeffector
+     */
+
+    //Home
+    secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
+
+    //L1 - L4
+    secondaryController.povUp().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
+    secondaryController.povLeft().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L3));
+    secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
+    secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
+
+    //intake sequence
+    secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
+        .alongWith(endEffector.intake()));
+    
+    //intake / outtake
+    secondaryController.leftBumper().onTrue(endEffector.intake());
+    secondaryController.rightBumper().onTrue(endEffector.outtake());
+
+    //Reset elevator / wrist
+    secondaryController.start().onTrue(elevator.requestZero());
+    secondaryController.back().onTrue(wrist.setAtZero());
+
+
 
     // Elevator buttons
-    controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
-
-
-    // Wrist buttons
-    // controller.y().whileTrue(wrist.setAngleDegrees(0));
-    // controller.b().onTrue(wrist.setAngleDegrees(-50));
-    // controller.a().whileTrue(wrist.setAngleDegrees(90));
-
+    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
+    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    // controller.leftTrigger().whileTrue(slapdownAlgae.intake());
-    // controller.rightTrigger().whileTrue(slapdownAlgae.outtake());
+    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));
+    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(80).andThen(slapdownAlgae.outtake()));
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }

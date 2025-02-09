@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -46,12 +47,13 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public boolean getBottomLimitSwitch(){
-        return bottomLimitSwitch;
+        return !MathUtil.isNear(ElevatorConstants.MIN_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
     }
 
     @Override
     public boolean getTopLimitSwitch(){
-        return topLimitSwitch;
+        return !MathUtil.isNear(ElevatorConstants.MAX_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
+
     }
 
 }

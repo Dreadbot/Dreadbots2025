@@ -9,7 +9,6 @@ public interface ElevatorIO {
 @AutoLog
 public class ElevatorIOInputs {
 
-
     public double positionMeters = 0.0;
        
     public double velocityMPS = 0.0;
@@ -27,6 +26,7 @@ public class ElevatorIOInputs {
 
  public default void setMinPosition() {};
 
+ // Good use of true as default, if we fail to intialize this properly this will effectively lock the elevator in place.
  public default boolean getBottomLimitSwitch() {
     return true;
 }

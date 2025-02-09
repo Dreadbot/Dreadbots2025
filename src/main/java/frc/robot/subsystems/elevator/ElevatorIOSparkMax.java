@@ -25,7 +25,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.currentAmps = elevatorMotor.getOutputCurrent();
         inputs.voltage = elevatorMotor.getAppliedOutput() * elevatorMotor.getBusVoltage();
-        inputs.currentAmps = elevatorMotor.getOutputCurrent();
         inputs.positionMeters = relativeEncoder.getPosition();
     } 
 

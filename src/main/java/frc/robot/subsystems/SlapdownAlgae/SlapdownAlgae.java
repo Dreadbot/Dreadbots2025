@@ -13,6 +13,7 @@ import frc.robot.Constants.SlapdownAlgaeConstants;
 
 public class SlapdownAlgae extends SubsystemBase {
     
+    
     private final SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
     private final SlapdownAlgaeIO io;
     public final PIDController pid = new PIDController(0.0, 0.0, 0);
