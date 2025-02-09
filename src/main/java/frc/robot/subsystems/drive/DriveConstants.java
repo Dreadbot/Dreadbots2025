@@ -15,6 +15,8 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -77,17 +79,17 @@ public class DriveConstants {
   public static final double driveKd = 0.0;
   public static final double driveKs = 0.0;
   public static final double driveKv = 0.1;
-  public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
-  public static final double driveSimP = 0.05;
+  public static final double driveKa = 0.025;
+  public static final double driveSimP = 1.0;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.01189;
-  public static final double driveSimKv = 0.11202;
+  public static final double driveSimKv = 0.12202;
 
   // Turn motor configuration
   public static final boolean turnInverted = true;
   public static final int turnMotorCurrentLimit = 20;
   public static final double turnMotorReduction = (150.0 / 7.0);
-  public static final DCMotor turnGearbox = DCMotor.getNEO(1);
+  public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);
 
   // Turn encoder configuration
   public static final boolean turnEncoderInverted = false;
@@ -102,7 +104,14 @@ public class DriveConstants {
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
-  // PathPlanner configuration
+  //Path following PID configuration
+  public static final double xKp = 15.0;
+  public static final double xKd = 0.0;
+  public static final double yKp = 15.0;
+  public static final double yKd = 0.0;
+  public static final double rotationKp = 7.5;
+  public static final double rotationKd = 0.0;
+  // PathPlanner
   public static final double robotMassKg = 74.088;
   public static final double robotMOI = 6.883;
   public static final double wheelCOF = 1.2;
