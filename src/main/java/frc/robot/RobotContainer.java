@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -187,13 +186,13 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // End Effector buttons
-    // controller.cross().whileTrue(endEffector.intake());
-    // controller.circle().whileTrue(endEffector.outtake());
+    // controller.a().whileTrue(endEffector.intake());
+    // controller.b().whileTrue(endEffector.outtake());
 
-    // Elevator buttons
+    // // Elevator buttons
     // controller.rightTrigger().onTrue(elevator.riseTo(.75));
 
-    // Wrist buttons
+    // // Wrist buttons
     // controller.rightBumper().whileTrue(wrist.setAngleDegrees(90));
     // controller.leftBumper().whileTrue(wrist.setAngleDegrees(-90));
   }
