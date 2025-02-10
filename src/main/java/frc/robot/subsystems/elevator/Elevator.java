@@ -29,6 +29,7 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
+    private double joystickAxis; 
 
 
     private final TrapezoidProfile profile =
@@ -37,6 +38,7 @@ public class Elevator extends SubsystemBase {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
     private State desiredElevatorState;
     public double joystickOverride;
+    public DoubleSupplier joystickOverride1;
 
     public Elevator(ElevatorIO io){
         this.io = io;
@@ -135,6 +137,10 @@ public class Elevator extends SubsystemBase {
             }
         );
     }
+
+    // public void setJoystick(DoubleSupplier joystickAxis) {
+    //     this.joystickOverride1 = joystickAxis;
+    // }
 
     public Command riseTo(double goalHeight){
         return runOnce(() -> {
