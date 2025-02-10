@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -22,12 +24,15 @@ public class Vision extends SubsystemBase {
 	private final VisionIO io;
 	private final VisionConsumer consumer;
 	private final RotationSupplier robotRotation;
+	private final AngularVelocitySupplier robotAngularVelociy;
 
 
-	public Vision(VisionConsumer consumer, RotationSupplier robotRotation, VisionIO io) {
+
+	public Vision(VisionConsumer consumer, RotationSupplier robotRotation, AngularVelocitySupplier robotAngularVelocity, VisionIO io) {
 		this.io = io;
 		this.consumer = consumer;
 		this.robotRotation = robotRotation;
+		this.robotAngularVelociy = robotAngularVelocity;
 		SmartDashboard.putNumber("TagX", 0.0);
 		SmartDashboard.putNumber("TagY", 0.0);
 		SmartDashboard.putNumber("TagId", -1.0);
@@ -46,10 +51,15 @@ public class Vision extends SubsystemBase {
 			inputs.detections[0] = detection;
 		} // debugging code
 
+
 		for(VisionObservation detection : inputs.detections) {
+			// (Radians / sec) * sec = Radians
+			double deltaRobotAngle = robotAngularVelociy.getAngularVelocity() * inputs.latency;
+			Rotation2d correctRobotAngle = robotRotation.getRotation().minus(Rotation2d.fromRadians(deltaRobotAngle));
+
 			Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
 				new Pose3d(detection.pose()),
-				robotRotation.getRotation()
+				correctRobotAngle
 			);
 			Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
 			Logger.recordOutput("Vision/pose", poseEstimate);
@@ -75,4 +85,8 @@ public class Vision extends SubsystemBase {
 	public static interface RotationSupplier {
 		public Rotation2d getRotation();
 	} 
+	@FunctionalInterface
+	public static interface  AngularVelocitySupplier {
+		public double getAngularVelocity();
+	}
 }

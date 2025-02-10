@@ -85,7 +85,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim());
-        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, new VisionIONetworkTables());
+        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, drive::getAngularVelocity, new VisionIONetworkTables());
         break;
 
       case SIM:
@@ -100,7 +100,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSim());
-        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, new VisionIONetworkTables());
+        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, drive::getAngularVelocity, new VisionIONetworkTables());
         break;
 
       default:
@@ -115,7 +115,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIOSim() {});
-        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, drive::getRotation, drive::getAngularVelocity, new VisionIO() {});
         break;
     }
 
