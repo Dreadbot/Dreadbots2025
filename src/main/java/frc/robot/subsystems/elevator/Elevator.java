@@ -25,7 +25,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final PIDController pid = new PIDController(.5, 0, 0);
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
+
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.15);
+    //private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
@@ -50,17 +52,20 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        //System.out.println("Driver Station: " + DriverStation.isDisabled());
-                //If we reach bottom, zero encoder and reset goal;
-            //     io.runVoltage(0);
-            //     isZeroed = true;
-            //     io.setMinPosition();
+    
+        System.out.println("Driver Station: " + DriverStation.isDisabled());
+
+            //If we reach bottom, zero encoder and reset goal;
         System.out.println(isZeroed + " Joystick: " + joystickOverride);
         if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
            // io.runVoltage(-1);
             voltage = -1;
             if (!io.getBottomLimitSwitch()) {
-         setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+                voltage = 0;
+
+                isZeroed = true;
+                io.setMinPosition();
+                setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
             }
            // return;
         } else {
@@ -71,6 +76,9 @@ public class Elevator extends SubsystemBase {
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             voltage = pidValue + feedforwardValue;
+            Logger.recordOutput("Feedforward", feedforwardValue);
+            Logger.recordOutput("PID", pidValue);
+    
            // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
            // io.runVoltage(voltage);
            // System.out.println(" Voltage: " + voltage);
@@ -87,6 +95,7 @@ public class Elevator extends SubsystemBase {
             //     0
             // );
             voltage = joystickOverride * 5;
+        
         }
 
         setMotorSpeed(voltage);

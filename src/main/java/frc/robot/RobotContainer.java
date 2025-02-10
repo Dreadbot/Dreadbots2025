@@ -16,9 +16,9 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,27 +26,31 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOSparkFlex;
 import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
+import frc.robot.subsystems.endEffector.EndEffectorIOSparkFlex;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSim;
+import frc.robot.subsystems.wrist.WristIOSparkFlex;
 import frc.robot.util.visualization.VisualizationManager;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -80,7 +84,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Sim
+
         drive =
         new Drive(
             new GyroIO() {},
@@ -92,9 +96,7 @@ public class RobotContainer {
       wrist = new Wrist(new WristIOSim());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-
-      // Real part
-      elevator = new Elevator(new ElevatorIOSparkFlex());
+      elevator = new Elevator(new ElevatorIOSparkMax());
       break;
         
 
@@ -127,7 +129,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
@@ -224,14 +226,10 @@ public class RobotContainer {
     secondaryController.rightBumper().onTrue(endEffector.outtake());
 
     //Reset elevator / wrist
-   // secondaryController.start().onTrue(elevator.requestZero());
+    secondaryController.start().onTrue(elevator.requestZero());
     secondaryController.back().onTrue(wrist.setAtZero());
 
-   
-    secondaryController.leftStick().whileTrue(elevator.setJoystickOverride(
-      () -> secondaryController.getLeftY() 
-      ));
-    
+    // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
 
 
@@ -255,11 +253,11 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public void autonomousInit() {
-    elevator.init(); 
+  public void autonomousInit(){
+    elevator.init();
   }
 
-  public void teleopInit() {
+  public void teleopInit(){
     elevator.init();
   }
 }
