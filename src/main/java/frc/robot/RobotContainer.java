@@ -212,10 +212,10 @@ public class RobotContainer {
     //secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
     //L1 - L4
-    secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
-    secondaryController.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L3));
-    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
-    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
+    secondaryController.povUp().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
+    secondaryController.povLeft().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L3));
+    secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
+    secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
