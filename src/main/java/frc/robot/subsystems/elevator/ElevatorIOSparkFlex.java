@@ -19,6 +19,8 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorIOSparkFlex implements ElevatorIO {
     private final SparkFlex elevatorMotor;
     private final RelativeEncoder relativeEncoder; 
+    private final double rotationsToMeters = ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI / ElevatorConstants.GEARING;
+    private final double metersToRotations = 1 / rotationsToMeters;
     private double volts = 0;
     private double minPosition;
     DigitalInput topLimitSwitch = new DigitalInput(8);
@@ -26,24 +28,22 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     
     public ElevatorIOSparkFlex() {
         this.elevatorMotor = new SparkFlex(ElevatorConstants.MOTOR_ID, MotorType.kBrushless);
-        this.relativeEncoder = elevatorMotor.getEncoder();
         this.volts = 0.0;
         
-        SparkBaseConfig sparkConfig = new SparkFlexConfig();
-        sparkConfig.encoder.positionConversionFactor(((ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI) / ElevatorConstants.GEARING));
+        this.relativeEncoder = elevatorMotor.getEncoder();
+
         // old code 
         // EncoderConfig encoderConf = new EncoderConfig();
         // encoderConf.positionConversionFactor(ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI / ElevatorConstants.GEARING);
         // SparkBaseConfig sparkConfig = new SparkFlexConfig();
         // sparkConfig.apply(encoderConf);
-        elevatorMotor.configure(sparkConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
   @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.currentAmps = elevatorMotor.getOutputCurrent();
         inputs.voltage = elevatorMotor.getAppliedOutput() * elevatorMotor.getBusVoltage();
-        inputs.positionMeters = relativeEncoder.getPosition();
+        inputs.positionMeters = relativeEncoder.getPosition() * rotationsToMeters;
     } 
 
  @Override
@@ -64,6 +64,6 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
 
     @Override 
     public void setMinPosition(){
-        relativeEncoder.setPosition(Units.inchesToMeters(18));
+        relativeEncoder.setPosition(Units.inchesToMeters(18) * metersToRotations);
     }
 }
