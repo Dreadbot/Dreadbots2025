@@ -58,7 +58,10 @@ public class Elevator extends SubsystemBase {
            // io.runVoltage(-1);
             voltage = -1;
             if (!io.getBottomLimitSwitch()) {
-         setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+                io.runVoltage(0);
+                isZeroed = true;
+                io.setMinPosition();
+                setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
             }
            // return;
         } else {
