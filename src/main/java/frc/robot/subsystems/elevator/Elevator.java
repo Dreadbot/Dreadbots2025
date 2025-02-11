@@ -25,10 +25,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final PIDController pid = new PIDController(.5, 0, 0);
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
+
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.15);
+    //private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
+    private double joystickAxis; 
 
 
     private final TrapezoidProfile profile =
@@ -37,6 +40,7 @@ public class Elevator extends SubsystemBase {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
     private State desiredElevatorState;
     public double joystickOverride;
+    public DoubleSupplier joystickOverride1;
 
     public Elevator(ElevatorIO io){
         this.io = io;
@@ -48,30 +52,28 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        //System.out.println("Driver Station: " + DriverStation.isDisabled());
-                //If we reach bottom, zero encoder and reset goal;
-            //     io.runVoltage(0);
-            //     isZeroed = true;
-            //     io.setMinPosition();
-        System.out.println(isZeroed + " Joystick: " + joystickOverride);
-        if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
+
+            //If we reach bottom, zero encoder and reset goal;
+        if (!isZeroed && !DriverStation.isDisabled()) {  // isDisabled only needed for sim 
            // io.runVoltage(-1);
             voltage = -1;
             if (!io.getBottomLimitSwitch()) {
-                io.runVoltage(0);
+                voltage = 0;
                 isZeroed = true;
                 io.setMinPosition();
-                setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+                setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
             }
            // return;
         } else {
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
-           
-            System.out.println("Set: " + setpoint.position + " Goal: " + goal.position + " Position " + inputs.positionMeters);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             voltage = pidValue + feedforwardValue;
+
+            Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
+            Logger.recordOutput("Elevator/PID", pidValue);
+    
            // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
            // io.runVoltage(voltage);
            // System.out.println(" Voltage: " + voltage);
@@ -88,6 +90,7 @@ public class Elevator extends SubsystemBase {
             //     0
             // );
             voltage = joystickOverride * 5;
+        
         }
 
         setMotorSpeed(voltage);
@@ -138,6 +141,10 @@ public class Elevator extends SubsystemBase {
             }
         );
     }
+
+    // public void setJoystick(DoubleSupplier joystickAxis) {
+    //     this.joystickOverride1 = joystickAxis;
+    // }
 
     public Command riseTo(double goalHeight){
         return runOnce(() -> {
