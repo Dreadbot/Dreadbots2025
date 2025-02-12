@@ -87,14 +87,16 @@ public class Elevator extends SubsystemBase {
 
          if (Math.abs(joystickOverride) > 0.08) {
             
-            // this.desiredElevatorState = new State(
-            //     MathUtil.clamp(
-            //         this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
-            //         0.000,
-            //         ElevatorConstants.MAX_HEIGHT
-            //     ),
-            //     0
-            // );
+            setpoint = new State(inputs.positionMeters, 0);
+//                MathUtil.clamp(
+  //                  setpoint.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
+    //                0.000,
+      //              ElevatorConstants.MAX_HEIGHT
+        //        ),
+          //      0
+            //);
+            goal = setpoint;
+
             voltage = joystickOverride * 2.5;
         }
 
