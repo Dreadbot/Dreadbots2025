@@ -1,5 +1,7 @@
 package frc.robot.subsystems.wrist;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,21 +20,24 @@ public class Wrist extends SubsystemBase {
     
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
-    private final PIDController pid = new PIDController(1.0, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0.0);
+    private final PIDController pid = new PIDController(.01, 0.0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(180, 180));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    private double goalAngle;
+    private double goalAngle = 0;
     private double startAngle;
     private State desiredWristState;
     public double joystickOverride;
+    public double voltage;
 
 
     public Wrist(WristIO io) {
         this.io = io;
         desiredWristState = new State(0, 0);
         this.joystickOverride = 0.0;
+        this.voltage = 0;
+        goalAngle = WristConstants.WRIST_ENCODER_OFFSET;
     } 
 
     @Override
@@ -46,34 +51,36 @@ public class Wrist extends SubsystemBase {
         Logger.recordOutput("Wrist/AtSetpoint", atSetpoint());
         Logger.recordOutput("Wrist/InDangerZone", isInDangerZone());
         setpoint = profile.calculate(0.02, setpoint, goal);
-        io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
-        
+        voltage = pid.calculate(inputs.rotationDegrees, setpoint.position) 
+        + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity);
         
         if (Math.abs(joystickOverride) > 0.08) {
             
-            this.desiredWristState = new State(
-                MathUtil.clamp(
-                    this.desiredWristState.position + joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
-                    0.000,
-                    WristConstants.WRIST_MAX_ANGLE
-                ),
-                0
-            );
+            // this.desiredWristState = new State(
+            //     MathUtil.clamp(
+            //         this.desiredWristState.position + joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
+            //         0.000,
+            //         WristConstants.WRIST_MAX_ANGLE
+            //     ),
+            //     0
+            // );
+            setpoint = new State(inputs.rotationDegrees, 0);
+            goal = setpoint;
         }
+        io.runVoltage(voltage);
     }
 
     public Command setAngleDegrees(double angle) {
-        
         return runOnce(
             () -> {
                 goalAngle = angle;
              } );
     }
 
-    public Command setJoystickOverride(double joystickValue) {
+    public Command setJoystickOverride(DoubleSupplier joystickValue) {
         return run (
             () -> {
-                joystickOverride = joystickValue;
+                joystickOverride = joystickValue.getAsDouble();
             }
         );
     }

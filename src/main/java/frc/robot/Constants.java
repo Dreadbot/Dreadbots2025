@@ -86,10 +86,11 @@ public final class Constants {
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
-    public static final int WRIST_ENCODER_OFFSET = 1;
+    public static final int WRIST_ENCODER_OFFSET = 113;
     public static final int WRIST_ENCODER_SCALE = 1;
-    public static final double WRIST_MAX_ANGLE = 1.0;
+    public static final double WRIST_MAX_ANGLE = 360;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
+    public static final double WRIST_EXPECTED_ZERO = 0;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
     public static final double CORAL_POSITION_L1 = 0.0;

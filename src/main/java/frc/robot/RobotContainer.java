@@ -50,7 +50,7 @@ import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSim;
-import frc.robot.subsystems.wrist.WristIOSparkFlex;
+import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.visualization.VisualizationManager;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -84,19 +84,22 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-
+        // Sim robot
         drive =
         new Drive(
             new GyroIO() {},
-            new ModuleIOSpark(0),
-            new ModuleIOSpark(1),
-            new ModuleIOSpark(2),
-            new ModuleIOSpark(3));
-      endEffector = new EndEffector(new EndEffectorIOSparkFlex());
-      wrist = new Wrist(new WristIOSparkFlex());
-      vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
-      elevator = new Elevator(new ElevatorIOSparkFlex());
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
+        endEffector = new EndEffector(new EndEffectorIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        
+        // Real Wrist
+        wrist = new Wrist(new WristIOSparkMax());
+
       break;
         
 
@@ -233,6 +236,8 @@ public class RobotContainer {
 
 
     elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
+
+    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
     
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));

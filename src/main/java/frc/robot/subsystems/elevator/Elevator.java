@@ -95,6 +95,7 @@ public class Elevator extends SubsystemBase {
         //        ),
           //      0
             //);
+        
             goal = setpoint;
 
             voltage = joystickOverride * 2.5;

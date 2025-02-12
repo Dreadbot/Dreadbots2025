@@ -1,23 +1,24 @@
 package frc.robot.subsystems.wrist;
 
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.WristConstants;
 
-public class WristIOSparkFlex implements WristIO {
-   private final SparkFlex WristMotor;
+public class WristIOSparkMax implements WristIO {
+   private final SparkMax WristMotor;
    private DutyCycleEncoder absoluteEncoder;
    private double volts = 0.0;
 
 
- public WristIOSparkFlex() {
-    this.WristMotor = new SparkFlex(2, MotorType.kBrushless);
+ public WristIOSparkMax() {
+    this.WristMotor = new SparkMax(1, MotorType.kBrushless);
     this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(WristConstants.WRIST_DUTY_CYCLE_ENCODER), 
-    WristConstants.WRIST_MAX_ANGLE, WristConstants.WRIST_ENCODER_OFFSET);
+    WristConstants.WRIST_MAX_ANGLE, WristConstants.WRIST_EXPECTED_ZERO);
     this.volts = 0.0;
+    absoluteEncoder.setInverted(true);
  }
 
   @Override
@@ -29,9 +30,7 @@ public class WristIOSparkFlex implements WristIO {
 
         inputs.currentAmps = WristMotor.getOutputCurrent();
 
-        //inputs.rotationDegrees = Units.radiansToDegrees(absoluteEncoder.);
-
-        //inputs.rotationDegrees = absoluteEncoder.get();
+        inputs.rotationDegrees = absoluteEncoder.get();
 
     } 
 
