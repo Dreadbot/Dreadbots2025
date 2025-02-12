@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -22,19 +24,24 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.0, 0, 0);
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
+    private final PIDController pid = new PIDController(0, 0, 0);
+    
+
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.1);
+    //private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
+    private double joystickAxis; 
 
 
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
-    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(70), 0);
     private State desiredElevatorState;
     public double joystickOverride;
+    public DoubleSupplier joystickOverride1;
 
     public Elevator(ElevatorIO io){
         this.io = io;
@@ -46,42 +53,61 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        if (!isZeroed && !DriverStation.isDisabled()) { //isDisabled only needed for sim 
-            io.runVoltage(-0.1);
+    
+        System.out.println("Driver Station: " + DriverStation.isDisabled());
+
+        //If we reach bottom, zero encoder and reset goal;
+        System.out.println("Joystick Periodic : " + joystickOverride);
+        if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
+           // io.runVoltage(-1);
+            voltage = -1;
+            System.out.println("Zeroed: " + isZeroed);
             if (!io.getBottomLimitSwitch()) {
-                //If we reach bottom, zero encoder and reset goal;
-                io.runVoltage(0);
+                voltage = 0;
                 isZeroed = true;
                 io.setMinPosition();
-                setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+                setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
+                //System.out.println("Zeroed: " + isZeroed);
             }
         } else {
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
-            voltage = pid.calculate(inputs.positionMeters, setpoint.position)
-            + feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
-            
-            io.runVoltage(voltage);
+            System.out.println("Set: " + setpoint.position + " Goal: " + goal.position + " Position " + inputs.positionMeters);
+            double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
+            double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
+            voltage = pidValue + feedforwardValue;
+            Logger.recordOutput("Feedforward", feedforwardValue);
+            Logger.recordOutput("PID", pidValue);
+            Logger.recordOutput("Setpoint", setpoint.position);
+    
+           // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
+           // io.runVoltage(voltage);
+           // System.out.println(" Voltage: " + voltage);
         }
 
          if (Math.abs(joystickOverride) > 0.08) {
             
-            this.desiredElevatorState = new State(
-                MathUtil.clamp(
-                    this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
-                    0.000,
-                    ElevatorConstants.MAX_HEIGHT
-                ),
-                0
-            );
+            setpoint = new State(inputs.positionMeters, 0);
+//                MathUtil.clamp(
+  //                  setpoint.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
+    //                0.000,
+      //              ElevatorConstants.MAX_HEIGHT
+        //        ),
+          //      0
+            //);
+            goal = setpoint;
+
+            voltage = joystickOverride * 2.5;
         }
 
+        setMotorSpeed(voltage);
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         Logger.recordOutput("Elevator/Homed", isZeroed);
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
+
         if (voltage > 0) {
             if (!io.getTopLimitSwitch()) {
                 io.runVoltage(0);
@@ -114,13 +140,18 @@ public class Elevator extends SubsystemBase {
     //     );
     // }
 
-    public Command setJoystickOverride(double joystickValue) {
-        return run (
+    public Command setJoystickOverride(DoubleSupplier joystickValue) {
+        return runOnce (
             () -> {
-                joystickOverride = joystickValue;
+                joystickOverride = joystickValue.getAsDouble();
+                System.out.println("Joystick Override: " + joystickValue.getAsDouble());
             }
         );
     }
+
+    // public void setJoystick(DoubleSupplier joystickAxis) {
+    //     this.joystickOverride1 = joystickAxis;
+    // }
 
     public Command riseTo(double goalHeight){
         return runOnce(() -> {
@@ -145,4 +176,8 @@ public class Elevator extends SubsystemBase {
         return inputs.positionMeters;
     }
 
-}
+    public void init() {
+        isZeroed = false;
+        voltage = 0;
+    }
+}   

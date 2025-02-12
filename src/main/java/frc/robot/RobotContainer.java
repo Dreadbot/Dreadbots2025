@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -38,7 +39,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
+import frc.robot.subsystems.elevator.ElevatorIOSparkFlex;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
@@ -83,7 +84,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Sim
+
         drive =
         new Drive(
             new GyroIO() {},
@@ -95,7 +96,7 @@ public class RobotContainer {
       wrist = new Wrist(new WristIOSparkFlex());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
-      elevator = new Elevator(new ElevatorIOSparkMax());
+      elevator = new Elevator(new ElevatorIOSparkFlex());
       break;
         
 
@@ -228,8 +229,11 @@ public class RobotContainer {
     secondaryController.start().onTrue(elevator.requestZero());
     secondaryController.back().onTrue(wrist.setAtZero());
 
+    // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
 
+    elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
+    
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
@@ -248,5 +252,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public void autonomousInit(){
+    elevator.init();
+  }
+
+  public void teleopInit(){
+    elevator.init();
   }
 }

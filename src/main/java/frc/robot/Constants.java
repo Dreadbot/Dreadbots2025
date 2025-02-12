@@ -48,14 +48,14 @@ public final class Constants {
     public static final double DCMOTOR_MASS = 2;
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.44); 
-    public static final double GEARING = 5;
+    public static final double GEARING = 1;  // change to 5 for elevator
     public static final double MIN_HEIGHT = Units.inchesToMeters(18);
     public static final double MAX_HEIGHT = Units.inchesToMeters(70 + 18);
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final int DUTY_CYCLE_ENCODER = 1;
     public static final double ELEVATOR_JOYSTICK_SLEW_VALUE = -0.00346;
-    public static final int MOTOR_ID = 1;
+    public static final int MOTOR_ID = 3;
   }
 
 
