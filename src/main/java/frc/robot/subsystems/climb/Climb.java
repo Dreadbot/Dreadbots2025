@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climb extends SubsystemBase {
     
     private ClimbIO io;
-    private Climb climb;
-    private boolean extended = false;
     private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
     public Climb(ClimbIO io) { 
@@ -19,11 +17,9 @@ public class Climb extends SubsystemBase {
     public void periodic() {}
     
     public void isExtended(boolean extended) {
-        this.extended = true;
     }
 
     public void isRetracted(boolean extended) {
-        this.extended = false;
     }
 
     public boolean getExtendedClimb() {

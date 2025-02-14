@@ -11,8 +11,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import frc.robot.Constants.WristConstants;
 
 public class Wrist extends SubsystemBase {
     
@@ -24,7 +24,6 @@ public class Wrist extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private double goalAngle;
-    private double startAngle;
     private State desiredWristState;
     public double joystickOverride;
 
@@ -78,26 +77,12 @@ public class Wrist extends SubsystemBase {
         );
     }
 
-
     public Command setAtZero() {
         return runOnce(
             () -> {
-                startAngle = WristConstants.WRIST_ZERO;
             } );
     }
     
-    /*  public void move(double Volts) {
-        if((inputs.leftBottomSwitch || inputs.rightBottomSwitch) && Volts < 0) {
-            Volts = 0;
-        }
-
-        if((inputs.leftTopSwitch || inputs.rightTopSwitch) && Volts > 0) {
-            Volts = 0;
-        }
-        io.runVoltage(Volts);
-    }
-    */
-
     public double getAngle() {
         return inputs.rotationDegrees;
     }
@@ -105,6 +90,7 @@ public class Wrist extends SubsystemBase {
     public boolean atSetpoint() {
         return MathUtil.isNear(goalAngle, inputs.rotationDegrees, 0.4); // 0.2 degrees
     }
+
     /**
      * Gets if the Wrist is in danger zone, see START_DANGER_ZONE for more information.
      * @return True of false whether we are in danger zone or not.

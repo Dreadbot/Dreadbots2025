@@ -98,7 +98,7 @@ public final class Constants {
     public static final double CORAL_POSITION_L3 = -55.0;
     public static final double CORAL_POSITION_L4 = -40.0;
     //End Angle in Degrees
-
+    public static final double GEAR_REDUCTION = 1.0 / 150.0;
     /* 
     * DANGER ZONE EXPLANATION!!!!!
     * With our robot layout, there is a crossbar on the first stage (we ony have 

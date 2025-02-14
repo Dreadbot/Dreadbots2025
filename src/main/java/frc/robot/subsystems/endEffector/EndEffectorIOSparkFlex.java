@@ -5,11 +5,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class EndEffectorIOSparkFlex implements EndEffectorIO{
     private final SparkFlex motor;
-    private double volts;
-
+    
     public EndEffectorIOSparkFlex(){
         this.motor = new SparkFlex(1, MotorType.kBrushless);
-        this.volts = 0.0;
     }
 
     public void updateInputs(EndEffectorIOInputs inputs){
@@ -19,6 +17,5 @@ public class EndEffectorIOSparkFlex implements EndEffectorIO{
 
     public void runVoltage(double volts){
         motor.setVoltage(volts);
-        this.volts = volts;
     }
 }

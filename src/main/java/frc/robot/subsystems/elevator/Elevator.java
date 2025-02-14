@@ -4,49 +4,34 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.WristConstants;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final PIDController pid = new PIDController(0, 0, 0);
-    
-
     private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.1);
-    //private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
-    private double voltage = 0;
-    public boolean isZeroed = false;
-    private double joystickAxis; 
-
-
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
+        private TrapezoidProfile.State goal = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(70), 0);
-    private State desiredElevatorState;
     public double joystickOverride;
+    public boolean isZeroed = false;
     public DoubleSupplier joystickOverride1;
+    private double voltage = 0;
 
     public Elevator(ElevatorIO io){
         this.io = io;
         this.joystickOverride = 0.0;
-        desiredElevatorState = new State(0, 0);
+        new State(0, 0);
     }
 
     @Override
@@ -148,10 +133,6 @@ public class Elevator extends SubsystemBase {
             }
         );
     }
-
-    // public void setJoystick(DoubleSupplier joystickAxis) {
-    //     this.joystickOverride1 = joystickAxis;
-    // }
 
     public Command riseTo(double goalHeight){
         return runOnce(() -> {

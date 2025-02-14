@@ -2,15 +2,9 @@ package frc.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
-
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,15 +15,11 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     private final RelativeEncoder relativeEncoder; 
     private final double rotationsToMeters = ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI / ElevatorConstants.GEARING;
     private final double metersToRotations = 1 / rotationsToMeters;
-    private double volts = 0;
-    private double minPosition;
     DigitalInput topLimitSwitch = new DigitalInput(8);
     DigitalInput bottomLimitSwitch = new DigitalInput(9);
     
     public ElevatorIOSparkFlex() {
         this.elevatorMotor = new SparkFlex(ElevatorConstants.MOTOR_ID, MotorType.kBrushless);
-        this.volts = 0.0;
-        
         this.relativeEncoder = elevatorMotor.getEncoder();
 
         // old code 
@@ -49,7 +39,6 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
  @Override
     public void runVoltage(double volts) {
         elevatorMotor.setVoltage(volts);
-        this.volts = volts;
     }
 
     @Override

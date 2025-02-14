@@ -1,6 +1,5 @@
 package frc.robot.subsystems.slapdownAlgae;
 
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;

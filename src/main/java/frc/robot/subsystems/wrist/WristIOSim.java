@@ -2,17 +2,12 @@ package frc.robot.subsystems.wrist;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.Constants.WristConstants;
 
 
 public class WristIOSim implements WristIO {
 
     private final SingleJointedArmSim wrist;
-    private double volts;    
-
     public WristIOSim() {
         this.wrist = new SingleJointedArmSim(
             DCMotor.getNEO(1), 
@@ -24,7 +19,6 @@ public class WristIOSim implements WristIO {
             true,
             Units.degreesToRadians(0)
             );
-        volts = 0.0;
     }
 
     @Override
@@ -44,7 +38,6 @@ public class WristIOSim implements WristIO {
     @Override
     public void runVoltage(double volts) {
         wrist.setInputVoltage(volts);
-        this.volts = volts;
     }
 
     
