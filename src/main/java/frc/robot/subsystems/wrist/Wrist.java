@@ -1,5 +1,7 @@
 package frc.robot.subsystems.wrist;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -7,8 +9,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
@@ -63,20 +63,21 @@ public class Wrist extends SubsystemBase {
     }
 
     public Command setAngleDegrees(double angle) {
-        
-        return runOnce(
+         return runOnce(
             () -> {
                 goalAngle = angle;
              } );
     }
 
-    public Command setJoystickOverride(double joystickValue) {
-        return run (
+    public Command setJoystickOverride(DoubleSupplier joystickValue) {
+        return runOnce (
             () -> {
-                joystickOverride = joystickValue;
+                joystickOverride = joystickValue.getAsDouble();
+                System.out.println("Joystick Override: " + joystickValue.getAsDouble());
             }
         );
     }
+
 
     public Command setAtZero() {
         return runOnce(

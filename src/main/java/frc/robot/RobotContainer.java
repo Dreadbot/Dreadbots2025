@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -31,6 +30,10 @@ import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSim;
+import frc.robot.subsystems.climb.ClimbIOSolenoid;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -68,6 +71,7 @@ public class RobotContainer {
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
+  private final Climb climb;
   private final SlapdownAlgae slapdownAlgae;
   private final VisualizationManager vizManager;
   private final Superstructure superstructure;
@@ -97,6 +101,7 @@ public class RobotContainer {
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
+      climb = new Climb(new ClimbIOSolenoid());
       break;
         
 
@@ -114,6 +119,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        climb = new Climb(new ClimbIOSim());
         break;
 
       default:
@@ -130,6 +136,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
+        climb = new Climb(new ClimbIO() {});
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
@@ -231,12 +238,12 @@ public class RobotContainer {
 
     // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
-
+    //manual override buttons
     elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
+    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
     
-    // Elevator buttons
-    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+    //climb sequence
+    primaryController.y().whileTrue(climb.climbSequence());
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
     primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));

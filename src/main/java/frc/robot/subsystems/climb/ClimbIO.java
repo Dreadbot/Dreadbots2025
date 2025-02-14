@@ -14,6 +14,8 @@ public interface ClimbIO {
     
  public default void updateInputs(ClimbIOInputs inputs) {};
 
- public default void setEnabled(boolean setExtended) {};
+ public default void setLockEnabled(boolean setExtended) {};
+
+ public default void setClimbEnabled(boolean setExtended) {};
 
     }
