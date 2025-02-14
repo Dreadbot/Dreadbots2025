@@ -47,7 +47,7 @@ public final class Constants {
     public static final double DROP_VOLTAGE = -5.0;
     public static final double DCMOTOR_MASS = 2;
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
-    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.804); //closer to original?
+    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.804); //closer to actual?
     public static final double GEARING = 1;  // change to 5 for elevator
     public static final double MIN_HEIGHT = Units.inchesToMeters(23); //from ground
     public static final double MAX_HEIGHT = Units.inchesToMeters(85); //from ground
