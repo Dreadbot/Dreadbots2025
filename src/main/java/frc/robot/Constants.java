@@ -90,7 +90,7 @@ public final class Constants {
     public static final int WRIST_ENCODER_SCALE = 1;
     public static final double WRIST_MAX_ANGLE = 90.0;
     public static final double WRIST_MIN_VALUE = -90.0;
-    public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
+    public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.5;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
     public static final double CORAL_POSITION_L1 = 0.0;

@@ -16,7 +16,7 @@ public class WristIOSparkMax implements WristIO {
    private DutyCycleEncoder absoluteEncoder;
    
    public WristIOSparkMax() {
-    this.wristMotor = new SparkMax(2, MotorType.kBrushless);
+    this.wristMotor = new SparkMax(1, MotorType.kBrushless);
     this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(WristConstants.WRIST_DUTY_CYCLE_ENCODER), 
     WristConstants.WRIST_MAX_ANGLE, WristConstants.WRIST_ENCODER_OFFSET);
     this.config = new SparkMaxConfig();
@@ -27,7 +27,7 @@ public class WristIOSparkMax implements WristIO {
   @Override
     public void updateInputs(WristIOInputs inputs) {
 
-        inputs.appliedVolts = 0.0;
+        inputs.appliedVolts = wristMotor.getAppliedOutput() * wristMotor.getBusVoltage();
        
         inputs.RPS = wristMotor.get();
 

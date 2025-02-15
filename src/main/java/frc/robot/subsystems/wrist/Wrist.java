@@ -18,27 +18,26 @@ public class Wrist extends SubsystemBase {
     
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
-    private final PIDController pid = new PIDController(1.0, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0.0);
+    private final PIDController pid = new PIDController(0.0, 0.0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0.05);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(180, 180));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private double goalAngle;
     private State desiredWristState;
-    public double joystickOverride;
+    public DoubleSupplier joystickOverride;
 
 
     public Wrist(WristIO io) {
         this.io = io;
         desiredWristState = new State(0, 0);
-        this.joystickOverride = 0.0;
+        this.joystickOverride = () -> 0.0;
     } 
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Wrist", inputs);
-        goal = new TrapezoidProfile.State(goalAngle, 0);
         Logger.recordOutput("Wrist/SetpointPosition", setpoint.position);
         Logger.recordOutput("Wrist/GoalAngle", goalAngle);
         Logger.recordOutput("Wrist/GoalPosition", goal.position);
@@ -48,11 +47,11 @@ public class Wrist extends SubsystemBase {
         io.runVoltage(pid.calculate(inputs.rotationDegrees, setpoint.position) + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity));
         
         
-        if (Math.abs(joystickOverride) > 0.08) {
+        if (Math.abs(joystickOverride.getAsDouble()) > 0.08) {
             
-            this.desiredWristState = new State(
+            this.goal = new State(
                 MathUtil.clamp(
-                    this.desiredWristState.position + joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
+                    this.goal.position + joystickOverride.getAsDouble() * WristConstants.WRIST_JOYSTICK_SLEW_VALUE,
                     0.000,
                     WristConstants.WRIST_MAX_ANGLE
                 ),
@@ -64,17 +63,12 @@ public class Wrist extends SubsystemBase {
     public Command setAngleDegrees(double angle) {
          return runOnce(
             () -> {
-                goalAngle = angle;
+                goal = new TrapezoidProfile.State(angle, 0);
              } );
     }
 
-    public Command setJoystickOverride(DoubleSupplier joystickValue) {
-        return runOnce (
-            () -> {
-                joystickOverride = joystickValue.getAsDouble();
-                System.out.println("Joystick Override: " + joystickValue.getAsDouble());
-            }
-        );
+    public void setJoystickOverride(DoubleSupplier joystickValue) {
+       joystickOverride = joystickValue;
     }
 
     public Command setAtZero() {

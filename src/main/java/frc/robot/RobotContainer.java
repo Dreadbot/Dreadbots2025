@@ -53,7 +53,7 @@ import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSim;
-import frc.robot.subsystems.wrist.WristIOSparkFlex;
+import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.visualization.VisualizationManager;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -92,16 +92,25 @@ public class RobotContainer {
         drive =
         new Drive(
             new GyroIO() {},
-            new ModuleIOSpark(0),
-            new ModuleIOSpark(1),
-            new ModuleIOSpark(2),
-            new ModuleIOSpark(3));
-      endEffector = new EndEffector(new EndEffectorIOSparkFlex());
-      wrist = new Wrist(new WristIOSparkFlex());
+            // new ModuleIOSpark(0),
+            // new ModuleIOSpark(1),
+            // new ModuleIOSpark(2),
+            // new ModuleIOSpark(3));
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
+      // endEffector = new EndEffector(new EndEffectorIOSparkFlex());
+      wrist = new Wrist(new WristIOSparkMax());
+      // vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+      // slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
+      // elevator = new Elevator(new ElevatorIOSparkFlex());
+      //climb = new Climb(new ClimbIOSolenoid());
+      endEffector = new EndEffector(new EndEffectorIOSim());
+      elevator = new Elevator(new ElevatorIOSim());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
-      elevator = new Elevator(new ElevatorIOSparkFlex());
-      climb = new Climb(new ClimbIOSolenoid());
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+      climb = new Climb(new ClimbIOSim());
       break;
         
 
@@ -240,7 +249,7 @@ public class RobotContainer {
 
     //manual override buttons
     elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
-    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
+    wrist.setJoystickOverride(secondaryController::getRightY);
     
     //climb sequence
     primaryController.y().whileTrue(climb.climbSequence());
