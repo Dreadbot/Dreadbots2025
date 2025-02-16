@@ -33,5 +33,5 @@ public class AutoCommands {
             factory.resetOdometry("Processor-A2-FarPickup"),
             factory.trajectoryCmd("Processor-A2-FarPickup")
         );
-    }
+    }   
 }
