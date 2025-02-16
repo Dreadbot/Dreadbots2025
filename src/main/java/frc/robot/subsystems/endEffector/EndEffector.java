@@ -34,4 +34,8 @@ public class EndEffector extends SubsystemBase {
         );
     }
 
+    public boolean hasGamePiece(){
+        return inputs.RPM < EndEffectorConstants.INTAKE_THRESHOLD;
+    }
+
 }

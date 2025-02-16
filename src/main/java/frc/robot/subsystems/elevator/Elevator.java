@@ -135,6 +135,10 @@ public class Elevator extends SubsystemBase {
         );
     }
 
+    public boolean atSetpoint(){
+        return MathUtil.isNear(goal.position, inputs.positionMeters,.1);
+    }
+
     public Command requestZero() {
         return runOnce(() -> {
             this.isZeroed = false;

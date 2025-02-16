@@ -140,12 +140,13 @@ public class RobotContainer {
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
     superstructure = new Superstructure(elevator, wrist);
-    autos = new AutoCommands(drive, superstructure);
+    autos = new AutoCommands(drive, superstructure, endEffector);
 
     // Set up auto routines
     // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     choreoAutoChooser = new AutoChooser();
     choreoAutoChooser.addCmd("Choreo Test", autos::choreoTest);
+    choreoAutoChooser.addCmd("MidBarge-C2B2-ClosePickup", autos::MidBargeC2B2ClosePickup);
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines

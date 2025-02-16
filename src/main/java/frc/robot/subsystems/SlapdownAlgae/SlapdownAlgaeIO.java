@@ -26,8 +26,8 @@ public interface SlapdownAlgaeIO {
         public double absolutePosition = 0.0;
 
         //Temp
-        public double intakeTemperature;
-        public double pivotTemperature;
+        public double intakeTemperature = 0.0;
+        public double pivotTemperature = 0.0;
 
     }
 
