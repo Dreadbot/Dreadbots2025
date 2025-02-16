@@ -36,6 +36,11 @@ public class Superstructure {
             () -> wrist.isInDangerZone() && level == SuperstructureState.L4
         );
     }
+
+    public boolean isFinished() {
+        return wrist.atSetpoint() && elevator.atSetpoint();
+    }
+
     //Height, Angle (degrees)
     public static enum SuperstructureState {
         L1(Units.inchesToMeters(18.0), 0.0),
