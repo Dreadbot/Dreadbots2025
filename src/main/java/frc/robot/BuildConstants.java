@@ -10,6 +10,9 @@ public final class BuildConstants {
   public static final int GIT_REVISION = 91;
   public static final String GIT_SHA = "561aa957988c072e0bded58da2d1d0669d7e9a53";
   public static final String GIT_DATE = "2025-02-15 19:34:48 EST";
+  public static final int GIT_REVISION = 91;
+  public static final String GIT_SHA = "561aa957988c072e0bded58da2d1d0669d7e9a53";
+  public static final String GIT_DATE = "2025-02-15 19:34:48 EST";
   public static final String GIT_BRANCH = "choreo-autos";
   public static final String BUILD_DATE = "2025-02-15 21:06:23 EST";
   public static final long BUILD_UNIX_TIME = 1739671583977L;

@@ -39,7 +39,7 @@ public final class Constants {
   public static class EndEffectorConstants {
     public static final double INTAKE_VOLTAGE = -7.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
-    public static final double INTAKE_THRESHOLD = 1000;
+    public static final double INTAKE_THRESHOLD = 200.0; //threshold (in rpm) of when we have a game piece
 
   }
   public static class ElevatorConstants {

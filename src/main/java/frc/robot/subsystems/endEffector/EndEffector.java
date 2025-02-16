@@ -33,6 +33,10 @@ public class EndEffector extends SubsystemBase {
             () -> io.runVoltage(0.0)
         );
     }
+    
+    public boolean hasGamePiece() {
+        return inputs.RPM < EndEffectorConstants.INTAKE_THRESHOLD;
+    }
 
     public boolean hasGamePiece(){
         return inputs.RPM < EndEffectorConstants.INTAKE_THRESHOLD;

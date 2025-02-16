@@ -79,6 +79,8 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         Logger.recordOutput("Elevator/Homed", isZeroed);
+        Logger.recordOutput("Elevator/atSetpoint", atSetpoint());
+
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
@@ -137,6 +139,10 @@ public class Elevator extends SubsystemBase {
 
     public boolean atSetpoint(){
         return MathUtil.isNear(goal.position, inputs.positionMeters,.1);
+    }
+
+    public boolean atSetpoint() {
+        return MathUtil.isNear(goal.position, inputs.positionMeters, 0.1); // 10cm tolerance
     }
 
     public Command requestZero() {
