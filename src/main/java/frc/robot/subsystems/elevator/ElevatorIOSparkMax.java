@@ -39,11 +39,6 @@ public class ElevatorIOSparkMax implements ElevatorIO {
         return bottomLimitSwitch.get();
     }
 
-    @Override
-    public boolean getTopLimitSwitch(){
-        return topLimitSwitch.get();
-    }
-
     @Override 
     public void setMinPosition(){
         relativeEncoder.setPosition(0);

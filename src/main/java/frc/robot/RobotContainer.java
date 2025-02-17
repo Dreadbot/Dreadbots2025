@@ -96,7 +96,7 @@ public class RobotContainer {
       wrist = new Wrist(new WristIOSim());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-      elevator = new Elevator(new ElevatorIOSparkMax());
+      elevator = new Elevator(new ElevatorIOSim());
       break;
         
 

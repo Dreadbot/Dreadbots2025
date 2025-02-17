@@ -50,10 +50,4 @@ public class ElevatorIOSim implements ElevatorIO {
         return !MathUtil.isNear(ElevatorConstants.MIN_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
     }
 
-    @Override
-    public boolean getTopLimitSwitch(){
-        return !MathUtil.isNear(ElevatorConstants.MAX_HEIGHT, elevatorSim.getPositionMeters(), 0.01); //1 cm of tolerance.
-
-    }
-
 }

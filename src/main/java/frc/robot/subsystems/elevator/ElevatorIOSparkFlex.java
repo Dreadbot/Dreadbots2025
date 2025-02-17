@@ -21,8 +21,7 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     private final RelativeEncoder relativeEncoder; 
     private double volts = 0;
     private double minPosition;
-    DigitalInput topLimitSwitch = new DigitalInput(8);
-    DigitalInput bottomLimitSwitch = new DigitalInput(9);
+    DigitalInput bottomLimitSwitch = new DigitalInput(0);
     
     public ElevatorIOSparkFlex() {
         this.elevatorMotor = new SparkFlex(ElevatorConstants.MOTOR_ID, MotorType.kBrushless);
@@ -55,11 +54,6 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     @Override
     public boolean getBottomLimitSwitch(){
         return bottomLimitSwitch.get();
-    }
-
-    @Override
-    public boolean getTopLimitSwitch(){
-        return topLimitSwitch.get();
     }
 
     @Override 

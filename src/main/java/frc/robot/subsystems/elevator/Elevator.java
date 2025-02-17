@@ -100,17 +100,7 @@ public class Elevator extends SubsystemBase {
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
-
-        if (voltage > 0) {
-            if (!io.getTopLimitSwitch()) {
-                io.runVoltage(0);
-            }
-            else {
-                io.runVoltage(voltage);
-            }
-        }
-
-        else {
+        if (voltage < 0) {
             if (!io.getBottomLimitSwitch()) {
                 io.runVoltage(0);
             }

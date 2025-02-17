@@ -85,7 +85,7 @@ public final class Constants {
     public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
-    public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
+    public static final int WRIST_DUTY_CYCLE_ENCODER = 9;
     public static final int WRIST_ENCODER_OFFSET = 1;
     public static final int WRIST_ENCODER_SCALE = 1;
     public static final double WRIST_MAX_ANGLE = 1.0;
