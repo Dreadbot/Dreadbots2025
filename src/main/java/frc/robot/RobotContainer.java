@@ -33,6 +33,7 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
@@ -87,19 +88,17 @@ public class RobotContainer {
 
         drive =
         new Drive(
-            new GyroIO() {},
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim());
-      endEffector = new EndEffector(new EndEffectorIOSim());
-      wrist = new Wrist(new WristIOSim());
+            new GyroIONavX(),
+            new ModuleIOSpark(0),
+            new ModuleIOSpark(1),
+            new ModuleIOSpark(2),
+            new ModuleIOSpark(3));
+      endEffector = new EndEffector(new EndEffectorIO() {});
+      wrist = new Wrist(new WristIO() {});
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-      elevator = new Elevator(new ElevatorIOSim());
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
+      elevator = new Elevator(new ElevatorIO() {});
       break;
-        
-
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =

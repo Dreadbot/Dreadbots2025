@@ -4,22 +4,14 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.WristConstants;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 
 public class Elevator extends SubsystemBase {
@@ -53,15 +45,11 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-    
-        System.out.println("Driver Station: " + DriverStation.isDisabled());
 
         //If we reach bottom, zero encoder and reset goal;
-        System.out.println("Joystick Periodic : " + joystickOverride);
         if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
            // io.runVoltage(-1);
             voltage = -1;
-            System.out.println("Zeroed: " + isZeroed);
             if (!io.getBottomLimitSwitch()) {
                 voltage = 0;
                 isZeroed = true;
@@ -72,7 +60,6 @@ public class Elevator extends SubsystemBase {
         } else {
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
-            System.out.println("Set: " + setpoint.position + " Goal: " + goal.position + " Position " + inputs.positionMeters);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             voltage = pidValue + feedforwardValue;
