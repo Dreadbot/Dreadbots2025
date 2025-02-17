@@ -20,10 +20,11 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
     private final DutyCycleEncoder absoluteEncoder;
 
     public SlapdownAlgaeIOSparkMax() {
-        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownAlgaeConstants.SLAPDOWNALGAE_DUTY_CYCLE_ENCODER)); //Update code with the 0 and max angle
-
+        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownAlgaeConstants.SLAPDOWNALGAE_DUTY_CYCLE_ENCODER), 
+        SlapdownAlgaeConstants.MAX_ANGLE, SlapdownAlgaeConstants.ZERO_ANGLE);
         this.intakeMotor = new SparkMax(0, MotorType.kBrushless);
         this.pivotMotor = new SparkMax(0, MotorType.kBrushless);
+        absoluteEncoder.setInverted(true);
     }
 
         @Override
@@ -37,6 +38,8 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
             inputs.pivotAppliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
             inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
             inputs.pivotTemperature = pivotMotor.getMotorTemperature();
+
+            inputs.pivotRotationDegrees = absoluteEncoder.get();
         }
 
         @Override
