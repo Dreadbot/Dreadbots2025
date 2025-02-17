@@ -24,9 +24,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(.5, 0, 0);
+    private final PIDController pid = new PIDController(0, 0, 0);
+    
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.15);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 0, 0.5, 0.1);
     //private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 1.626, 2.25, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
@@ -37,7 +38,7 @@ public class Elevator extends SubsystemBase {
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2, 2));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
-    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(Units.inchesToMeters(70), 0);
     private State desiredElevatorState;
     public double joystickOverride;
     public DoubleSupplier joystickOverride1;
@@ -52,27 +53,32 @@ public class Elevator extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+    
+        System.out.println("Driver Station: " + DriverStation.isDisabled());
 
-            //If we reach bottom, zero encoder and reset goal;
-        if (!isZeroed && !DriverStation.isDisabled()) {  // isDisabled only needed for sim 
+        //If we reach bottom, zero encoder and reset goal;
+        System.out.println("Joystick Periodic : " + joystickOverride);
+        if (!isZeroed && !DriverStation.isDisabled()) {  //isDisabled only needed for sim 
            // io.runVoltage(-1);
             voltage = -1;
+            System.out.println("Zeroed: " + isZeroed);
             if (!io.getBottomLimitSwitch()) {
                 voltage = 0;
                 isZeroed = true;
                 io.setMinPosition();
                 setpoint = new TrapezoidProfile.State(Units.inchesToMeters(18), 0);
+                //System.out.println("Zeroed: " + isZeroed);
             }
-           // return;
         } else {
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
+            System.out.println("Set: " + setpoint.position + " Goal: " + goal.position + " Position " + inputs.positionMeters);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
             voltage = pidValue + feedforwardValue;
-
-            Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
-            Logger.recordOutput("Elevator/PID", pidValue);
+            Logger.recordOutput("Feedforward", feedforwardValue);
+            Logger.recordOutput("PID", pidValue);
+            Logger.recordOutput("Setpoint", setpoint.position);
     
            // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
            // io.runVoltage(voltage);
@@ -81,16 +87,17 @@ public class Elevator extends SubsystemBase {
 
          if (Math.abs(joystickOverride) > 0.08) {
             
-            // this.desiredElevatorState = new State(
-            //     MathUtil.clamp(
-            //         this.desiredElevatorState.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
-            //         0.000,
-            //         ElevatorConstants.MAX_HEIGHT
-            //     ),
-            //     0
-            // );
-            voltage = joystickOverride * 5;
-        
+            setpoint = new State(inputs.positionMeters, 0);
+//                MathUtil.clamp(
+  //                  setpoint.position + joystickOverride * ElevatorConstants.ELEVATOR_JOYSTICK_SLEW_VALUE,
+    //                0.000,
+      //              ElevatorConstants.MAX_HEIGHT
+        //        ),
+          //      0
+            //);
+            goal = setpoint;
+
+            voltage = joystickOverride * 2.5;
         }
 
         setMotorSpeed(voltage);
@@ -127,7 +134,7 @@ public class Elevator extends SubsystemBase {
         return runOnce (
             () -> {
                 joystickOverride = joystickValue.getAsDouble();
-                System.out.println(joystickValue.getAsDouble());
+                System.out.println("Joystick Override: " + joystickValue.getAsDouble());
             }
         );
     }

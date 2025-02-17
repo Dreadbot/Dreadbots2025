@@ -39,7 +39,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
+import frc.robot.subsystems.elevator.ElevatorIOSparkFlex;
 import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
@@ -209,7 +209,7 @@ public class RobotContainer {
      */
 
     //Home
-    //secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
+    secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
     //L1 - L4
     secondaryController.povUp().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
@@ -232,7 +232,8 @@ public class RobotContainer {
     // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
 
-
+    elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
+    
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
