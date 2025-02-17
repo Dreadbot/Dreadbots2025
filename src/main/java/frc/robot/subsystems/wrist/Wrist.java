@@ -20,8 +20,8 @@ public class Wrist extends SubsystemBase {
     
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
-    private final PIDController pid = new PIDController(.01, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0, 0);
+    private final PIDController pid = new PIDController(.00, 0.0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0, 0.02);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(180, 180));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -37,7 +37,7 @@ public class Wrist extends SubsystemBase {
         desiredWristState = new State(0, 0);
         this.joystickOverride = 0.0;
         this.voltage = 0;
-        goalAngle = WristConstants.WRIST_ENCODER_OFFSET;
+        goalAngle = 0;
     } 
 
     @Override

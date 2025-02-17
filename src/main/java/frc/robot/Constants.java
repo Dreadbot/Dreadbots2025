@@ -86,17 +86,11 @@ public final class Constants {
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
-    public static final int WRIST_ENCODER_OFFSET = 113;
-    public static final int WRIST_ENCODER_SCALE = 1;
+    public static final int WRIST_ENCODER_OFFSET = 50;
     public static final double WRIST_MAX_ANGLE = 360;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
     public static final double WRIST_EXPECTED_ZERO = 0;
-    //Start Angle in Degrees
-    public static final double CORAL_POSITION_PICKUP = 35.0;
-    public static final double CORAL_POSITION_L1 = 0.0;
-    public static final double CORAL_POSITION_L2 = -55.0;
-    public static final double CORAL_POSITION_L3 = -55.0;
-    public static final double CORAL_POSITION_L4 = -40.0;
+    public static final double ENCODER_FREQUENCY = 975.6;
     //End Angle in Degrees
 
     /* 
@@ -106,8 +100,8 @@ public final class Constants {
     * Because of this, there are a couple of specific situations in which we need to move the wrist FIRST, and then move elevator.
     * Most of the time we can move both at same time
     */ 
-    public static final double START_DANGER_ZONE = 15.0;
-    public static final double END_DANGER_ZONE = 90.0; // Basically starts at 15 degrees, and then can't rotate anymore
+    public static final double START_DANGER_ZONE = 105.0;
+    public static final double END_DANGER_ZONE = 180.0; // Basically starts at 15 degrees, and then can't rotate anymore
 
   }
 }
