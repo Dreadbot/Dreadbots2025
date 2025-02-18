@@ -9,6 +9,7 @@ public interface SlapdownAlgaeIO {
     @AutoLog
     public static class SlapdownAlgaeIOInputs {
 
+
         //The Volts
         public double pivotAppliedVolts = 0.0;
         public double intakeAppliedVolts = 0.0;
@@ -25,8 +26,8 @@ public interface SlapdownAlgaeIO {
         public double absolutePosition = 0.0;
 
         //Temp
-        //public Object intakeTemperature;
-        //public Object pivotTemperature;
+        public double intakeTemperature = 0.0;
+        public double pivotTemperature = 0.0;
 
     }
 

@@ -60,7 +60,7 @@ public final class Constants {
   public static class SlapdownAlgaeConstants {
     public static final double INTAKE_VOLTAGE = -7.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
-    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 0;
+    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 2;
     // public static final String SLAPDOWNALGAE_ENCODER_OFFSET = null;
     // public static final String SLAPDOWNALGAE_ENCODER_SCALE = null;
     // public static final String SLAPDOWNALGAE_IN_OUT_TAKE_MOTOR = null;
@@ -83,11 +83,11 @@ public final class Constants {
     public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
-    public static final int WRIST_DUTY_CYCLE_ENCODER = 9;
-    public static final int WRIST_ENCODER_OFFSET = 1;
-    public static final int WRIST_ENCODER_SCALE = 1;
-    public static final double WRIST_MAX_ANGLE = 1.0;
-    public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
+    public static final int WRIST_DUTY_CYCLE_ENCODER = 2;
+    public static final int WRIST_ENCODER_OFFSET = 23;
+    public static final double WRIST_MAX_ANGLE = 360;
+    public static final double WRIST_JOYSTICK_SLEW_VALUE = 3;
+    public static final double WRIST_EXPECTED_ZERO = 0;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
     public static final double CORAL_POSITION_L1 = 0.0;
