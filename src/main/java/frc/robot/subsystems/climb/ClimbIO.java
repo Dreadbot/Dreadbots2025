@@ -9,11 +9,14 @@ public interface ClimbIO {
 
         public boolean extendedClimb = false;
         public boolean extendedLock = false;
-        
-        }
+        public boolean extendedClaw = false;
+    }
     
- public default void updateInputs(ClimbIOInputs inputs) {};
+    public default void updateInputs(ClimbIOInputs inputs) {};
 
- public default void setEnabled(boolean setExtended) {};
+    public default void setClawEnabled(boolean setExtended) {};
+    public default void setLockEnabled(boolean setExtended) {};
+    public default void setClimbEnabled(boolean setExtended) {};
+
 
     }

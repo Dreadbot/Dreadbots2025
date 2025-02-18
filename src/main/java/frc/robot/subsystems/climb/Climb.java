@@ -1,5 +1,7 @@
 package frc.robot.subsystems.climb;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,46 +12,41 @@ import frc.robot.subsystems.climb.ClimbIO.ClimbIOInputs;
 public class Climb extends SubsystemBase {
     
     private ClimbIO io;
-    private Climb climb;
-    private boolean extended = false;
-    private Solenoid solenoidClimb = new Solenoid(PneumaticsModuleType.REVPH, 0);
-    private Solenoid solenoidLock = new Solenoid(PneumaticsModuleType.REVPH, 0);
-
+    private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
+    
     public Climb(ClimbIO io) { 
         this.io = io;
-        this.solenoidClimb = new Solenoid(0, null, 0); 
-        this.solenoidLock = new Solenoid(0, null, 0); 
     }
 
     @Override
-    public void periodic() {}
-    
-    public void isExtended(boolean extended) {
-        this.extended = true;
-    }
-
-    public void isRetracted(boolean extended) {
-        this.extended = false;
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Climb", inputs);
     }
 
     public Command swapStatusClimb() {
          return runOnce(() -> {
-         solenoidClimb.set(!solenoidClimb.get());
+            io.setClimbEnabled(!inputs.extendedClimb);
          });
-        
     }
 
     public Command swapStatusLock() {
         return runOnce(() -> {
-        solenoidLock.set(!solenoidLock.get());
+            io.setLockEnabled(!inputs.extendedLock);
         });
-       
    }
+   public Command swapStatusClaw() {
+    return runOnce(() -> {
+        io.setClawEnabled(!inputs.extendedClaw);
+    });
+    }
 
    public Command climbSequence() {
-    return swapStatusLock()
-    .andThen(Commands.waitSeconds(1)
-    .andThen(swapStatusClimb()));
+    return swapStatusClaw()
+        .andThen(Commands.waitSeconds(1.0))
+        .andThen(swapStatusLock())
+        .andThen(Commands.waitSeconds(1.0))
+        .andThen(swapStatusClimb());
    }
     
 }

@@ -34,8 +34,9 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
         SparkFlexConfig config = new SparkFlexConfig();
         config
             .smartCurrentLimit(50)
-            .idleMode(IdleMode.kCoast)
-            .inverted(true);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true)
+            .encoder.positionConversionFactor(rotationsToMeters);
         this.elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // old code 
@@ -49,7 +50,7 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.currentAmps = elevatorMotor.getOutputCurrent();
         inputs.voltage = elevatorMotor.getAppliedOutput() * elevatorMotor.getBusVoltage();
-        inputs.positionMeters = relativeEncoder.getPosition() * rotationsToMeters;
+        inputs.positionMeters = relativeEncoder.getPosition();
     } 
 
  @Override
@@ -60,11 +61,11 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
 
     @Override
     public boolean getBottomLimitSwitch() {
-        return bottomLimitSwitch.get();
+        return !bottomLimitSwitch.get();
     }
 
     @Override 
     public void setMinPosition() {
-        relativeEncoder.setPosition(Units.inchesToMeters(18) * metersToRotations);
+        relativeEncoder.setPosition(ElevatorConstants.MIN_HEIGHT);
     }
 }

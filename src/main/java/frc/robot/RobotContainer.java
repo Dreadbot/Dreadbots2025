@@ -31,6 +31,9 @@ import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSolenoid;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -70,6 +73,7 @@ public class RobotContainer {
   private final Elevator elevator;
   private final Wrist wrist;
   private final SlapdownAlgae slapdownAlgae;
+  private final Climb climb;
   private final VisualizationManager vizManager;
   private final Superstructure superstructure;
 
@@ -88,16 +92,17 @@ public class RobotContainer {
 
         drive =
         new Drive(
-            new GyroIONavX(),
-            new ModuleIOSpark(0),
-            new ModuleIOSpark(1),
-            new ModuleIOSpark(2),
-            new ModuleIOSpark(3));
-      endEffector = new EndEffector(new EndEffectorIO() {});
+            new GyroIO() {},
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim(),
+            new ModuleIOSim());
+      endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIO() {});
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
-      elevator = new Elevator(new ElevatorIOSparkFlex());
+      elevator = new Elevator(new ElevatorIOSim());
+      climb = new Climb(new ClimbIO() {});
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -113,6 +118,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSim());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        climb = new Climb(new ClimbIO() {});
         break;
 
       default:
@@ -129,6 +135,7 @@ public class RobotContainer {
         wrist = new Wrist(new WristIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
+        climb = new Climb(new ClimbIO() {});
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
@@ -206,7 +213,7 @@ public class RobotContainer {
      * Focuses on the coral pieces
      * Elevator / Wrist / Endeffector
      */
-
+    primaryController.y().onTrue(climb.climbSequence());
     //Home
     secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
@@ -221,8 +228,8 @@ public class RobotContainer {
         .alongWith(endEffector.intake()));
     
     //intake / outtake
-    secondaryController.leftBumper().onTrue(endEffector.intake());
-    secondaryController.rightBumper().onTrue(endEffector.outtake());
+    secondaryController.leftBumper().whileTrue(endEffector.intake());
+    secondaryController.rightBumper().whileTrue(endEffector.outtake());
 
     //Reset elevator / wrist
     secondaryController.start().onTrue(elevator.requestZero());
