@@ -97,7 +97,7 @@ public class RobotContainer {
       wrist = new Wrist(new WristIO() {});
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
-      elevator = new Elevator(new ElevatorIO() {});
+      elevator = new Elevator(new ElevatorIOSparkFlex());
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations

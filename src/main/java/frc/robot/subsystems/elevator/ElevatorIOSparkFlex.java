@@ -34,7 +34,8 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
         SparkFlexConfig config = new SparkFlexConfig();
         config
             .smartCurrentLimit(50)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast)
+            .inverted(true);
         this.elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // old code 
