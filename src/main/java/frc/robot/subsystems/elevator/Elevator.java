@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
         
             goal = setpoint;
 
-            voltage = joystickOverride * 5.5;
+            voltage = joystickOverride * 9.0;
         }
         Logger.recordOutput("Elevator/passedInVoltage", voltage);
         setMotorSpeed(voltage);

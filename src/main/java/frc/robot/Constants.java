@@ -37,17 +37,17 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = 7.0;
-    public static final double OUTAKE_VOLTAGE = -5.0;
+    public static final double INTAKE_VOLTAGE = 3.0;
+    public static final double OUTAKE_VOLTAGE = -1.5;
 
   }
   public static class ElevatorConstants {
     public static final double DCMOTOR_MASS = 2;
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
-    public static final double GEARING = 4;  // change to 5 for elevator
+    public static final double GEARING = 12;
     public static final double MIN_HEIGHT = Units.inchesToMeters(25); //from ground
-    public static final double MAX_HEIGHT = Units.inchesToMeters(78); //from ground
+    public static final double MAX_HEIGHT = Units.inchesToMeters(83.5); //from ground
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final double ZEROING_VOLTAGE = 0.5;
@@ -60,7 +60,7 @@ public final class Constants {
   public static class SlapdownAlgaeConstants {
     public static final double INTAKE_VOLTAGE = -7.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
-    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 2;
+    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 8;
     // public static final String SLAPDOWNALGAE_ENCODER_OFFSET = null;
     // public static final String SLAPDOWNALGAE_ENCODER_SCALE = null;
     // public static final String SLAPDOWNALGAE_IN_OUT_TAKE_MOTOR = null;
@@ -83,7 +83,7 @@ public final class Constants {
     public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
-    public static final int WRIST_DUTY_CYCLE_ENCODER = 2;
+    public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
     public static final int WRIST_ENCODER_OFFSET = 23;
     public static final double WRIST_MAX_ANGLE = 360;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = 3;
