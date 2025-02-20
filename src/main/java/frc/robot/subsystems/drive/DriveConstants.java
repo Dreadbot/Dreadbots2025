@@ -36,7 +36,7 @@ public class DriveConstants {
 
   // Zeroed rotation values for each module, see setup instructions
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.208);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.516);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.516 + Math.PI);
   public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.522);
   public static final Rotation2d backRightZeroRotation = new Rotation2d(2.926);
 
@@ -76,7 +76,7 @@ public class DriveConstants {
   public static final double driveKp = 0.0;
   public static final double driveKd = 0.0;
   public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKv = 0.11202;
   public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;

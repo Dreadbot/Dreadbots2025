@@ -23,6 +23,7 @@ public class WristIOSparkMax implements WristIO {
     WristConstants.WRIST_MAX_ANGLE, WristConstants.WRIST_EXPECTED_ZERO);
     this.volts = 0.0;
     absoluteEncoder.setInverted(true);
+    absoluteEncoder.setAssumedFrequency(975.6);
     SparkMaxConfig config = new SparkMaxConfig();
     config
         .idleMode(IdleMode.kBrake);
@@ -38,7 +39,7 @@ public class WristIOSparkMax implements WristIO {
 
         inputs.currentAmps = wristMotor.getOutputCurrent();
 
-        inputs.rotationDegrees = (absoluteEncoder.get() + WristConstants.WRIST_ENCODER_OFFSET);
+        inputs.rotationDegrees = (absoluteEncoder.get() - WristConstants.WRIST_ENCODER_OFFSET);
 
     } 
 

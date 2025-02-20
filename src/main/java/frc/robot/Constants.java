@@ -50,7 +50,7 @@ public final class Constants {
     public static final double MAX_HEIGHT = Units.inchesToMeters(83.5); //from ground
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
-    public static final double ZEROING_VOLTAGE = 0.5;
+    public static final double ZEROING_VOLTAGE = -0.5;
     public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
     public static final double ELEVATOR_JOYSTICK_SLEW_VALUE = -0.00346;
     public static final int MOTOR_ID = 13;
@@ -84,7 +84,7 @@ public final class Constants {
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
-    public static final int WRIST_ENCODER_OFFSET = 23;
+    public static final double WRIST_ENCODER_OFFSET = 35;
     public static final double WRIST_MAX_ANGLE = 360;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = 3;
     public static final double WRIST_EXPECTED_ZERO = 0;
