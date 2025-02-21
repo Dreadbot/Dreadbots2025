@@ -33,7 +33,7 @@ public class WristIOSparkMax implements WristIO {
   @Override
     public void updateInputs(WristIOInputs inputs) {
 
-        inputs.appliedVolts = 0.0;
+        inputs.appliedVolts = wristMotor.getAppliedOutput() * wristMotor.getBusVoltage();
        
         //inputs.RPS = (WristMotor.getVelocityRadPerSec());
 

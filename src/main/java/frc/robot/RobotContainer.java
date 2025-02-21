@@ -118,7 +118,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
-        wrist = new Wrist(new WristIOSim());
+        wrist = new Wrist(new WristIOSparkMax());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         climb = new Climb(new ClimbIO() {});

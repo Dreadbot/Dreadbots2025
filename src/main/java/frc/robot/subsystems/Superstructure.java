@@ -33,20 +33,20 @@ public class Superstructure {
                 .andThen(Commands.waitUntil(wrist::atSetpoint))
                 .andThen(elevator.riseTo(level.height)),
 
-            wrist.setAngleDegrees(level.angle)
-                .alongWith(elevator.riseTo(level.height)),
+            elevator.riseTo(level.height)
+                .andThen(wrist.setAngleDegrees(level.angle)),
 
-            () -> wrist.isInDangerZone() && level == SuperstructureState.L4
+            () -> wrist.isInDangerZone() && (level == SuperstructureState.L4)
         );
     }
     //Height, Angle (degrees)
     public static enum SuperstructureState {
-        L1(0.634, 0.0),
-        L2(Units.inchesToMeters(39.0), -35.0),
-        L3(Units.inchesToMeters(55.0), -35.0),
-        L4(Units.inchesToMeters(81.0), -40.0),
-        STOW(0.634, -82.0),
-        PICKUP(0.8, 55.0);
+        L1(0.634, 135.0),
+        L2(Units.inchesToMeters(39.0), 55.0),
+        L3(Units.inchesToMeters(55.0), 55.0),
+        L4(Units.inchesToMeters(81.0), 50.0),
+        STOW(0.634, 8.0),
+        PICKUP(0.8, 145.0);
         SuperstructureState(double height, double angle) {
             this.height = height;
             this.angle = angle;

@@ -47,7 +47,7 @@ public final class Constants {
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
     public static final double GEARING = 12;
     public static final double MIN_HEIGHT = Units.inchesToMeters(25); //from ground
-    public static final double MAX_HEIGHT = Units.inchesToMeters(83.5); //from ground
+    public static final double MAX_HEIGHT = 2.124; //from ground
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final double ZEROING_VOLTAGE = -0.5;
@@ -84,7 +84,7 @@ public final class Constants {
     public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
-    public static final double WRIST_ENCODER_OFFSET = 35;
+    public static final double WRIST_ENCODER_OFFSET = 26.9;
     public static final double WRIST_MAX_ANGLE = 360;
     public static final double WRIST_JOYSTICK_SLEW_VALUE = 3;
     public static final double WRIST_EXPECTED_ZERO = 0;
@@ -97,14 +97,14 @@ public final class Constants {
     //End Angle in Degrees
 
     /* 
-    * DANGER ZONE EXPLANATION!!!!!
+    * SAFE ZONE EXPLANATION!!!!!
     * With our robot layout, there is a crossbar on the first stage (we ony have 
     * to care about this when we are going to max height)
     * Because of this, there are a couple of specific situations in which we need to move the wrist FIRST, and then move elevator.
     * Most of the time we can move both at same time
     */ 
-    public static final double START_DANGER_ZONE = 15.0;
-    public static final double END_DANGER_ZONE = 90.0; // Basically starts at 15 degrees, and then can't rotate anymore
+    public static final double START_SAFE_ZONE = 0.0;
+    public static final double END_SAFE_ZONE = 106;
 
   }
 }

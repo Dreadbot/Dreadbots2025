@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 
 public class Elevator extends SubsystemBase {
@@ -46,7 +48,6 @@ public class Elevator extends SubsystemBase {
 
         //If we reach bottom, zero encoder and reset goal;
         if (!isZeroed) {
-           // io.runVoltage(-1);
             voltage = ElevatorConstants.ZEROING_VOLTAGE;
             if (io.getBottomLimitSwitch()) {
                 voltage = 0;
@@ -54,7 +55,7 @@ public class Elevator extends SubsystemBase {
                 io.setMinPosition();
                 setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
             }
-        } else {
+        } else { 
             TrapezoidProfile.State currentState = setpoint;
             setpoint = profile.calculate(.02, setpoint, goal);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
@@ -63,10 +64,10 @@ public class Elevator extends SubsystemBase {
             Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
             Logger.recordOutput("Elevator/PID", pidValue);
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);
-    
-           // System.out.println("PID: " + pidValue + " Feed " + feedforwardValue);
-           // io.runVoltage(voltage);
-           // System.out.println(" Voltage: " + voltage);
+
+        //    if (MathUtil.isNear(ElevatorConstants.MIN_HEIGHT, inputs.positionMeters, 0.01)) { //If we are at bottom, don't run elevator, we don't need volts to hold it up
+        //         voltage = 0.0;
+        //    }
         }
 
          if (Math.abs(joystickOverride) > 0.08) {
@@ -127,7 +128,6 @@ public class Elevator extends SubsystemBase {
         return run(
             () -> {
                 joystickOverride = joystickValue.getAsDouble();
-                System.out.println("Joystick Override: " + joystickValue.getAsDouble());
             }
         );
     }
