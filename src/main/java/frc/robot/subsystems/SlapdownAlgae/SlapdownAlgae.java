@@ -18,8 +18,8 @@ public class SlapdownAlgae extends SubsystemBase {
     private final SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
     private final SlapdownAlgaeIO io;
     public final PIDController pid = new PIDController(0.0, 0.0, 0);
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.0, 0.005);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(90, 90));
+    public final ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.0, 0.01);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(3, 1));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
@@ -27,25 +27,34 @@ public class SlapdownAlgae extends SubsystemBase {
         this.io = io;
     }
 
-    public Command intake() {
-        return Commands.startEnd(
-        () -> io.runIntakeVoltage(SlapdownAlgaeConstants.INTAKE_VOLTAGE),
-        () -> io.runIntakeVoltage(0.0)
-        );
+    public Command intakeSequence() {
+        return Commands.sequence(
+            setAngleDegrees(SlapdownAlgaeConstants.INTAKE_ANGLE_DEGREES),
+                Commands.parallel(
+                startEnd(
+            () -> io.runIntakeVoltage(SlapdownAlgaeConstants.INTAKE_VOLTAGE),
+            () -> io.runIntakeVoltage(0.0)
+            ), 
+            setAngleDegrees(SlapdownAlgaeConstants.HOME_ANGLE_DEGREES)
+            )
+            );
     }
 
-    public Command outtake() {
-        return Commands.startEnd(
+    public Command outtakeSequence() {
+        return Commands.sequence(
+            setAngleDegrees(SlapdownAlgaeConstants.OUTTAKE_ANGLE_DEGREES),
+            Commands.parallel(startEnd(
         () -> io.runIntakeVoltage(SlapdownAlgaeConstants.OUTAKE_VOLTAGE),
         () -> io.runIntakeVoltage(0.0)
-        );
+        ),
+        setAngleDegrees(SlapdownAlgaeConstants.HOME_ANGLE_DEGREES)
+        ));
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SlapdownIntake", inputs);
-        
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
@@ -56,7 +65,6 @@ public class SlapdownAlgae extends SubsystemBase {
     }
 
     public Command setAngleDegrees(double angle) {
-        
         return runOnce(
             () -> {
                 goal = new TrapezoidProfile.State(angle, 0);
@@ -66,3 +74,4 @@ public class SlapdownAlgae extends SubsystemBase {
         return inputs.pivotRotationDegrees;
     }
 }
+
