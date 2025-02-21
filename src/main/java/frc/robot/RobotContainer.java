@@ -250,8 +250,8 @@ public class RobotContainer {
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));
-    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(80).andThen(slapdownAlgae.outtake()));
+    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(7).andThen(slapdownAlgae.intake().alongWith(slapdownAlgae.setAngleDegrees(0))));
+    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(3).andThen(slapdownAlgae.outtake().andThen(slapdownAlgae.setAngleDegrees(0))));
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
