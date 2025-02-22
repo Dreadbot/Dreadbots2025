@@ -34,10 +34,11 @@ public class Wrist extends SubsystemBase {
 
     public Wrist(WristIO io) {
         this.io = io;
-        desiredWristState = new State(0, 0);
         this.joystickOverride = 0.0;
         this.voltage = 0;
-        goalAngle = WristConstants.WRIST_ENCODER_OFFSET;
+        io.updateInputs(inputs);
+        goal = new TrapezoidProfile.State(inputs.rotationDegrees, 0);
+        setpoint = goal;
     } 
 
     @Override
