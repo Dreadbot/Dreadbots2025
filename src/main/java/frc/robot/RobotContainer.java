@@ -228,7 +228,7 @@ public class RobotContainer {
 
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-        .alongWith(endEffector.intake()));
+        .alongWith(endEffector.intake().until(endEffector::hasCoral)));
     
     //intake / outtake
     secondaryController.leftBumper().whileTrue(endEffector.intake());

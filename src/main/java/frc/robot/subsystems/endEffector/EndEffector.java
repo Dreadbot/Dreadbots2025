@@ -10,6 +10,7 @@ public class EndEffector extends SubsystemBase {
     
     private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
     private EndEffectorIO io;
+    private boolean isIntaking = false;
 
     public EndEffector(EndEffectorIO io) {
         this.io = io;
@@ -19,12 +20,15 @@ public class EndEffector extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("EndEffector", inputs);
+        if(inputs.RPM > EndEffectorConstants.CORAL_THRESHOLD) {
+            isIntaking = true;
+        }
     }
 
     public Command intake() {
         return startEnd(
             () -> io.runVoltage(EndEffectorConstants.INTAKE_VOLTAGE),
-            () -> io.runVoltage(0.0)
+            () -> { io.runVoltage(0.0); isIntaking = false; }
         );
     }
     public Command outtake() {
@@ -32,6 +36,14 @@ public class EndEffector extends SubsystemBase {
             () -> io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE),
             () -> io.runVoltage(0.0)
         );
+    }
+
+    public boolean hasCoral() {
+        if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
+            isIntaking = false;
+            return true;
+        }
+        return false;
     }
 
 }

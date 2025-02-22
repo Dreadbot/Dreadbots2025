@@ -41,12 +41,12 @@ public class Superstructure {
     }
     //Height, Angle (degrees)
     public static enum SuperstructureState {
-        L1(0.634, 135.0),
-        L2(Units.inchesToMeters(39.0), 55.0),
-        L3(Units.inchesToMeters(55.0), 55.0),
-        L4(Units.inchesToMeters(81.0), 50.0),
+        L1(0.634, 110.0),
+        L2(0.996, 65.6),
+        L3(1.415, 65.6),
+        L4(2.120, 50.0),
         STOW(0.634, 8.0),
-        PICKUP(0.8, 145.0);
+        PICKUP(0.809, 145.0);
         SuperstructureState(double height, double angle) {
             this.height = height;
             this.angle = angle;

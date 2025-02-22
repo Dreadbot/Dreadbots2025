@@ -39,6 +39,7 @@ public final class Constants {
   public static class EndEffectorConstants {
     public static final double INTAKE_VOLTAGE = 3.0;
     public static final double OUTAKE_VOLTAGE = -1.5;
+    public static final double CORAL_THRESHOLD = 200.0;
 
   }
   public static class ElevatorConstants {
