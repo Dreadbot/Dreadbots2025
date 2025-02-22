@@ -59,18 +59,15 @@ public final class Constants {
 
 
   public static class SlapdownAlgaeConstants {
-    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double INTAKE_VOLTAGE = -5.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
     public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 8;
-    // public static final String SLAPDOWNALGAE_ENCODER_OFFSET = null;
-    // public static final String SLAPDOWNALGAE_ENCODER_SCALE = null;
-    // public static final String SLAPDOWNALGAE_IN_OUT_TAKE_MOTOR = null;
-    // public static final String SLAPDOWNALGAE_PIVOT_MOTOR = null;
-    // public static final String PIVOT_SLAPDOWNALGAE_MOTOR = null;
-    // public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
+    public static final double ENCODER_OFFSET = 48.125;
     public static final double HOME_ANGLE_DEGREES = 0;
     public static final double OUTTAKE_ANGLE_DEGREES = 3;
-    public static final double INTAKE_ANGLE_DEGREES = 8;
+    public static final double INTAKE_ANGLE_DEGREES = 60.0;
+    public static final double HOLD_ANGLE_DEGREES = 14.0;
+    public static final double MAX_ANGLE_DEGREES = 80.0;
     /* 
      * Taken from onshape in form m^2kg, 
      */

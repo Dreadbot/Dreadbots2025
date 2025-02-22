@@ -13,7 +13,6 @@ public interface VisionIO {
     
     public static record VisionObservation(
         Pose2d pose,
-        double timestamp,
-        int tagId
+        double timestamp
     ) {}
 }

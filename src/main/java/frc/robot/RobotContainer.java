@@ -103,13 +103,13 @@ public class RobotContainer {
             new ModuleIOSpark(2),
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
-      wrist = new Wrist(new WristIO() {});
+      wrist = new Wrist(new WristIOSparkMax());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
-      elevator = new Elevator(new ElevatorIO() {});
+      elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
       //Boot up camera server
-      CameraServer.startAutomaticCapture(1);
+      CameraServer.startAutomaticCapture(0);
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -124,7 +124,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
         vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
         climb = new Climb(new ClimbIO() {});
         break;
 
@@ -211,7 +211,7 @@ public class RobotContainer {
             Commands.runOnce(
                     () ->
                         drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                            new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
 
@@ -254,8 +254,8 @@ public class RobotContainer {
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    primaryController.x().whileTrue(slapdownAlgae.intakeSequence());
-    primaryController.b().whileTrue(slapdownAlgae.outtakeSequence());
+    primaryController.rightTrigger().whileTrue(slapdownAlgae.intakeSequence());
+    primaryController.leftTrigger().whileTrue(slapdownAlgae.outtakeSequence());
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }

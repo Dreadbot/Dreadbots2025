@@ -27,19 +27,19 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
         this.pivotMotor = new SparkFlex(18, MotorType.kBrushless);
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
-        pivotConfig.idleMode(IdleMode.kBrake);
 
         intakeConfig
             .idleMode(IdleMode.kBrake);
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotConfig
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
         @Override
         public void updateInputs(SlapdownAlgaeIOInputs inputs) {
-            inputs.absolutePosition = absoluteEncoder.get();
+            inputs.absolutePosition = absoluteEncoder.get() - SlapdownAlgaeConstants.ENCODER_OFFSET;
+            inputs.intakeRPM = intakeMotor.getEncoder().getVelocity();
 
             inputs.intakeAppliedVolts = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
             inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();

@@ -17,12 +17,12 @@ public class Vision extends SubsystemBase {
 	private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 	private final VisionIO io;
 	private final VisionConsumer consumer;
+	private Pose2d lastVisionPose;
 
 	public Vision(VisionConsumer consumer, VisionIO io) {
 		this.io = io;
 		this.consumer = consumer;
-		NetworkTableInstance ntinst = NetworkTableInstance.getDefault();
-		NetworkTable visionTable = ntinst.getTable(VisionConstants.FRONT_CAMERA_NAME);
+		this.lastVisionPose = new Pose2d();
 	}
 
 	@Override
@@ -30,15 +30,11 @@ public class Vision extends SubsystemBase {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
 		for(VisionObservation detection : inputs.detections) {
-			Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
-				new Pose3d(detection.pose()), 
-				VisionUtil.getApriltagPose(detection.tagId())
-			);
-			Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
-
+			
 			// std dev scaling goes here
-
-			consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
+			Logger.recordOutput("Vision/VisionPose", detection.pose());
+			consumer.accept(detection.pose(), inputs.detections[0].timestamp() / 1_000_000.0, VisionConstants.STD_DEV);
+			lastVisionPose = detection.pose();
 		}
 	}
 
@@ -49,5 +45,8 @@ public static interface VisionConsumer {
 		Pose2d visionRobotPoseMeters,
 		double timestampSeconds,
 		Matrix<N3, N1> visionMeasurementStdDevs);
+  }
+  public Pose2d getLastVisionPose() {
+	return lastVisionPose;
   }
 }

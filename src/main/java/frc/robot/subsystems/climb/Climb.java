@@ -38,13 +38,13 @@ public class Climb extends SubsystemBase {
 
    public Command extendLock() {
         return runOnce(() -> {
-            io.setLockEnabled(true);
+            io.setLockState(DoubleSolenoid.Value.kForward);
         });
     }
 
    public Command retractLock() {
         return runOnce(() -> {
-            io.setLockEnabled(false);
+            io.setLockState(DoubleSolenoid.Value.kReverse);
         });
    }
 
