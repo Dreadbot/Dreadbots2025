@@ -103,10 +103,10 @@ public class RobotContainer {
             new ModuleIOSpark(2),
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
-      wrist = new Wrist(new WristIOSparkMax());
+      wrist = new Wrist(new WristIO() {});
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
-      elevator = new Elevator(new ElevatorIOSparkFlex());
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
+      elevator = new Elevator(new ElevatorIO() {});
       climb = new Climb(new ClimbIOSolenoid());
       //Boot up camera server
       CameraServer.startAutomaticCapture(1);
@@ -254,8 +254,8 @@ public class RobotContainer {
     // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));
-    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(80).andThen(slapdownAlgae.outtake()));
+    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(7).andThen(slapdownAlgae.intake().andThen(slapdownAlgae.setAngleDegrees(0))));
+    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(3).andThen(slapdownAlgae.outtake().andThen(slapdownAlgae.setAngleDegrees(0))));
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
