@@ -25,8 +25,7 @@ public class WristIOSparkMax implements WristIO {
     absoluteEncoder.setInverted(true);
     absoluteEncoder.setAssumedFrequency(975.6);
     SparkMaxConfig config = new SparkMaxConfig();
-    config
-        .idleMode(IdleMode.kBrake);
+    config.idleMode(IdleMode.kBrake);
     wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  }
 
