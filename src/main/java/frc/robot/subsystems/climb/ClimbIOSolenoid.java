@@ -25,12 +25,12 @@ public class ClimbIOSolenoid implements ClimbIO {
 
     @Override
     public void setClawEnabled(boolean setExtended) {
-        clawSolenoid.set(setExtended);
+        clawSolenoid.set(!setExtended);
     }
 
     @Override
     public void setLockEnabled(boolean setExtended) {
-        lockSolenoid.set(setExtended);
+        lockSolenoid.set(!setExtended);
     }
 
     @Override
