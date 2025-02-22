@@ -46,6 +46,10 @@ public class Elevator extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
 
+        if(DriverStation.isDisabled()) { //If we are disabled, reset setpoint to elevator position
+            setpoint = new TrapezoidProfile.State(inputs.positionMeters, 0);
+            goal = setpoint;
+        }
         //If we reach bottom, zero encoder and reset goal;
         if (!isZeroed) {
             voltage = ElevatorConstants.ZEROING_VOLTAGE;
@@ -64,10 +68,6 @@ public class Elevator extends SubsystemBase {
             Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
             Logger.recordOutput("Elevator/PID", pidValue);
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);
-
-        //    if (MathUtil.isNear(ElevatorConstants.MIN_HEIGHT, inputs.positionMeters, 0.01)) { //If we are at bottom, don't run elevator, we don't need volts to hold it up
-        //         voltage = 0.0;
-        //    }
         }
 
          if (Math.abs(joystickOverride) > 0.08) {
@@ -110,19 +110,6 @@ public class Elevator extends SubsystemBase {
             }
         }
     }
-
-    // public Command rise(){
-    //     return startEnd(
-    //     () -> elevatorIO.runVoltage(ElevatorConstants.RISE_VOLTAGE), 
-    //     () -> elevatorIO.runVoltage(0)
-    //     );
-    // }
-    // public Command drop(){
-    //     return startEnd(
-    //     () -> elevatorIO.runVoltage(ElevatorConstants.DROP_VOLTAGE), 
-    //     () -> elevatorIO.runVoltage(0)
-    //     );
-    // }
 
     public Command setJoystickOverride(DoubleSupplier joystickValue) {
         return run(

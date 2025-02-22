@@ -2,6 +2,7 @@ package frc.robot.subsystems.climb;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,11 +25,16 @@ public class Climb extends SubsystemBase {
         Logger.processInputs("Climb", inputs);
     }
 
-    public Command swapStatusClimb() {
+    public Command extendClimb() {
          return runOnce(() -> {
-            io.setClimbEnabled(!inputs.extendedClimb);
+            io.setClimbState(DoubleSolenoid.Value.kForward);
          });
     }
+    public Command retractClimb() {
+        return runOnce(() -> {
+           io.setClimbState(DoubleSolenoid.Value.kReverse);
+        });
+   }
 
     public Command swapStatusLock() {
         return runOnce(() -> {
@@ -42,11 +48,11 @@ public class Climb extends SubsystemBase {
     }
 
    public Command climbSequence() {
-    return swapStatusClaw()
-        .andThen(Commands.waitSeconds(1.0))
-        .andThen(swapStatusLock())
-        .andThen(Commands.waitSeconds(1.0))
-        .andThen(swapStatusClimb());
+        return swapStatusClaw()
+            .andThen(Commands.waitSeconds(1.0))
+            .andThen(swapStatusLock())
+            .andThen(Commands.waitSeconds(1.0))
+            .andThen(extendClimb());
    }
     
 }

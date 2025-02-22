@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -106,6 +107,8 @@ public class RobotContainer {
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
+      //Boot up camera server
+      CameraServer.startAutomaticCapture();
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
