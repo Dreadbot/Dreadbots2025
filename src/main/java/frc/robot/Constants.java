@@ -68,7 +68,9 @@ public final class Constants {
     // public static final String SLAPDOWNALGAE_PIVOT_MOTOR = null;
     // public static final String PIVOT_SLAPDOWNALGAE_MOTOR = null;
     // public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
-
+    public static final double HOME_ANGLE_DEGREES = 0;
+    public static final double OUTTAKE_ANGLE_DEGREES = 3;
+    public static final double INTAKE_ANGLE_DEGREES = 8;
     /* 
      * Taken from onshape in form m^2kg, 
      */
