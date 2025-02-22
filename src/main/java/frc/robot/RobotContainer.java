@@ -53,7 +53,7 @@ import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSim;
-import frc.robot.subsystems.wrist.WristIOSparkFlex;
+import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.visualization.VisualizationManager;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -97,7 +97,7 @@ public class RobotContainer {
             new ModuleIOSpark(2),
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
-      wrist = new Wrist(new WristIOSparkFlex());
+      wrist = new Wrist(new WristIOSparkMax());
       vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
