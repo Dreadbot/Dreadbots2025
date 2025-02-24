@@ -26,6 +26,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,7 +72,14 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(
+        kinematics,
+        rawGyroRotation,
+        lastModulePositions,
+        new Pose2d(),
+        VecBuilder.fill(0.5, 0.5, 0.1),
+        VecBuilder.fill(0.02, 0.02, 100_000)
+        );
 
   public Drive(
       GyroIO gyroIO,
@@ -177,7 +185,8 @@ public class Drive extends SubsystemBase {
       }
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
+      poseEstimator.updateWithTime(sampleTimestamps[i] / 1_000_000.0, rawGyroRotation, modulePositions);
     }
 
     // Update gyro alert

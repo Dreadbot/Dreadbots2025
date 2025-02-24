@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class ClimbIOSolenoid implements ClimbIO {
     private Solenoid clawSolenoid;
-    private Solenoid lockSolenoid;
+    private DoubleSolenoid lockSolenoid;
     private DoubleSolenoid extendSolenoid;
 
 
     public ClimbIOSolenoid() {
         this.clawSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
-        this.lockSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 1);
+        this.lockSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 1);
         this.extendSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
     }
 
@@ -20,17 +20,17 @@ public class ClimbIOSolenoid implements ClimbIO {
     public void updateInputs(ClimbIOInputs inputs) {
         inputs.extendedClaw = clawSolenoid.get();
         inputs.extendedClimb = extendSolenoid.get() == DoubleSolenoid.Value.kForward ? true : false; // Inline if statement: if (extendedSolenoid.get() == DoubleSolenoid.Value.kForward) { true } else { false }
-        inputs.extendedLock = lockSolenoid.get();
+        inputs.extendedLock = lockSolenoid.get() == DoubleSolenoid.Value.kForward ? true : false;
     }
 
     @Override
     public void setClawEnabled(boolean setExtended) {
-        clawSolenoid.set(setExtended);
+        clawSolenoid.set(!setExtended);
     }
 
     @Override
-    public void setLockEnabled(boolean setExtended) {
-        lockSolenoid.set(setExtended);
+    public void setLockState(DoubleSolenoid.Value value) {
+        lockSolenoid.set(value);
     }
 
     @Override

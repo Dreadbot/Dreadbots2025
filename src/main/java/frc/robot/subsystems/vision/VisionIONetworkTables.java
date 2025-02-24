@@ -14,15 +14,18 @@ public class VisionIONetworkTables implements VisionIO {
     public VisionIONetworkTables() {
         NetworkTableInstance ntinst = NetworkTableInstance.getDefault();
         NetworkTable visionTable = ntinst.getTable(VisionConstants.FRONT_CAMERA_NAME);
-        this.visionPositions = visionTable.getStructArrayTopic("visionPos", VisionPosition.struct).subscribe(new VisionPosition[]{}, PubSubOption.periodic(0.02));
+        this.visionPositions = visionTable.getStructArrayTopic("visionPos", VisionPosition.struct).subscribe(new VisionPosition[]{}, PubSubOption.periodic(0.02), PubSubOption.sendAll(true));
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        VisionObservation[] tmp = {};
-        for (var i = 0; i < visionPositions.get().length; i++) {
-            var currentPosition = visionPositions.get()[i];
-            tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.kZero), visionPositions.getAtomic().timestamp, currentPosition.ID);
+        VisionPosition[] currentPositions = visionPositions.get();
+        VisionObservation[] tmp = new VisionObservation[currentPositions.length];
+        if(currentPositions.length > 0) {
+            for (var i = 0; i < currentPositions.length; i++) {
+                var currentPosition = currentPositions[i];
+                tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.fromRadians(currentPosition.r)), visionPositions.getAtomic().timestamp);
+            }
         }
         inputs.detections = tmp;
     }

@@ -73,7 +73,7 @@ public class DriveConstants {
       (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
   // Drive PID configuration
-  public static final double driveKp = 0.01;
+  public static final double driveKp = 0.02;
   public static final double driveKd = 0.0;
   public static final double driveKs = 0.18703;
   public static final double driveKv = 0.11280;
@@ -87,7 +87,7 @@ public class DriveConstants {
   public static final boolean turnInverted = true;
   public static final int turnMotorCurrentLimit = 35;
   public static final double turnMotorReduction = (150.0 / 7.0);
-  public static final DCMotor turnGearbox = DCMotor.getNEO(1);
+  public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);
 
   // Turn encoder configuration
   public static final boolean turnEncoderInverted = false;
