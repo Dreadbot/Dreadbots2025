@@ -70,7 +70,7 @@ public class Elevator extends SubsystemBase {
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         }
 
-         if (Math.abs(joystickOverride) > 0.08) {
+         if (Math.abs(joystickOverride) > 0.10) {
             
             setpoint = new State(inputs.positionMeters, 0);
 //                MathUtil.clamp(
