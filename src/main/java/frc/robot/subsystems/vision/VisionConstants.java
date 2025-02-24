@@ -7,5 +7,6 @@ import edu.wpi.first.math.numbers.N3;
 
 public final class VisionConstants {
     public static final String FRONT_CAMERA_NAME = "azathoth";
-    public static final Matrix<N3, N1> STD_DEV = VecBuilder.fill(0.01, 0.01, 100_000); // don't trust rotation;
+    public static final double TRANSLATION_STD_DEV = 0.05;
+    public static final double ROTATION_STD_DEV = 100_00;
 }

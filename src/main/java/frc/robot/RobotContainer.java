@@ -104,7 +104,7 @@ public class RobotContainer {
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
-      vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+      vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
@@ -123,7 +123,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
         climb = new Climb(new ClimbIO() {});
         break;
@@ -140,7 +140,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIO() {});
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;

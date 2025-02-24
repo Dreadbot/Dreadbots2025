@@ -1,8 +1,11 @@
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
@@ -17,11 +20,13 @@ public class Vision extends SubsystemBase {
 	private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 	private final VisionIO io;
 	private final VisionConsumer consumer;
+	private final PoseSupplier supplier;
 	private Pose2d lastVisionPose;
 
-	public Vision(VisionConsumer consumer, VisionIO io) {
+	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
 		this.io = io;
 		this.consumer = consumer;
+		this.supplier = supplier;
 		this.lastVisionPose = new Pose2d();
 	}
 
@@ -29,13 +34,25 @@ public class Vision extends SubsystemBase {
 	public void periodic() {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
+		ArrayList<Pose3d> tagPoses = new ArrayList<>();
 		for(VisionObservation detection : inputs.detections) {
-			
+			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
+			double tagDist = tagPose.toPose2d().getTranslation().getDistance(supplier.getPose().getTranslation());
+			double stdDevFactor = Math.pow(tagDist, 1.5);
+
+			tagPoses.add(tagPose);
+
+			double linearStdDev = VisionConstants.TRANSLATION_STD_DEV * stdDevFactor;
+			double angularStdDev = VisionConstants.ROTATION_STD_DEV * stdDevFactor;
+
 			// std dev scaling goes here
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
-			consumer.accept(detection.pose(), inputs.detections[0].timestamp() / 1_000_000.0, VisionConstants.STD_DEV);
+			Logger.recordOutput("Vision/PoseTimestamp", detection.timestamp() / 1_000_000.0);
+
+			consumer.accept(detection.pose(), inputs.detections[0].timestamp() / 1_000_000.0, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
 		}
+		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
 	}
 
 
@@ -48,5 +65,9 @@ public static interface VisionConsumer {
   }
   public Pose2d getLastVisionPose() {
 	return lastVisionPose;
+  }
+  @FunctionalInterface
+  public static interface PoseSupplier {
+	public Pose2d getPose();
   }
 }

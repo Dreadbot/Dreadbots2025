@@ -24,7 +24,7 @@ public class VisionIONetworkTables implements VisionIO {
         if(currentPositions.length > 0) {
             for (var i = 0; i < currentPositions.length; i++) {
                 var currentPosition = currentPositions[i];
-                tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.fromRadians(currentPosition.r)), visionPositions.getAtomic().timestamp);
+                tmp[i] = new VisionObservation(new Pose2d(currentPosition.x, currentPosition.y, Rotation2d.fromRadians(currentPosition.r)), currentPosition.ID, visionPositions.getAtomic().timestamp);
             }
         }
         inputs.detections = tmp;
