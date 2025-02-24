@@ -145,6 +145,10 @@ public class Elevator extends SubsystemBase {
     public double getHeight() {
         return inputs.positionMeters;
     }
+    
+    public boolean atHeight() {
+        return MathUtil.isNear(goal.position, inputs.positionMeters, 0.02); // 2cm tolerance
+    }
 
     public void init() {
         voltage = 0;
