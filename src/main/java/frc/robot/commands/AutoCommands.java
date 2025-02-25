@@ -32,10 +32,12 @@ public class AutoCommands {
         );
     }
 
-    public Command choreoTest() {
+    public Command midBargeC2Low() {
         return Commands.sequence(
-            factory.resetOdometry("Processor-A2-FarPickup"),
-            factory.trajectoryCmd("Processor-A2-FarPickup")
+            factory.resetOdometry("Test-Auto"),
+            factory.trajectoryCmd("Test-Auto")
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L1)),
+            endEffector.outtake().withTimeout(2.0)
         );
     }
     public Command midProcessorE2F2FarPickup() {
