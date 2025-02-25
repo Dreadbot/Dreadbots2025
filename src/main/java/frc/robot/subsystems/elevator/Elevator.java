@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final PIDController pid = new PIDController(0.02, 0, 0);
     
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.07, 0.23, 6.2, 0.0);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.07, 0.24, 5.9, 0.0);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
 
 
     private final TrapezoidProfile profile =
-        new TrapezoidProfile(new TrapezoidProfile.Constraints(1.0, 0.5)); // Slow to start
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.0, 1.0)); // Slow to start
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     public double joystickOverride;
@@ -58,6 +58,7 @@ public class Elevator extends SubsystemBase {
                 isZeroed = true;
                 io.setMinPosition();
                 setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
+                goal = setpoint;
             }
         } else { 
             TrapezoidProfile.State currentState = setpoint;
@@ -147,7 +148,7 @@ public class Elevator extends SubsystemBase {
     }
     
     public boolean atHeight() {
-        return MathUtil.isNear(goal.position, inputs.positionMeters, 0.02); // 2cm tolerance
+        return MathUtil.isNear(goal.position, inputs.positionMeters, 0.05); // 2cm tolerance
     }
 
     public void init() {

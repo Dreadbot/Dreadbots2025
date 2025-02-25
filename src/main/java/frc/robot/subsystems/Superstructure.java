@@ -14,6 +14,7 @@ public class Superstructure {
 
     private final Wrist wrist;
     private final Elevator elevator;
+    private SuperstructureState previousState = SuperstructureState.STOW;
     public Superstructure(Elevator elevator, Wrist wrist) {
         this.wrist = wrist;
         this.elevator = elevator;
@@ -37,8 +38,8 @@ public class Superstructure {
             elevator.riseTo(level.height)
                 .andThen(wrist.setAngleDegrees(level.angle)),
 
-            () -> wrist.isInDangerZone() || (level == SuperstructureState.PICKUP) // Pickup requires a wrist angle that is inside danger zone
-        );
+            () -> (previousState == SuperstructureState.L4 && level == SuperstructureState.PICKUP) // Pickup requires a wrist angle that is inside danger zone
+        ).until(() -> wrist.atSetpoint() && elevator.atHeight()).finallyDo(() -> previousState = level);
     }
     //Height (meters), Angle (degrees)
     public static enum SuperstructureState {

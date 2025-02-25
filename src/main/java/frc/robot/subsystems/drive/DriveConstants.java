@@ -78,9 +78,9 @@ public class DriveConstants {
   public static final double driveKs = 0.18703;
   public static final double driveKv = 0.11280;
   public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
-  public static final double driveSimP = 0.05;
+  public static final double driveSimP = 0.5;
   public static final double driveSimD = 0.0;
-  public static final double driveSimKs = 0.01189;
+  public static final double driveSimKs = 0.01191;
   public static final double driveSimKv = 0.11202;
 
   // Turn motor configuration

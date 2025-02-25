@@ -20,9 +20,9 @@ public class Wrist extends SubsystemBase {
     
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
-    private final PIDController pid = new PIDController(0.02, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.23, 0.14, 0.027);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(90, 90));
+    private final PIDController pid = new PIDController(0.025, 0.0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.23, 0.12, 0.03);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(360, 360));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private double goalAngle = 0;
@@ -109,7 +109,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
-        return MathUtil.isNear(goal.position, inputs.rotationDegrees, 1.0); // 1.0 degrees
+        return MathUtil.isNear(goal.position, inputs.rotationDegrees, 4.0); // 4.0 degrees
     }
     /**
      * Gets if the Wrist is in danger zone, see START_SAFE_ZONE for more information.

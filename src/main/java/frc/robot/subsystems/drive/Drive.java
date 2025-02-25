@@ -77,7 +77,7 @@ public class Drive extends SubsystemBase {
         rawGyroRotation,
         lastModulePositions,
         new Pose2d(),
-        VecBuilder.fill(0.5, 0.5, 0.1),
+        VecBuilder.fill(0.3, 0.3, 0.01),
         VecBuilder.fill(0.02, 0.02, 100_000)
         );
 
@@ -106,7 +106,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         (speeds, feedforwards) -> runVelocity(speeds, feedforwards),
         new PPHolonomicDriveController(
-            new PIDConstants(6.0, 0.0, 0.0), new PIDConstants(6.0, 0.0, 0.0)),
+            new PIDConstants(7.0, 0.0, 0.05), new PIDConstants(10.0, 0.0, 0.1)),
         ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
