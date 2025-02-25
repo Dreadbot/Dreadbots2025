@@ -40,7 +40,11 @@ public class Superstructure {
             () -> wrist.isInDangerZone() || (level == SuperstructureState.PICKUP) // Pickup requires a wrist angle that is inside danger zone
         );
     }
-    //Height (meters), Angle (degrees)
+
+    public boolean isFinished(){
+        return wrist.atSetpoint() && elevator.atSetpoint();
+    }
+    //Height, Angle (degrees)
     public static enum SuperstructureState {
         L1(0.634, 110.0),
         L2(0.996, 65.6),

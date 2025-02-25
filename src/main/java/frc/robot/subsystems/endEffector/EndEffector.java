@@ -37,6 +37,10 @@ public class EndEffector extends SubsystemBase {
             () -> io.runVoltage(0.0)
         );
     }
+    
+    public boolean hasGamePiece() {
+        return inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD;
+    }
 
     public boolean hasCoral() {
         if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {

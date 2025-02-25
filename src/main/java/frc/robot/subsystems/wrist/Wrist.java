@@ -109,7 +109,11 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
+<<<<<<< HEAD
         return MathUtil.isNear(goal.position, inputs.rotationDegrees, 1.0); // 1.0 degrees
+=======
+        return MathUtil.isNear(goalAngle, inputs.rotationDegrees, 1.0); // 1 degree
+>>>>>>> origin/choreo-autos
     }
     /**
      * Gets if the Wrist is in danger zone, see START_SAFE_ZONE for more information.
