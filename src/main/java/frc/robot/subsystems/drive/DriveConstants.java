@@ -38,9 +38,9 @@ public class DriveConstants {
 
   // Zeroed rotation values for each module, see setup instructions
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.208);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.516 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.516 - 0.145 + 0.217 + Math.PI);
   public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.522);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(2.926);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(2.926 - 0.145 - 0.228);
 
   // Device CAN IDs
   public static final int pigeonCanId = 20; //not yet determined/ not needed;
@@ -97,7 +97,7 @@ public class DriveConstants {
   public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0 / turnMotorReduction; // RPM -> Rad/Sec
 
   // Turn PID configuration
-  public static final double turnKp = 4.0;
+  public static final double turnKp = 3.0;
   public static final double turnKd = 0.0;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
@@ -105,11 +105,11 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   //Path following PID configuration
-  public static final double xKp = 15.0;
+  public static final double xKp = 3.0;
   public static final double xKd = 0.0;
-  public static final double yKp = 15.0;
+  public static final double yKp = 3.0;
   public static final double yKd = 0.0;
-  public static final double rotationKp = 7.5;
+  public static final double rotationKp = 3.5;
   public static final double rotationKd = 0.0;
   // PathPlanner
   public static final double robotMassKg = 74.088;
