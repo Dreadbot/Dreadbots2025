@@ -32,7 +32,7 @@ public class AutoCommands {
         );
     }
 
-    public Command choreoTest() {
+    public Command midBargeC2Low() {
         return Commands.sequence(
             factory.resetOdometry("Test-Auto"),
             factory.trajectoryCmd("Test-Auto")
