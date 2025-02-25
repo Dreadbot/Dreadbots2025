@@ -46,7 +46,7 @@ public class AutoCommands {
             endEffector.outtake().withTimeout(0.5),
             superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
             factory.trajectoryCmd("MidProcessor-E2F2-FarPickup", 1), // run second segment of path (from first scoring location to pickup location)
-            endEffector.intake().until(endEffector::hasGamePiece), // run intake until we have game piece
+            endEffector.intake().until(endEffector::hasCoral), // run intake until we have game piece
             factory.trajectoryCmd("MidProcessor-E2F2-FarPickup", 2), // run third segment of path (from pickup location to second scoring location)
             superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)), // run Scoring sequence (elevator and wrist to l4, outtake, back down to pickup)
             endEffector.outtake().withTimeout(0.5),
@@ -62,7 +62,7 @@ public class AutoCommands {
             endEffector.outtake().withTimeout(.5),
             superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
             factory.trajectoryCmd("MidBarge-C2B2-ClosePickup",1),
-            endEffector.intake().until(endEffector::hasGamePiece),
+            endEffector.intake().until(endEffector::hasCoral),
             factory.trajectoryCmd("MidBarge-C2B2-ClosePickup",2),
             superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
             endEffector.outtake().withTimeout(.5),

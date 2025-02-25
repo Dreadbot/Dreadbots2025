@@ -13,31 +13,22 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -63,11 +54,11 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
-import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.subsystems.wrist.WristIOSparkMax;
+import frc.robot.util.misc.AutoAlignUtil;
 import frc.robot.util.visualization.VisualizationManager;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -111,7 +102,7 @@ public class RobotContainer {
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
-      vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+      vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
@@ -130,7 +121,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
         climb = new Climb(new ClimbIO() {});
         break;
@@ -147,7 +138,7 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIO() {});
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;
@@ -220,6 +211,9 @@ public class RobotContainer {
                             new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+    primaryController
+      .back()
+        .onTrue(AutoAlignUtil.createPOIListCommand().ignoringDisable(true));
 
     /* 
      * Keybinds for the secondary controller
@@ -227,6 +221,9 @@ public class RobotContainer {
      * Elevator / Wrist / Endeffector
      */
     primaryController.y().onTrue(climb.climbSequence());
+    primaryController
+      .a()
+        .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
     //Home
     secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 

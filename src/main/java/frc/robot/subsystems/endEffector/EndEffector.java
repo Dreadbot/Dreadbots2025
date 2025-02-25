@@ -38,10 +38,6 @@ public class EndEffector extends SubsystemBase {
         );
     }
     
-    public boolean hasGamePiece() {
-        return inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD;
-    }
-
     public boolean hasCoral() {
         if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
             isIntaking = false;

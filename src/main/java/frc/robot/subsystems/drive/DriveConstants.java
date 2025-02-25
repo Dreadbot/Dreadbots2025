@@ -63,7 +63,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.930);
+  public static final double wheelRadiusMeters = Units.inchesToMeters(2.0);
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -80,10 +80,10 @@ public class DriveConstants {
   public static final double driveKs = 0.18703;
   public static final double driveKv = 0.11280;
   public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
-  public static final double driveSimP = 0.05;
+  public static final double driveSimP = 0.5;
   public static final double driveSimD = 0.0;
-  public static final double driveSimKs = 0.01189;
-  public static final double driveSimKv = 0.12202;
+  public static final double driveSimKs = 0.01191;
+  public static final double driveSimKv = 0.11202;
 
   // Turn motor configuration
   public static final boolean turnInverted = true;
