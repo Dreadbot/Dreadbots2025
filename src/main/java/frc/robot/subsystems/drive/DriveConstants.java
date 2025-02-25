@@ -15,6 +15,8 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -102,7 +104,14 @@ public class DriveConstants {
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
-  // PathPlanner configuration
+  //Path following PID configuration
+  public static final double xKp = 15.0;
+  public static final double xKd = 0.0;
+  public static final double yKp = 15.0;
+  public static final double yKd = 0.0;
+  public static final double rotationKp = 7.5;
+  public static final double rotationKd = 0.0;
+  // PathPlanner
   public static final double robotMassKg = 74.088;
   public static final double robotMOI = 6.883;
   public static final double wheelCOF = 1.2;

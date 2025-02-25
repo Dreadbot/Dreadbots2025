@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
-        public VisionObservation[] detections;
+        public VisionObservation[] detections = new VisionObservation[] {};
     }
     public default void updateInputs(VisionIOInputs inputs) {}
     
