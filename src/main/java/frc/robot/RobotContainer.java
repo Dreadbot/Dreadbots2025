@@ -150,6 +150,8 @@ public class RobotContainer {
     // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     choreoAutoChooser = new AutoChooser();
     choreoAutoChooser.addCmd("Mid Barge C2 Low", autos::midBargeC2Low);
+    choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
+
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines

@@ -34,9 +34,22 @@ public class AutoCommands {
 
     public Command midBargeC2Low() {
         return Commands.sequence(
-            factory.resetOdometry("Test-Auto"),
-            factory.trajectoryCmd("Test-Auto")
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L1)),
+            factory.resetOdometry("MidBarge-C2"),
+            factory.trajectoryCmd("MidBarge-C2")
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L1))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(2.0)
+        );
+    }
+    public Command midBargeC2High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2", 0),
+            factory.trajectoryCmd("MidBarge-C2", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidBarge-C2", 1)
+                .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(2.0)
         );
     }
