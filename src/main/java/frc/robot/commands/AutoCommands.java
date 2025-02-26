@@ -53,6 +53,19 @@ public class AutoCommands {
             endEffector.outtake().withTimeout(2.0)
         );
     }
+
+    public Command midProcessorE1High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E1", 0),
+            factory.trajectoryCmd("MidProcessor-E1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidProcessor-E1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(2.0)
+        );
+    }
     public Command midProcessorE2F2FarPickup() {
         return Commands.sequence(
             factory.resetOdometry("MidProcessor-E2F2-FarPickup"), 

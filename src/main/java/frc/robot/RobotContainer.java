@@ -151,6 +151,7 @@ public class RobotContainer {
     choreoAutoChooser = new AutoChooser();
     choreoAutoChooser.addCmd("Mid Barge C2 Low", autos::midBargeC2Low);
     choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
+    choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
