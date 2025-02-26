@@ -8,6 +8,7 @@ public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
         public VisionObservation[] detections = new VisionObservation[] {};
+        public double visionDelay = 0.0;
     }
     public default void updateInputs(VisionIOInputs inputs) {}
     

@@ -41,7 +41,7 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = 3.0;
+    public static final double INTAKE_VOLTAGE = 1.5;
     public static final double OUTAKE_VOLTAGE = -1.5;
     public static final double CORAL_THRESHOLD = 50.0;
 

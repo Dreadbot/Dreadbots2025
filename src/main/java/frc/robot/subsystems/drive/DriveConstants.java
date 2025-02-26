@@ -37,10 +37,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.208);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-1.516 - 0.145 + 0.217 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.522);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(2.926 - 0.145 - 0.228);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.214);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.522 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(-0.101);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(-1.002 + Math.PI);
 
   // Device CAN IDs
   public static final int pigeonCanId = 20; //not yet determined/ not needed;
@@ -105,11 +105,11 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   //Path following PID configuration
-  public static final double xKp = 3.0;
+  public static final double xKp = 1.2;
   public static final double xKd = 0.0;
-  public static final double yKp = 3.0;
+  public static final double yKp = 1.2;
   public static final double yKd = 0.0;
-  public static final double rotationKp = 3.5;
+  public static final double rotationKp = 1.5;
   public static final double rotationKd = 0.0;
   // PathPlanner
   public static final double robotMassKg = 74.088;

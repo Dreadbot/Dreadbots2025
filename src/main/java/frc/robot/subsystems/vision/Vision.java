@@ -38,7 +38,7 @@ public class Vision extends SubsystemBase {
 		for(VisionObservation detection : inputs.detections) {
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(supplier.getPose().getTranslation());
-			double stdDevFactor = Math.pow(tagDist, 1.5);
+			double stdDevFactor = Math.pow(tagDist, 1.6);
 
 			tagPoses.add(tagPose);
 
@@ -47,9 +47,9 @@ public class Vision extends SubsystemBase {
 
 			// std dev scaling goes here
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
-			Logger.recordOutput("Vision/PoseTimestamp", detection.timestamp() / 1_000_000.0);
+			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
-			consumer.accept(detection.pose(), inputs.detections[0].timestamp() / 1_000_000.0, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+			consumer.accept(detection.pose(), (inputs.detections[0].timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
 		}
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));

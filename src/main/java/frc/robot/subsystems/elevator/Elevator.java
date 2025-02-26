@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
 
 
     private final TrapezoidProfile profile =
-        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.0, 1.0)); // Slow to start
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.5, 1.5)); // Slow to start
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     public double joystickOverride;
