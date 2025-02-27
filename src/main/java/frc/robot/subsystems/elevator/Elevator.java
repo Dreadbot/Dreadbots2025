@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final PIDController pid = new PIDController(0.02, 0, 0);
     
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.07, 0.24, 5.9, 0.0);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.24, 5.8, 0.0);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;

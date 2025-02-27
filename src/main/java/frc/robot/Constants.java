@@ -42,7 +42,7 @@ public final class Constants {
   }
   public static class EndEffectorConstants {
     public static final double INTAKE_VOLTAGE = 1.5;
-    public static final double OUTAKE_VOLTAGE = -1.5;
+    public static final double OUTAKE_VOLTAGE = -3.0;
     public static final double CORAL_THRESHOLD = 50.0;
 
   }
@@ -52,7 +52,7 @@ public final class Constants {
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
     public static final double GEARING = 12;
     public static final double MIN_HEIGHT = Units.inchesToMeters(25); //from ground
-    public static final double MAX_HEIGHT = 2.124; //from ground
+    public static final double MAX_HEIGHT = 2.137; //from ground
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final double ZEROING_VOLTAGE = -0.5;

@@ -22,7 +22,7 @@ public class Wrist extends SubsystemBase {
     private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
     private WristIO io;
     private final PIDController pid = new PIDController(0.025, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.23, 0.12, 0.03);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -51,7 +51,7 @@ public class Wrist extends SubsystemBase {
             setpoint = new TrapezoidProfile.State(inputs.rotationDegrees, 0);
             goal = setpoint;
         }
-        
+
         Logger.recordOutput("Wrist/SetpointPosition", setpoint.position);
         Logger.recordOutput("Wrist/GoalPosition", goal.position);
         Logger.recordOutput("Wrist/AtSetpoint", atSetpoint());
