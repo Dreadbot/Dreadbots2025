@@ -16,16 +16,16 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,14 +39,13 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.util.misc.LocalADStarAK;
-
+import frc.robot.util.misc.ChassisAcceleration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -71,7 +70,20 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(
+        kinematics,
+        rawGyroRotation,
+        lastModulePositions,
+        new Pose2d(),
+        VecBuilder.fill(0.3, 0.3, 0.01),
+        VecBuilder.fill(0.02, 0.02, 100_000)
+        );
+  
+  private PIDController xController = new PIDController(xKp, 0.0, xKd);
+  private PIDController yController = new PIDController(yKp, 0.0, yKd);
+  private PIDController rotationController = new PIDController(rotationKp, 0.0, rotationKd);
+
+
 
   public Drive(
       GyroIO gyroIO,
@@ -89,30 +101,14 @@ public class Drive extends SubsystemBase {
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
     // Start odometry thread
+    rotationController.enableContinuousInput(-Math.PI, Math.PI);
     SparkOdometryThread.getInstance().start();
-
-    // Configure AutoBuilder for PathPlanner
-    AutoBuilder.configure(
-        this::getPose,
-        this::setPose,
-        this::getChassisSpeeds,
-        (speeds, feedforwards) -> runVelocity(speeds, feedforwards),
-        new PPHolonomicDriveController(
-            new PIDConstants(6.0, 0.0, 0.0), new PIDConstants(6.0, 0.0, 0.0)),
-        ppConfig,
-        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-        this);
-    Pathfinding.setPathfinder(new LocalADStarAK());
+    // Enable taking quickest route to heading
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
           Logger.recordOutput(
               "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
         });
-    PathPlannerLogging.setLogTargetPoseCallback(
-        (targetPose) -> {
-          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-        });
-
     // Configure SysId
     sysId =
         new SysIdRoutine(
@@ -177,7 +173,8 @@ public class Drive extends SubsystemBase {
       }
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
+      poseEstimator.updateWithTime(sampleTimestamps[i] / 1_000_000.0, rawGyroRotation, modulePositions);
     }
 
     // Update gyro alert
@@ -188,25 +185,47 @@ public class Drive extends SubsystemBase {
    * Runs the drive at the desired velocity.
    *
    * @param speeds Speeds in meters/sec
-   * @param feedfowrads Module Feedforwards from PathPlanner
+   * @param acceleration Accelerations in meters/sec^2
    */
-  public void runVelocity(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+  public void runVelocity(ChassisSpeeds speeds, ChassisSpeeds acceleration) {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveModuleState[] accelerationStates = kinematics.toSwerveModuleStates(acceleration);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
+    Logger.recordOutput("SwerveStates/Acceleration", accelerationStates);
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       // Get module force for use in feedforward calculations
-      modules[i].runSetpoint(setpointStates[i]);
+      modules[i].runSetpoint(setpointStates[i], accelerationStates[i].speedMetersPerSecond);
     }
 
     // Log optimized setpoints (runSetpoint mutates each state)
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+  }
+
+  public void followTrajectory(SwerveSample sample) {
+    Pose2d currentRobotPose = getPose();
+
+    ChassisSpeeds speeds = new ChassisSpeeds(
+      sample.vx + xController.calculate(currentRobotPose.getX(), sample.x),
+      sample.vy + yController.calculate(currentRobotPose.getY(), sample.y),
+      sample.omega + rotationController.calculate(currentRobotPose.getRotation().getRadians(), sample.heading)
+    );
+    ChassisAcceleration acceleration = new ChassisAcceleration(sample.ax, sample.ay, 0); //we don't care about rotation as of right now
+    ChassisSpeeds robotRelativeAcceleration = ChassisSpeeds.fromFieldRelativeSpeeds(acceleration, getRotation());
+    // Only care about acceleration in direction of wheel, so we can properly apply acceleration feedforwards
+    robotRelativeAcceleration = new ChassisSpeeds(robotRelativeAcceleration.vxMetersPerSecond, 0, 0); 
+    Logger.recordOutput("Odometry/TrajectorySetpoint", new Pose2d(sample.x, sample.y, Rotation2d.fromRadians(sample.heading)));
+    Logger.recordOutput("SwerveChassisSpeeds/Acceleration", robotRelativeAcceleration);
+    runVelocity(
+      ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getRotation()),
+      robotRelativeAcceleration
+    );
   }
 
    /**
@@ -215,7 +234,17 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    runVelocity(speeds, DriveFeedforwards.zeros(4));
+    runVelocity(speeds, new ChassisAcceleration(0, 0, 0));
+  }
+
+  public void logTrajectory(Trajectory trajectory, boolean startOrEnd) {
+    Logger.recordOutput("Odometry/Trajectory", trajectory.getPoses());
+  }
+
+  public Command stopDrive() {
+    return Commands.runOnce(() -> {
+      runVelocity(new ChassisSpeeds(0, 0, 0));
+    });
   }
 
   /** Runs the drive in a straight line with the specified drive output. */

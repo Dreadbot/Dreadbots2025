@@ -1,8 +1,11 @@
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
@@ -17,29 +20,49 @@ public class Vision extends SubsystemBase {
 	private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 	private final VisionIO io;
 	private final VisionConsumer consumer;
+	private final PoseSupplier supplier;
+	private Pose2d lastVisionPose;
 
-	public Vision(VisionConsumer consumer, VisionIO io) {
+	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
 		this.io = io;
 		this.consumer = consumer;
-		NetworkTableInstance ntinst = NetworkTableInstance.getDefault();
-		NetworkTable visionTable = ntinst.getTable(VisionConstants.FRONT_CAMERA_NAME);
+		this.supplier = supplier;
+		this.lastVisionPose = new Pose2d();
 	}
 
 	@Override
 	public void periodic() {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
+		ArrayList<Pose3d> tagPoses = new ArrayList<>();
+		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
+
 		for(VisionObservation detection : inputs.detections) {
-			Pose2d detectionInWorldAxis = VisionUtil.tagAxisToWorldAxis(
-				new Pose3d(detection.pose()), 
-				VisionUtil.getApriltagPose(detection.tagId())
-			);
-			Pose2d poseEstimate = VisionUtil.calculatePoseFromTagOffset(detectionInWorldAxis, detection.tagId());
+			
+			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
+			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
+			if(detection.id() == 14 || detection.id() == 15 || detection.id() == 4 || detection.id() == 5 || tagDist > 5.0) {
+				rejectedPoses.add(detection.pose());
+				continue;
+			}
+			double stdDevFactor = Math.pow(tagDist, 2.0);
+
+			tagPoses.add(tagPose);
+
+
+			double linearStdDev = VisionConstants.TRANSLATION_STD_DEV * stdDevFactor;
+			double angularStdDev = VisionConstants.ROTATION_STD_DEV * stdDevFactor;
 
 			// std dev scaling goes here
+			Logger.recordOutput("Vision/VisionPose", detection.pose());
+			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
-			consumer.accept(poseEstimate, inputs.detections[0].timestamp(), VisionConstants.STD_DEV);
+			consumer.accept(detection.pose(), (inputs.detections[0].timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+			lastVisionPose = detection.pose();
 		}
+		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
+		Logger.recordOutput("Vision/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
+
 	}
 
 
@@ -49,5 +72,12 @@ public static interface VisionConsumer {
 		Pose2d visionRobotPoseMeters,
 		double timestampSeconds,
 		Matrix<N3, N1> visionMeasurementStdDevs);
+  }
+  public Pose2d getLastVisionPose() {
+	return lastVisionPose;
+  }
+  @FunctionalInterface
+  public static interface PoseSupplier {
+	public Pose2d getPose();
   }
 }

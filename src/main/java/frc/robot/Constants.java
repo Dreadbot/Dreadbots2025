@@ -14,7 +14,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -37,9 +41,9 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = 3.0;
-    public static final double OUTAKE_VOLTAGE = -1.5;
-    public static final double CORAL_THRESHOLD = 200.0;
+    public static final double INTAKE_VOLTAGE = 1.5;
+    public static final double OUTAKE_VOLTAGE = -3.0;
+    public static final double CORAL_THRESHOLD = 50.0;
 
   }
   public static class ElevatorConstants {
@@ -48,7 +52,7 @@ public final class Constants {
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
     public static final double GEARING = 12;
     public static final double MIN_HEIGHT = Units.inchesToMeters(25); //from ground
-    public static final double MAX_HEIGHT = 2.124; //from ground
+    public static final double MAX_HEIGHT = 2.137; //from ground
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final double ZEROING_VOLTAGE = -0.5;
@@ -59,16 +63,15 @@ public final class Constants {
 
 
   public static class SlapdownAlgaeConstants {
-    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double INTAKE_VOLTAGE = -5.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
     public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 8;
-    // public static final String SLAPDOWNALGAE_ENCODER_OFFSET = null;
-    // public static final String SLAPDOWNALGAE_ENCODER_SCALE = null;
-    // public static final String SLAPDOWNALGAE_IN_OUT_TAKE_MOTOR = null;
-    // public static final String SLAPDOWNALGAE_PIVOT_MOTOR = null;
-    // public static final String PIVOT_SLAPDOWNALGAE_MOTOR = null;
-    // public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
-
+    public static final double ENCODER_OFFSET = 48.125;
+    public static final double HOME_ANGLE_DEGREES = 0;
+    public static final double OUTTAKE_ANGLE_DEGREES = 3;
+    public static final double INTAKE_ANGLE_DEGREES = 60.0;
+    public static final double HOLD_ANGLE_DEGREES = 14.0;
+    public static final double MAX_ANGLE_DEGREES = 80.0;
     /* 
      * Taken from onshape in form m^2kg, 
      */
@@ -106,5 +109,18 @@ public final class Constants {
     public static final double START_SAFE_ZONE = 0.0;
     public static final double END_SAFE_ZONE = 106;
 
+  }
+
+  public static final class AutoAlignConstants {
+    public static final double TRANSLATION_KP = 1.0;
+    public static final double TRANSLATION_KD = 0.0;
+    public static final double TRANSLATION_VELOCITY = 1.5; // Meters/Sec
+    public static final double TRANSLATION_ACCELERATION = 1.5; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 1.0; // Meters/Sec^3
+    public static final double ROTATION_KP = 2.0;
+    public static final double ROTATION_KD = 0.0;
+    public static final double ROTATION_MAX_VELOCITY = 5.0;
+    public static final double ROTATION_MAX_ACCELERATION = 10.0;
+    public static final double REEF_BRANCH_OFFSET = Units.inchesToMeters(12.938 / 2.0);
   }
 }

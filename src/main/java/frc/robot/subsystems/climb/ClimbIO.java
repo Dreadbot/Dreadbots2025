@@ -17,7 +17,7 @@ public interface ClimbIO {
     public default void updateInputs(ClimbIOInputs inputs) {};
 
     public default void setClawEnabled(boolean setExtended) {};
-    public default void setLockEnabled(boolean setExtended) {};
+    public default void setLockState(DoubleSolenoid.Value value) {};
     public default void setClimbState(DoubleSolenoid.Value value) {};
 
 

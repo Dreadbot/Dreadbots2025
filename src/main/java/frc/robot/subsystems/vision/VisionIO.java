@@ -7,13 +7,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
-        public VisionObservation[] detections;
+        public VisionObservation[] detections = new VisionObservation[] {};
+        public double visionDelay = 0.0;
     }
     public default void updateInputs(VisionIOInputs inputs) {}
     
     public static record VisionObservation(
         Pose2d pose,
-        double timestamp,
-        int tagId
+        int id,
+        double timestamp
     ) {}
 }

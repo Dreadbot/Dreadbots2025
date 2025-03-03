@@ -36,23 +36,41 @@ public class Climb extends SubsystemBase {
         });
    }
 
-    public Command swapStatusLock() {
+   public Command extendLock() {
         return runOnce(() -> {
-            io.setLockEnabled(!inputs.extendedLock);
+            io.setLockState(DoubleSolenoid.Value.kForward);
         });
-   }
-   public Command swapStatusClaw() {
-    return runOnce(() -> {
-        io.setClawEnabled(!inputs.extendedClaw);
-    });
     }
 
+   public Command retractLock() {
+        return runOnce(() -> {
+            io.setLockState(DoubleSolenoid.Value.kReverse);
+        });
+   }
+
+   public Command extendClaw() {
+    return runOnce(() -> {
+        io.setClawEnabled(true);
+    });
+   }
+
+   public Command retractClaw() {
+    return runOnce(() -> {
+        io.setClawEnabled(false);
+    });
+   }
    public Command climbSequence() {
-        return swapStatusClaw()
-            .andThen(Commands.waitSeconds(1.0))
-            .andThen(swapStatusLock())
-            .andThen(Commands.waitSeconds(1.0))
+        return extendClaw()
+            .andThen(Commands.waitSeconds(0.5))
+            .andThen(extendLock())
+            .andThen(Commands.waitSeconds(0.5))
             .andThen(extendClimb());
    }
-    
+
+   public Command init() {
+    return retractLock()
+        .andThen(retractClimb())
+        .andThen(Commands.waitSeconds(0.5))
+        .andThen(retractClaw());
+   }
 }

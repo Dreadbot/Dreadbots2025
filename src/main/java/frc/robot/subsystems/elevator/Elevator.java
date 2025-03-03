@@ -19,10 +19,10 @@ import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0, 0, 0);
+    private final PIDController pid = new PIDController(0.02, 0, 0);
     
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.05, 0.23, 6.2, 0.0);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.24, 5.8, 0.0);
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
 
 
     private final TrapezoidProfile profile =
-        new TrapezoidProfile(new TrapezoidProfile.Constraints(0.5, 0.25)); // Slow to start
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.5, 1.5)); // Slow to start
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     public double joystickOverride;
@@ -58,6 +58,7 @@ public class Elevator extends SubsystemBase {
                 isZeroed = true;
                 io.setMinPosition();
                 setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
+                goal = setpoint;
             }
         } else { 
             TrapezoidProfile.State currentState = setpoint;
@@ -72,7 +73,7 @@ public class Elevator extends SubsystemBase {
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         }
 
-         if (Math.abs(joystickOverride) > 0.08) {
+         if (Math.abs(joystickOverride) > 0.10) {
             
             setpoint = new State(inputs.positionMeters, 0);
 //                MathUtil.clamp(
@@ -92,8 +93,6 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("Elevator/Goal", goal.position);
         Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         Logger.recordOutput("Elevator/Homed", isZeroed);
-        Logger.recordOutput("Elevator/LimitSwitchTriggered", io.getBottomLimitSwitch());
-
     }
     // Look into soft limits: https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/softlimitconfig
     public void setMotorSpeed(double voltage) {
@@ -146,6 +145,10 @@ public class Elevator extends SubsystemBase {
 
     public double getHeight() {
         return inputs.positionMeters;
+    }
+    
+    public boolean atHeight() {
+        return MathUtil.isNear(goal.position, inputs.positionMeters, 0.05); // 2cm tolerance
     }
 
     public void init() {

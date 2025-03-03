@@ -37,7 +37,7 @@ public class EndEffector extends SubsystemBase {
             () -> io.runVoltage(0.0)
         );
     }
-
+    
     public boolean hasCoral() {
         if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
             isIntaking = false;

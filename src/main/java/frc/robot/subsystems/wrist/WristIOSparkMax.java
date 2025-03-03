@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -25,8 +26,7 @@ public class WristIOSparkMax implements WristIO {
     absoluteEncoder.setInverted(true);
     absoluteEncoder.setAssumedFrequency(975.6);
     SparkMaxConfig config = new SparkMaxConfig();
-    config
-        .idleMode(IdleMode.kBrake);
+    config.idleMode(IdleMode.kBrake);
     wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  }
 
