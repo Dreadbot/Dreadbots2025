@@ -78,7 +78,6 @@ public final class Constants {
   }
 
   public static class WristConstants {
-    //all filler values
     public static final double WRIST_ZERO = 0.0;
     public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;

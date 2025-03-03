@@ -64,7 +64,9 @@ public class Elevator extends SubsystemBase {
             setpoint = profile.calculate(.02, setpoint, goal);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
-            voltage = pidValue + feedforwardValue;
+            //change to voltage
+            voltage = (pidValue + feedforwardValue);
+            //* 1.5;
             Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
             Logger.recordOutput("Elevator/PID", pidValue);
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);

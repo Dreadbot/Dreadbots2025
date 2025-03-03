@@ -4,22 +4,7 @@
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{
-   "LeftFarPickup":{
-    "x":{
-     "exp":"1.6445536613464355 m",
-     "val":1.6445536613464355
-    },
-    "y":{
-     "exp":"7.503785610198975 m",
-     "val":7.503785610198975
-    },
-    "heading":{
-     "exp":"2.1864162373008917 rad",
-     "val":2.1864162373008917
-    }
-   }
-  }
+  "poses":{}
  },
  "config":{
   "frontLeft":{
