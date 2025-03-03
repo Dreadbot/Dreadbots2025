@@ -155,4 +155,24 @@ public class AutoCommands {
             superstructure.requestSuperstructureState(SuperstructureState.STOW)
         );
     }
+
+    public Command MiddleD2(){
+        return Commands.sequence(
+            factory.resetOdometry("Middle-D2",0),
+            factory.trajectoryCmd("Middle-D2",0),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
+    }
+
+    public Command MidProcessorE2(){
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E2",0),
+            factory.trajectoryCmd("MidProcessor-E2",0),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
+    }
 }
