@@ -7,8 +7,6 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.endEffector.EndEffector;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.wrist.Wrist;
 
 public class AutoCommands {
     private AutoFactory factory;

@@ -9,12 +9,10 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 
 public class Elevator extends SubsystemBase {
@@ -26,7 +24,6 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private double voltage = 0;
     public boolean isZeroed = false;
-    private double joystickAxis; 
 
 
     private final TrapezoidProfile profile =

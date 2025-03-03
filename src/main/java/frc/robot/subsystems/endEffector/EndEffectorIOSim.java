@@ -1,8 +1,5 @@
 package frc.robot.subsystems.endEffector;
 
-import edu.wpi.first.math.system.LinearSystem;
-import static frc.robot.subsystems.drive.DriveConstants.driveGearbox;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
