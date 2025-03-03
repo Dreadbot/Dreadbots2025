@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -238,6 +239,12 @@ public class Drive extends SubsystemBase {
 
   public void logTrajectory(Trajectory trajectory, boolean startOrEnd) {
     Logger.recordOutput("Odometry/Trajectory", trajectory.getPoses());
+  }
+
+  public Command stopDrive() {
+    return Commands.runOnce(() -> {
+      runVelocity(new ChassisSpeeds(0, 0, 0));
+    });
   }
 
   /** Runs the drive in a straight line with the specified drive output. */

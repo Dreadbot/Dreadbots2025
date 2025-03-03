@@ -35,24 +35,34 @@ public class Vision extends SubsystemBase {
 		io.updateInputs(inputs);
 		Logger.processInputs("Vision", inputs);
 		ArrayList<Pose3d> tagPoses = new ArrayList<>();
+		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
+
 		for(VisionObservation detection : inputs.detections) {
+			
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
-			double tagDist = tagPose.toPose2d().getTranslation().getDistance(supplier.getPose().getTranslation());
-			double stdDevFactor = Math.pow(tagDist, 1.5);
+			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
+			if(detection.id() == 14 || detection.id() == 15 || detection.id() == 4 || detection.id() == 5 || tagDist > 5.0) {
+				rejectedPoses.add(detection.pose());
+				continue;
+			}
+			double stdDevFactor = Math.pow(tagDist, 2.0);
 
 			tagPoses.add(tagPose);
+
 
 			double linearStdDev = VisionConstants.TRANSLATION_STD_DEV * stdDevFactor;
 			double angularStdDev = VisionConstants.ROTATION_STD_DEV * stdDevFactor;
 
 			// std dev scaling goes here
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
-			Logger.recordOutput("Vision/PoseTimestamp", detection.timestamp() / 1_000_000.0);
+			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
-			consumer.accept(detection.pose(), inputs.detections[0].timestamp() / 1_000_000.0, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+			consumer.accept(detection.pose(), (inputs.detections[0].timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
 		}
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
+		Logger.recordOutput("Vision/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
+
 	}
 
 

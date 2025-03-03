@@ -34,12 +34,96 @@ public class AutoCommands {
 
     public Command midBargeC2Low() {
         return Commands.sequence(
-            factory.resetOdometry("Test-Auto"),
-            factory.trajectoryCmd("Test-Auto")
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L1)),
+            factory.resetOdometry("MidBarge-C2"),
+            factory.trajectoryCmd("MidBarge-C2")
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L1))
+                .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(2.0)
         );
     }
+    public Command midBargeC2High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2", 0),
+            factory.trajectoryCmd("MidBarge-C2", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidBarge-C2", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(2.0)
+        );
+    }
+
+    public Command midD2High() {
+        return Commands.sequence(
+            factory.resetOdometry("Middle-D2", 0),
+            factory.trajectoryCmd("Middle-D2", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D2", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0),
+            factory.trajectoryCmd("Middle-D2", 2)
+                .alongWith(Commands.waitSeconds(0.6).andThen(superstructure.requestSuperstructureState(SuperstructureState.STOW)))
+                .andThen(drive.stopDrive())
+        );
+    }
+
+    public Command midProcessorE1High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E1", 0),
+            factory.trajectoryCmd("MidProcessor-E1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidProcessor-E1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0),
+            factory.trajectoryCmd("MidProcessor-E1", 2)
+                .alongWith(Commands.waitSeconds(2.5).andThen(superstructure.requestSuperstructureState(SuperstructureState.STOW)))
+                .andThen(drive.stopDrive())
+        );
+    }
+    public Command midProcessorE1PickupHigh() {
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E1-FarPickup", 0),
+            factory.trajectoryCmd("MidProcessor-E1-FarPickup", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidProcessor-E1-FarPickup", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0),
+            factory.trajectoryCmd("MidProcessor-E1-FarPickup", 2)
+                .alongWith(Commands.waitSeconds(1.0).andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .andThen(drive.stopDrive())
+        );
+    }
+
+    public Command midProcessorE1F1High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E1F1", 0),
+            factory.trajectoryCmd("MidProcessor-E1F1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidProcessor-E1F1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0),
+            factory.trajectoryCmd("MidProcessor-E1F1", 2)
+                .alongWith(Commands.waitSeconds(1.0)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)).alongWith(Commands.waitSeconds(1.0).andThen(endEffector.intake())))
+                .andThen(drive.stopDrive()),
+            Commands.waitUntil(endEffector::hasCoral),
+            factory.trajectoryCmd("MidProcessor-E1F1", 3)
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidProcessor-E1F1", 4)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0)
+        );
+    }
+
     public Command midProcessorE2F2FarPickup() {
         return Commands.sequence(
             factory.resetOdometry("MidProcessor-E2F2-FarPickup"), 
