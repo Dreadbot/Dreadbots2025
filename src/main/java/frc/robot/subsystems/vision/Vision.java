@@ -57,7 +57,7 @@ public class Vision extends SubsystemBase {
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
 			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
-			consumer.accept(detection.pose(), (inputs.detections[0].timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
 		}
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
