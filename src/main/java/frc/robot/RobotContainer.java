@@ -228,9 +228,12 @@ public class RobotContainer {
      * Elevator / Wrist / Endeffector
      */
     primaryController.y().onTrue(climb.climbSequence());
+    // primaryController
+    //   .a()
+    //     .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
     primaryController
       .a()
-        .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
+        .onTrue(climb.init());
     //Home
     secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
@@ -242,7 +245,7 @@ public class RobotContainer {
 
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-        .alongWith(endEffector.intake().until(endEffector::hasCoral)));
+        .alongWith(endEffector.intake().until(() -> endEffector.hasCoral() || Math.abs(wrist.joystickOverride.getAsDouble()) > 0.08)));
     
     //intake / outtake
     secondaryController.leftBumper().whileTrue(endEffector.intake());
@@ -254,10 +257,8 @@ public class RobotContainer {
 
     // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
-
-    elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
-
-    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
+    elevator.setJoystickSupplier(() -> -secondaryController.getLeftY());
+    wrist.setJoystickOverride(() -> -secondaryController.getRightY());
     
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
