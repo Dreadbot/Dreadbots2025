@@ -105,11 +105,11 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   //Path following PID configuration
-  public static final double xKp = 1.5;
+  public static final double xKp = 1.75;
   public static final double xKd = 0.0;
-  public static final double yKp = 1.5;
+  public static final double yKp = 1.75;
   public static final double yKd = 0.0;
-  public static final double rotationKp = 1.5;
+  public static final double rotationKp = 1.75;
   public static final double rotationKd = 0.0;
   // PathPlanner
   public static final double robotMassKg = 74.088;
