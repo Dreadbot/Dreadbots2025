@@ -19,26 +19,23 @@ import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.02, 0, 0);
+    private final PIDController pid = new PIDController(0.04, 0, 0);
     
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.24, 5.8, 0.0);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.30, 5.55, 0.17);
     private final ElevatorIO io;
     private double voltage = 0;
-    public boolean isZeroed = false;
-    private double joystickAxis; 
-
+    public boolean isZeroed = false; 
 
     private final TrapezoidProfile profile =
-        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.5, 1.5)); // Slow to start
+        new TrapezoidProfile(new TrapezoidProfile.Constraints(2.5, 2.5));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State(ElevatorConstants.MIN_HEIGHT, 0);
-    public double joystickOverride;
-    public DoubleSupplier joystickOverride1;
+    public DoubleSupplier joystickOverride;
 
     public Elevator(ElevatorIO io){
         this.io = io;
-        this.joystickOverride = 0.0;
+        this.joystickOverride = () -> 0.0;
     }
 
     @Override
@@ -71,7 +68,7 @@ public class Elevator extends SubsystemBase {
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);
         }
 
-         if (Math.abs(joystickOverride) > 0.10) {
+         if (Math.abs(joystickOverride.getAsDouble()) > 0.10) {
             
             setpoint = new State(inputs.positionMeters, 0);
 //                MathUtil.clamp(
@@ -84,7 +81,7 @@ public class Elevator extends SubsystemBase {
         
             goal = setpoint;
 
-            voltage = joystickOverride * 9.0;
+            voltage = joystickOverride.getAsDouble() * 9.0;
         }
         Logger.recordOutput("Elevator/passedInVoltage", voltage);
         setMotorSpeed(voltage);
@@ -110,12 +107,8 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public Command setJoystickOverride(DoubleSupplier joystickValue) {
-        return run(
-            () -> {
-                joystickOverride = joystickValue.getAsDouble();
-            }
-        );
+    public void setJoystickSupplier(DoubleSupplier joystick) {
+        this.joystickOverride = joystick;
     }
 
     // public void setJoystick(DoubleSupplier joystickAxis) {

@@ -111,13 +111,13 @@ public class AutoCommands {
                 .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(1.0),
             factory.trajectoryCmd("MidProcessor-E1F1", 2)
-                .alongWith(Commands.waitSeconds(1.0)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)).alongWith(Commands.waitSeconds(1.0).andThen(endEffector.intake())))
+                .alongWith(Commands.waitSeconds(0.1)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
                 .andThen(drive.stopDrive()),
-            Commands.waitUntil(endEffector::hasCoral),
+            endEffector.intake().withTimeout(1.0),
             factory.trajectoryCmd("MidProcessor-E1F1", 3)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 .andThen(drive.stopDrive()),
-            superstructure.requestSuperstructureState(SuperstructureState.L4),
             factory.trajectoryCmd("MidProcessor-E1F1", 4)
                 .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(1.0)
@@ -150,6 +150,26 @@ public class AutoCommands {
             factory.trajectoryCmd("MidBarge-C2B2-ClosePickup",1),
             endEffector.intake().until(endEffector::hasCoral),
             factory.trajectoryCmd("MidBarge-C2B2-ClosePickup",2),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
+    }
+
+    public Command MiddleD2(){
+        return Commands.sequence(
+            factory.resetOdometry("Middle-D2",0),
+            factory.trajectoryCmd("Middle-D2",0),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
+    }
+
+    public Command MidProcessorE2(){
+        return Commands.sequence(
+            factory.resetOdometry("MidProcessor-E2",0),
+            factory.trajectoryCmd("MidProcessor-E2",0),
             superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
             endEffector.outtake().withTimeout(.5),
             superstructure.requestSuperstructureState(SuperstructureState.STOW)

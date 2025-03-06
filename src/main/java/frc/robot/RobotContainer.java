@@ -103,7 +103,7 @@ public class RobotContainer {
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
       vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
       //Boot up camera server
@@ -154,7 +154,8 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Mid Processor E1 Pickup High", autos::midProcessorE1PickupHigh);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
-    choreoAutoChooser.addCmd("Middle E1 F1 High", autos::midProcessorE1F1High);
+    choreoAutoChooser.addCmd("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
+    choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
 
 
 
@@ -231,6 +232,9 @@ public class RobotContainer {
     primaryController
       .a()
         .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
+    // primaryController
+    //   .a()
+    //     .onTrue(climb.init());
     //Home
     secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
@@ -240,9 +244,13 @@ public class RobotContainer {
     secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
     secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
+    //knockout algae
+    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L2));
+    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L3));
+
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-        .alongWith(endEffector.intake().until(endEffector::hasCoral)));
+        .alongWith(endEffector.intake().until(() -> endEffector.hasCoral() || Math.abs(wrist.joystickOverride.getAsDouble()) > 0.08)));
     
     //intake / outtake
     secondaryController.leftBumper().whileTrue(endEffector.intake());
@@ -254,10 +262,8 @@ public class RobotContainer {
 
     // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
-
-    elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
-
-    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
+    elevator.setJoystickSupplier(() -> -secondaryController.getLeftY());
+    wrist.setJoystickOverride(() -> -secondaryController.getRightY());
     
     // Elevator buttons
     // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
