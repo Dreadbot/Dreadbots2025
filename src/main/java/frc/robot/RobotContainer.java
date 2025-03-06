@@ -244,6 +244,10 @@ public class RobotContainer {
     secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
     secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
+    //knockout algae
+    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L2));
+    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L3));
+
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
         .alongWith(endEffector.intake().until(() -> endEffector.hasCoral() || Math.abs(wrist.joystickOverride.getAsDouble()) > 0.08)));
