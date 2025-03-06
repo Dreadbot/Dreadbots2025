@@ -44,6 +44,7 @@ public final class Constants {
     public static final double INTAKE_VOLTAGE = 1.5;
     public static final double OUTAKE_VOLTAGE = -3.0;
     public static final double CORAL_THRESHOLD = 50.0;
+    public static final int MOTOR_ID = 16;
 
   }
   public static class ElevatorConstants {
@@ -72,6 +73,10 @@ public final class Constants {
     public static final double INTAKE_ANGLE_DEGREES = 60.0;
     public static final double HOLD_ANGLE_DEGREES = 14.0;
     public static final double MAX_ANGLE_DEGREES = 80.0;
+    public static final double ENCODER_FREQUENCY = 975.6;
+    public static final int INTAKE_MOTOR_ID = 20;
+    public static final int PIVOT_MOTOR_ID = 18;
+
     /* 
      * Taken from onshape in form m^2kg, 
      */
