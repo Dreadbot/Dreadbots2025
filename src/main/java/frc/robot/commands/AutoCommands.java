@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Superstructure;
@@ -100,29 +102,29 @@ public class AutoCommands {
         );
     }
 
-    public Command midProcessorE1F1High() {
-        return Commands.sequence(
-            factory.resetOdometry("MidProcessor-E1F1", 0),
-            factory.trajectoryCmd("MidProcessor-E1F1", 0)
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
-                .andThen(drive.stopDrive()),
-            superstructure.requestSuperstructureState(SuperstructureState.L4),
-            factory.trajectoryCmd("MidProcessor-E1F1", 1)
-                .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(1.0),
-            factory.trajectoryCmd("MidProcessor-E1F1", 2)
-                .alongWith(Commands.waitSeconds(0.1)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
-                .andThen(drive.stopDrive()),
-            endEffector.intake().withTimeout(1.0),
-            factory.trajectoryCmd("MidProcessor-E1F1", 3)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
-                .andThen(drive.stopDrive()),
-            factory.trajectoryCmd("MidProcessor-E1F1", 4)
-                .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(1.0)
-        );
-    }
+    // public Command midProcessorE1F1High() {
+    //     return Commands.sequence(
+    //         factory.resetOdometry("MidProcessor-E1F1", 0),
+    //         factory.trajectoryCmd("MidProcessor-E1F1", 0)
+    //             .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+    //             .andThen(drive.stopDrive()),
+    //         superstructure.requestSuperstructureState(SuperstructureState.L4),
+    //         factory.trajectoryCmd("MidProcessor-E1F1", 1)
+    //             .andThen(drive.stopDrive()),
+    //         endEffector.outtake().withTimeout(1.0),
+    //         factory.trajectoryCmd("MidProcessor-E1F1", 2)
+    //             .alongWith(Commands.waitSeconds(0.1)
+    //             .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+    //             .andThen(drive.stopDrive()),
+    //         endEffector.intake().withTimeout(1.0),
+    //         factory.trajectoryCmd("MidProcessor-E1F1", 3)
+    //             .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
+    //             .andThen(drive.stopDrive()),
+    //         factory.trajectoryCmd("MidProcessor-E1F1", 4)
+    //             .andThen(drive.stopDrive()),
+    //         endEffector.outtake().withTimeout(1.0)
+    //     );
+    // }
 
     public Command midProcessorE2F2FarPickup() {
         return Commands.sequence(
@@ -174,5 +176,52 @@ public class AutoCommands {
             endEffector.outtake().withTimeout(.5),
             superstructure.requestSuperstructureState(SuperstructureState.STOW)
         );
+    }
+
+    public AutoRoutine midProcessorE1F1High(){
+        AutoRoutine routine = factory.newRoutine("MidProcessor-E1F1-High");
+        AutoTrajectory midProcessorToSlow = routine.trajectory("MideProcessor-E1F1", 0);
+        AutoTrajectory slowToE1 = routine.trajectory("MideProcessor-E1F1", 1);
+        AutoTrajectory e1ToPickup = routine.trajectory("MideProcessor-E1F1", 2);
+        AutoTrajectory pickupToSlow = routine.trajectory("MideProcessor-E1F1", 3);
+        AutoTrajectory slowToF1 = routine.trajectory("MideProcessor-E1F1", 4);
+
+        routine.active().onTrue(
+            Commands.sequence(
+                midProcessorToSlow.resetOdometry(),
+                midProcessorToSlow.cmd(),
+                superstructure.requestSuperstructureState(SuperstructureState.L3)
+            )
+        );
+
+        midProcessorToSlow.done().onTrue(
+            Commands.sequence(
+                superstructure.requestSuperstructureState(SuperstructureState.L4),
+                slowToE1.cmd()
+            )
+        );
+
+        slowToE1.done().onTrue(endEffector.outtake());
+        slowToE1.done().and(() -> !endEffector.hasCoral()).onTrue(
+            Commands.sequence(
+                e1ToPickup.cmd(),
+                superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
+            )
+        );
+
+        slowToE1.done().onTrue(endEffector.outtake());
+
+
+        e1ToPickup.done().and(endEffector::hasCoral).onTrue(Commands.sequence(
+            pickupToSlow.cmd(),
+            superstructure.requestSuperstructureState(SuperstructureState.L3)
+        ));
+
+        pickupToSlow.done().onTrue(Commands.sequence(
+            slowToF1.cmd(),
+            superstructure.requestSuperstructureState(SuperstructureState.L4)
+        ));
+
+        return routine;
     }
 }

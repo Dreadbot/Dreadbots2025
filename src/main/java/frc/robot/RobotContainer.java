@@ -154,8 +154,8 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Mid Processor E1 Pickup High", autos::midProcessorE1PickupHigh);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
-    choreoAutoChooser.addCmd("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
     choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    choreoAutoChooser.addRoutine("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
 
 
 
