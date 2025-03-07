@@ -19,7 +19,7 @@ import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.12, 0, 0);
+    private final PIDController pid = new PIDController(10, 0, 0);
     
 
     private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.15, 5.35, 0.15);
