@@ -29,13 +29,13 @@ public class Wrist extends SubsystemBase {
     private double goalAngle = 0;
     private double startAngle;
     private State desiredWristState;
-    public double joystickOverride;
+    public DoubleSupplier joystickOverride;
     public double voltage;
 
 
     public Wrist(WristIO io) {
         this.io = io;
-        this.joystickOverride = 0.0;
+        this.joystickOverride = () -> 0.0;
         this.voltage = 0;
         io.updateInputs(inputs);
         goal = new TrapezoidProfile.State(inputs.rotationDegrees, 0);
@@ -60,7 +60,7 @@ public class Wrist extends SubsystemBase {
         voltage = pid.calculate(inputs.rotationDegrees, setpoint.position) 
         + feedforward.calculate(Units.degreesToRadians(setpoint.position - 90) ,setpoint.velocity); //convert so 0 degrees is horizontal
         
-        if (Math.abs(joystickOverride) > 0.08) {
+        if (Math.abs(joystickOverride.getAsDouble()) > 0.08) {
             
             // this.desiredWristState = new State(
             //     MathUtil.clamp(
@@ -72,7 +72,7 @@ public class Wrist extends SubsystemBase {
             // );
             setpoint = new State(inputs.rotationDegrees, 0);
             goal = setpoint;
-            voltage = joystickOverride * WristConstants.WRIST_JOYSTICK_SLEW_VALUE;
+            voltage = joystickOverride.getAsDouble() * WristConstants.WRIST_JOYSTICK_SLEW_VALUE;
         }
         io.runVoltage(voltage);
     }
@@ -84,12 +84,8 @@ public class Wrist extends SubsystemBase {
              } );
     }
 
-    public Command setJoystickOverride(DoubleSupplier joystickValue) {
-        return run (
-            () -> {
-                joystickOverride = joystickValue.getAsDouble();
-            }
-        );
+    public void setJoystickOverride(DoubleSupplier joystickSupplier) {
+        this.joystickOverride = joystickSupplier;
     }
 
     public Command setAtZero() {

@@ -163,6 +163,9 @@ public class DriveCommands {
   }
 
   public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
+    if(AutoAlignUtil.POIs.size() == 0) {
+      AutoAlignUtil.buildPOIList();
+    }
     Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
     Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
     Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
