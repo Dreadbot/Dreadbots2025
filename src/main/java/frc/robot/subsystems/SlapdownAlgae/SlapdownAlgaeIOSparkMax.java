@@ -32,7 +32,8 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
             .idleMode(IdleMode.kBrake);
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotConfig
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

@@ -11,6 +11,7 @@ public class EndEffector extends SubsystemBase {
     private EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
     private EndEffectorIO io;
     private boolean isIntaking = false;
+    private boolean hasGamepiece = false;
 
     public EndEffector(EndEffectorIO io) {
         this.io = io;
@@ -20,6 +21,9 @@ public class EndEffector extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("EndEffector", inputs);
+        Logger.recordOutput("EndEffector/HasCoral", hasCoral());
+        Logger.recordOutput("EndEffector/IsIntaking", isIntaking);
+
         if(inputs.RPM > EndEffectorConstants.CORAL_THRESHOLD) {
             isIntaking = true;
         }
@@ -33,7 +37,7 @@ public class EndEffector extends SubsystemBase {
     }
     public Command outtake() {
         return startEnd(
-            () -> io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE),
+            () -> { io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE); hasGamepiece = false; },
             () -> io.runVoltage(0.0)
         );
     }
@@ -41,9 +45,10 @@ public class EndEffector extends SubsystemBase {
     public boolean hasCoral() {
         if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
             isIntaking = false;
+            hasGamepiece = true;
             return true;
         }
-        return false;
+        return hasGamepiece;
     }
 
 }

@@ -36,6 +36,7 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
             .smartCurrentLimit(50)
             .idleMode(IdleMode.kBrake)
             .inverted(true)
+            .voltageCompensation(12.0)
             .encoder.positionConversionFactor(rotationsToMeters);
         this.elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
