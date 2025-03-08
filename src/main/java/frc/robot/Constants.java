@@ -59,10 +59,10 @@ public final class Constants {
 
 
   public static class SlapdownAlgaeConstants {
-    public static final double INTAKE_VOLTAGE = -5.0;
+    public static final double INTAKE_VOLTAGE = -6.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
     public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 8;
-    public static final double ENCODER_OFFSET = 48.125;
+    public static final double ENCODER_OFFSET = 108.125;
     public static final double HOME_ANGLE_DEGREES = 0;
     public static final double OUTTAKE_ANGLE_DEGREES = 3;
     public static final double INTAKE_ANGLE_DEGREES = 60.0;

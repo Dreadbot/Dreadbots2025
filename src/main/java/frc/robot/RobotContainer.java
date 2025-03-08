@@ -105,7 +105,7 @@ public class RobotContainer {
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
       vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
       //Boot up camera server
@@ -156,9 +156,11 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
     choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
-    choreoAutoChooser.addRoutine("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
+    choreoAutoChooser.addCmd("Mid Barge C2 B1 High", autos::midBargeC2B1High);
+    choreoAutoChooser.addCmd("Wheel Radi Calibration Path", autos::WheelRadiCalibration);
 
-
+    //choreoAutoChooser.addRoutine("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
+    
 
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);

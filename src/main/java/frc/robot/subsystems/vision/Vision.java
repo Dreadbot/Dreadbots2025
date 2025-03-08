@@ -41,8 +41,20 @@ public class Vision extends SubsystemBase {
 			
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
-			if(detection.id() == 14 || detection.id() == 15 || detection.id() == 4 || detection.id() == 5 || tagDist > 5.0) {
+			boolean shouldRejectTag =
+				detection.id() == 14 
+				|| detection.id() == 15 
+				|| detection.id() == 4 
+				|| detection.id() == 5
+				|| tagDist > 5.0
+				|| detection.pose().getX() < 0.0
+				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
+				|| detection.pose().getY() < 0.0
+				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
+				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
+			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
+				lastVisionPose = detection.pose();
 				continue;
 			}
 			double stdDevFactor = Math.pow(tagDist, 2.0);
@@ -55,6 +67,7 @@ public class Vision extends SubsystemBase {
 
 			// std dev scaling goes here
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
+			Logger.recordOutput("Vision/tagPoseLen", tagPoses.size());
 			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
 			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));

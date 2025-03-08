@@ -113,7 +113,7 @@ public class ModuleIOSpark implements ModuleIO {
     // Configure drive motor
     var driveConfig = new SparkFlexConfig();
     driveConfig
-        .idleMode(IdleMode.kBrake)
+        .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(driveMotorCurrentLimit)
         .voltageCompensation(12.0);
     driveConfig

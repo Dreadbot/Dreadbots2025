@@ -276,4 +276,11 @@ public class AutoCommands {
             superstructure.requestSuperstructureState(SuperstructureState.STOW)
         );
     }
+
+    public Command WheelRadiCalibration() {
+        return Commands.sequence(
+            factory.resetOdometry("WheelRadiCalibration"),
+            factory.trajectoryCmd("WheelRadiCalibration")
+        );
+    }
 }
