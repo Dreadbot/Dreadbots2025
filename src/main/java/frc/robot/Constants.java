@@ -39,6 +39,7 @@ public final class Constants {
     public static final double INTAKE_VOLTAGE = 1.5;
     public static final double OUTAKE_VOLTAGE = -3.0;
     public static final double CORAL_THRESHOLD = 50.0;
+    public static final int MOTOR_ID = 16;
 
   }
   public static class ElevatorConstants {
@@ -67,6 +68,10 @@ public final class Constants {
     public static final double INTAKE_ANGLE_DEGREES = 60.0;
     public static final double HOLD_ANGLE_DEGREES = 14.0;
     public static final double MAX_ANGLE_DEGREES = 80.0;
+    public static final double ENCODER_FREQUENCY = 975.6;
+    public static final int INTAKE_MOTOR_ID = 20;
+    public static final int PIVOT_MOTOR_ID = 18;
+
     /* 
      * Taken from onshape in form m^2kg, 
      */
@@ -107,11 +112,11 @@ public final class Constants {
   }
 
   public static final class AutoAlignConstants {
-    public static final double TRANSLATION_KP = 1.0;
+    public static final double TRANSLATION_KP = 0.5;
     public static final double TRANSLATION_KD = 0.0;
-    public static final double TRANSLATION_VELOCITY = 1.5; // Meters/Sec
-    public static final double TRANSLATION_ACCELERATION = 1.5; // Meters/Sec^2
-    public static final double TRANSLATION_JERK = 1.0; // Meters/Sec^3
+    public static final double TRANSLATION_VELOCITY = 3.5; // Meters/Sec
+    public static final double TRANSLATION_ACCELERATION = 2.5; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 2.0; // Meters/Sec^3
     public static final double ROTATION_KP = 2.0;
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 5.0;
