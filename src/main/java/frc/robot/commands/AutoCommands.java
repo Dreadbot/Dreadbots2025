@@ -247,4 +247,33 @@ public class AutoCommands {
 
         return routine;
     }
+
+    public Command midBargeC2B1B2(){
+        // AutoRoutine routine = factory.newRoutine("MidBargeC2B1B2h");
+        // AutoTrajectory midProcessorToSlow = routine.trajectory("MidBarge-C2B1B2", 0);
+        // AutoTrajectory slowToE1 = routine.trajectory("MidBarge-C2B1B2", 1);
+        // AutoTrajectory e1ToPickup = routine.trajectory("MidBarge-C2B1B2", 2);
+        // AutoTrajectory pickupToSlow = routine.trajectory("MidBarge-C2B1B2", 3);
+        // AutoTrajectory slowToF1 = routine.trajectory("MidBarge-C2B1B2", 4);
+
+        //basic code that will be updated
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2B1B2",0),
+            factory.trajectoryCmd("MidBarge-C2B1B2",0),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
+            factory.trajectoryCmd("MidBarge-C2B1B2",1),
+            endEffector.intake().until(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C2B1B2",2),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),  
+            superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
+            factory.trajectoryCmd("MidBarge-C2B1B2",3),
+            endEffector.intake().until(endEffector::hasCoral),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
+    }
 }
