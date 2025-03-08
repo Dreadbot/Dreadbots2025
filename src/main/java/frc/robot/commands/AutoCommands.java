@@ -124,6 +124,31 @@ public class AutoCommands {
     //     );
     // }
 
+    public Command midBargeC2B1High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2B1", 0),
+            factory.trajectoryCmd("MidBarge-C2B1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidBarge-C2B1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.5),
+            factory.trajectoryCmd("MidBarge-C2B1", 2)
+                .alongWith(Commands.waitSeconds(0.1)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .andThen(drive.stopDrive()),
+            endEffector.intake().until(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C2B1", 3)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C2B1", 4)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.5)
+        );
+    }
+
     public Command midProcessorE2F2FarPickup() {
         return Commands.sequence(
             factory.resetOdometry("MidProcessor-E2F2-FarPickup"), 
