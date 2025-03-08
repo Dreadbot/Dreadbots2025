@@ -9,8 +9,6 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.endEffector.EndEffector;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.wrist.Wrist;
 
 public class AutoCommands {
     private AutoFactory factory;
@@ -126,6 +124,31 @@ public class AutoCommands {
     //     );
     // }
 
+    public Command midBargeC2B1High() {
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2B1", 0),
+            factory.trajectoryCmd("MidBarge-C2B1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            superstructure.requestSuperstructureState(SuperstructureState.L4),
+            factory.trajectoryCmd("MidBarge-C2B1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.5),
+            factory.trajectoryCmd("MidBarge-C2B1", 2)
+                .alongWith(Commands.waitSeconds(0.1)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .andThen(drive.stopDrive()),
+            endEffector.intake().until(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C2B1", 3)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C2B1", 4)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.5)
+        );
+    }
+
     public Command midProcessorE2F2FarPickup() {
         return Commands.sequence(
             factory.resetOdometry("MidProcessor-E2F2-FarPickup"), 
@@ -223,5 +246,34 @@ public class AutoCommands {
         ));
 
         return routine;
+    }
+
+    public Command midBargeC2B1B2(){
+        // AutoRoutine routine = factory.newRoutine("MidBargeC2B1B2h");
+        // AutoTrajectory midProcessorToSlow = routine.trajectory("MidBarge-C2B1B2", 0);
+        // AutoTrajectory slowToE1 = routine.trajectory("MidBarge-C2B1B2", 1);
+        // AutoTrajectory e1ToPickup = routine.trajectory("MidBarge-C2B1B2", 2);
+        // AutoTrajectory pickupToSlow = routine.trajectory("MidBarge-C2B1B2", 3);
+        // AutoTrajectory slowToF1 = routine.trajectory("MidBarge-C2B1B2", 4);
+
+        //basic code that will be updated
+        return Commands.sequence(
+            factory.resetOdometry("MidBarge-C2B1B2",0),
+            factory.trajectoryCmd("MidBarge-C2B1B2",0),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
+            factory.trajectoryCmd("MidBarge-C2B1B2",1),
+            endEffector.intake().until(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C2B1B2",2),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),  
+            superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
+            factory.trajectoryCmd("MidBarge-C2B1B2",3),
+            endEffector.intake().until(endEffector::hasCoral),
+            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
+            endEffector.outtake().withTimeout(.5),
+            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+        );
     }
 }

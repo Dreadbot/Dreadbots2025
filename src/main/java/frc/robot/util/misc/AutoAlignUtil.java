@@ -27,7 +27,7 @@ public class AutoAlignUtil {
 		Pose2d[] reefFaces = new Pose2d[6];
 		// Reef Auto Align Poses
 		Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
-		Translation2d firstSide = new Translation2d(3.10, 4.026);
+		Translation2d firstSide = new Translation2d(3.176810150146484, 4.026);
 		for(int i = 0; i < 6; i++) {
 			Translation2d side = firstSide.rotateAround(reefCenter, Rotation2d.fromDegrees(60 * (i - 1)));
 			reefFaces[i] = getAlliancePOI(

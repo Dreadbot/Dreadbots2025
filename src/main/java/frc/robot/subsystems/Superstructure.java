@@ -1,12 +1,8 @@
 package frc.robot.subsystems;
 
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.wrist.Wrist;
 
@@ -51,10 +47,10 @@ public class Superstructure {
         L2(0.996, 65.6),
         L3(1.415, 65.6),
         L4(2.137, 49.0),
-        STOW(0.634, 8.0),
+        STOW(0.627, 8.0),
         PICKUP(0.84, 145.0),
-        KNOCKOUT_L2(1.096, 110.0),
-        KNOCKOUT_L3(1.515, 110.0);
+        KNOCKOUT_L2(0.97, 90.0),
+        KNOCKOUT_L3(1.38, 90.0);
         SuperstructureState(double height, double angle) {
             this.height = height;
             this.angle = angle;

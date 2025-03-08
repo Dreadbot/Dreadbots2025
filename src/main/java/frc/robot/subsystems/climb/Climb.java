@@ -14,6 +14,7 @@ public class Climb extends SubsystemBase {
     
     private ClimbIO io;
     private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
+    public boolean isClimbed = false; 
     
     public Climb(ClimbIO io) { 
         this.io = io;
@@ -64,13 +65,23 @@ public class Climb extends SubsystemBase {
             .andThen(Commands.waitSeconds(0.5))
             .andThen(extendLock())
             .andThen(Commands.waitSeconds(0.5))
-            .andThen(extendClimb());
+            .andThen(extendClimb()
+            .andThen(() -> {isClimbed = true;}));
    }
 
    public Command init() {
     return retractLock()
         .andThen(retractClimb())
         .andThen(Commands.waitSeconds(0.5))
-        .andThen(retractClaw());
+        .andThen(retractClaw())
+        .andThen(() -> {isClimbed = false;});
+   }
+
+   public boolean getIsClimbed(){
+    return isClimbed;
+   }
+
+   public Command climb(){
+    return Commands.either(init(), climbSequence(), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
    }
 }

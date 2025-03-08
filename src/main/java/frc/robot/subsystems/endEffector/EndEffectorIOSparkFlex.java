@@ -7,12 +7,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import frc.robot.Constants.EndEffectorConstants;
+
 public class EndEffectorIOSparkFlex implements EndEffectorIO{
     private final SparkFlex motor;
     private double volts;
 
     public EndEffectorIOSparkFlex(){
-        this.motor = new SparkFlex(16, MotorType.kBrushless);
+        this.motor = new SparkFlex(EndEffectorConstants.MOTOR_ID, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config
             .idleMode(IdleMode.kBrake)

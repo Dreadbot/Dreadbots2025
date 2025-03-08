@@ -9,23 +9,22 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.Superstructure.SuperstructureState;
 
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.04, 0, 0);
+    private final PIDController pid = new PIDController(10, 0, 0);
     
 
-    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.30, 5.55, 0.17);
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(0.09, 0.15, 5.35, 0.15);
     private final ElevatorIO io;
     private double voltage = 0;
-    public boolean isZeroed = false; 
+    public boolean isZeroed = false;
+
 
     private final TrapezoidProfile profile =
         new TrapezoidProfile(new TrapezoidProfile.Constraints(2.5, 2.5));
@@ -62,7 +61,9 @@ public class Elevator extends SubsystemBase {
             setpoint = profile.calculate(.02, setpoint, goal);
             double pidValue = pid.calculate(inputs.positionMeters, setpoint.position);
             double feedforwardValue = feedforward.calculateWithVelocities(currentState.velocity, setpoint.velocity);
-            voltage = pidValue + feedforwardValue;
+            //change to voltage
+            voltage = (pidValue + feedforwardValue);
+            //* 1.5;
             Logger.recordOutput("Elevator/Feedforward", feedforwardValue);
             Logger.recordOutput("Elevator/PID", pidValue);
             Logger.recordOutput("Elevator/Setpoint", setpoint.position);

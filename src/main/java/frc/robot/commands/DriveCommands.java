@@ -25,7 +25,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,7 +38,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -165,7 +163,7 @@ public class DriveCommands {
   }
 
   public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
-    if(AutoAlignUtil.POIs.size() == 0) {
+    if(AutoAlignUtil.POIs.isEmpty()) {
       AutoAlignUtil.buildPOIList();
     }
     Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
@@ -173,9 +171,9 @@ public class DriveCommands {
     Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
 
     if(leftTrim.getAsBoolean()) {
-      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.LEFT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
     } else if(rightTrim.getAsBoolean()) {
-      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.RIGHT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
     }
     Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
     return closestPose;

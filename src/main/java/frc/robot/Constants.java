@@ -14,11 +14,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -52,8 +47,8 @@ public final class Constants {
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
     public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
     public static final double GEARING = 12;
-    public static final double MIN_HEIGHT = Units.inchesToMeters(25); //from ground
-    public static final double MAX_HEIGHT = 2.137; //from ground
+    public static final double MIN_HEIGHT = 0.627; 
+    public static final double MAX_HEIGHT = 2.137;
     public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
     public static final double ZEROING_VOLTAGE = -0.5;
@@ -86,7 +81,6 @@ public final class Constants {
   }
 
   public static class WristConstants {
-    //all filler values
     public static final double WRIST_ZERO = 0.0;
     public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
     public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
@@ -127,6 +121,8 @@ public final class Constants {
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 5.0;
     public static final double ROTATION_MAX_ACCELERATION = 10.0;
-    public static final double REEF_BRANCH_OFFSET = Units.inchesToMeters(12.938 / 2.0);
+    public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
+    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(12.938 / 2.0);
+
   }
 }
