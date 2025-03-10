@@ -133,7 +133,7 @@ public class AutoCommands {
             superstructure.requestSuperstructureState(SuperstructureState.L4),
             factory.trajectoryCmd("MidBarge-C2B1", 1)
                 .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(0.5),
+            endEffector.outtake().withTimeout(0.3),
             factory.trajectoryCmd("MidBarge-C2B1", 2)
                 .alongWith(Commands.waitSeconds(0.1)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
@@ -145,7 +145,7 @@ public class AutoCommands {
             factory.trajectoryCmd("MidBarge-C2B1", 4)
                 .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(0.5)
+            endEffector.outtake().withTimeout(0.3)
         );
     }
 
