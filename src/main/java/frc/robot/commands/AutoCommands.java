@@ -137,8 +137,9 @@ public class AutoCommands {
             factory.trajectoryCmd("MidBarge-C2B1", 2)
                 .alongWith(Commands.waitSeconds(0.1)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .andThen(endEffector.intake())
                 .andThen(drive.stopDrive()),
-            endEffector.intake().until(endEffector::hasCoral),
+            Commands.waitUntil(endEffector::hasCoral),
             factory.trajectoryCmd("MidBarge-C2B1", 3)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
                 .andThen(drive.stopDrive()),
