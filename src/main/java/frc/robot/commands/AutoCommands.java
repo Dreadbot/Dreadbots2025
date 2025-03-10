@@ -137,9 +137,8 @@ public class AutoCommands {
             factory.trajectoryCmd("MidBarge-C2B1", 2)
                 .alongWith(Commands.waitSeconds(0.1)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
-                .andThen(endEffector.intake())
                 .andThen(drive.stopDrive()),
-            Commands.waitUntil(endEffector::hasCoral),
+            endEffector.intake().until(endEffector::hasCoral),
             factory.trajectoryCmd("MidBarge-C2B1", 3)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
                 .andThen(drive.stopDrive()),
@@ -213,13 +212,13 @@ public class AutoCommands {
         routine.active().onTrue(
             Commands.sequence(
                 midProcessorToSlow.resetOdometry(),
-                midProcessorToSlow.cmd()
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                midProcessorToSlow.cmd(),
+                superstructure.requestSuperstructureState(SuperstructureState.L3)
             )
         );
 
         midProcessorToSlow.done().onTrue(
-            Commands.parallel(
+            Commands.sequence(
                 superstructure.requestSuperstructureState(SuperstructureState.L4),
                 slowToE1.cmd()
             )
@@ -227,89 +226,24 @@ public class AutoCommands {
 
         slowToE1.done().onTrue(endEffector.outtake());
         slowToE1.done().and(() -> !endEffector.hasCoral()).onTrue(
-            Commands.parallel(
+            Commands.sequence(
                 e1ToPickup.cmd(),
                 superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
             )
         );
 
-        e1ToPickup.done().onTrue(endEffector.intake());
-        e1ToPickup.done().and(endEffector::hasCoral).onTrue(
-            Commands.parallel(
-                pickupToSlow.cmd(),
-                superstructure.requestSuperstructureState(SuperstructureState.L3)
+        slowToE1.done().onTrue(endEffector.outtake());
+
+
+        e1ToPickup.done().and(endEffector::hasCoral).onTrue(Commands.sequence(
+            pickupToSlow.cmd(),
+            superstructure.requestSuperstructureState(SuperstructureState.L3)
         ));
 
-        pickupToSlow.done().onTrue(
-            Commands.parallel(
-                slowToF1.cmd(),
-                superstructure.requestSuperstructureState(SuperstructureState.L4)
+        pickupToSlow.done().onTrue(Commands.sequence(
+            slowToF1.cmd(),
+            superstructure.requestSuperstructureState(SuperstructureState.L4)
         ));
-
-        slowToF1.done().onTrue(endEffector.outtake());
-
-        return routine;
-    }
-
-    public AutoRoutine midProccessorE1E2F1(){
-        AutoRoutine routine = factory.newRoutine("MidProcessor-E1E2F1");
-        AutoTrajectory midProcessorToSlowE1 = routine.trajectory("MidProcessor-E1E2F1", 0);
-        AutoTrajectory e1SlowToE1 = routine.trajectory("MidProcessor-E1E2F1", 1);
-        AutoTrajectory e1ToPickup = routine.trajectory("MidProcessor-E1E2F1", 2);
-        AutoTrajectory pickupToSlowE2 = routine.trajectory("MidProcessor-E1E2F1", 3);
-        AutoTrajectory e2SlowToE2 =  routine.trajectory("MidProcessor-E1E2F1", 4);
-        AutoTrajectory e2ToPickup =  routine.trajectory("MidProcessor-E1E2F1", 5);
-        AutoTrajectory pickupToSlowF1 = routine.trajectory("MidProcessor-E1E2F1", 6);
-        AutoTrajectory f1SlowToF1 =  routine.trajectory("MidProcessor-E1E2F1", 7);
-        
-        routine.active().onTrue(
-            Commands.sequence(
-                midProcessorToSlowE1.resetOdometry(),
-                midProcessorToSlowE1.cmd()
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
-            )
-        );
-
-        midProcessorToSlowE1.done().onTrue(
-            Commands.parallel(
-                superstructure.requestSuperstructureState(SuperstructureState.L4),
-                e1SlowToE1.cmd()
-            )
-        );
-        
-        e1SlowToE1.done().onTrue(endEffector.outtake());
-        e1SlowToE1.done().and(endEffector::hasCoral).onTrue(
-            Commands.parallel(
-                superstructure.requestSuperstructureState(SuperstructureState.PICKUP),
-                e1ToPickup.cmd()
-            )
-        );
-
-        e1ToPickup.done().onTrue(endEffector.intake());
-        e1ToPickup.done().and(endEffector::hasCoral).onTrue(
-            Commands.parallel(
-                pickupToSlowE2.cmd(),
-                superstructure.requestSuperstructureState(SuperstructureState.L3)
-            )
-        );
-
-        e2SlowToE2.done().onTrue(endEffector.outtake());
-        e2SlowToE2.done().and(endEffector::hasCoral).onTrue(
-            Commands.parallel(
-                superstructure.requestSuperstructureState(SuperstructureState.PICKUP),
-                e2ToPickup.cmd()
-            )
-        );
-
-        e2ToPickup.done().onTrue(endEffector.intake());
-        e2ToPickup.done().and(endEffector::hasCoral).onTrue(
-            Commands.parallel(
-                pickupToSlowF1.cmd(),
-                superstructure.requestSuperstructureState(SuperstructureState.L3)
-            )
-        );
-
-        f1SlowToF1.done().onTrue(endEffector.outtake());
 
         return routine;
     }

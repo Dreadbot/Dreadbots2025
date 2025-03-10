@@ -65,12 +65,12 @@ public class Vision extends SubsystemBase {
 			double linearStdDev = VisionConstants.TRANSLATION_STD_DEV * stdDevFactor;
 			double angularStdDev = VisionConstants.ROTATION_STD_DEV * stdDevFactor;
 
-			// std dev scaling goes here
+			double delay = (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.TIMESTAMP_OFFSET);
 			Logger.recordOutput("Vision/VisionPose", detection.pose());
 			Logger.recordOutput("Vision/tagPoseLen", tagPoses.size());
-			Logger.recordOutput("Vision/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
+			Logger.recordOutput("Vision/PoseTimestamp", delay);
 
-			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+			consumer.accept(detection.pose(), delay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
 		}
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
