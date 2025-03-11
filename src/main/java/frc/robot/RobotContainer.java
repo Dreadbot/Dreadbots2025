@@ -13,24 +13,24 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import org.littletonrobotics.junction.Logger;
+
+import choreo.auto.AutoChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.climb.Climb;
@@ -50,17 +50,21 @@ import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
 import frc.robot.subsystems.endEffector.EndEffectorIOSparkFlex;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionCamera;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIONetworkTables;
+import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.misc.AutoAlignUtil;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.util.visualization.VisualizationManager;
-
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -72,6 +76,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final List<VisionCamera> cameras;
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
@@ -104,7 +109,29 @@ public class RobotContainer {
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
-      vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
+      cameras = List.of(
+        new VisionCamera(
+          drive::addVisionMeasurement,
+          drive::getPose,
+          new VisionIOCamera(VisionConstants.FRONT_RIGHT_CAMERA_NAME),
+          0,
+          VisionConstants.TRANSLATION_STD_DEV,
+          VisionConstants.ROTATION_STD_DEV),
+        new VisionCamera(
+          drive::addVisionMeasurement,
+          drive::getPose,
+          new VisionIOCamera(VisionConstants.FRONT_LEFT_CAMERA_NAME),
+          1,
+          VisionConstants.TRANSLATION_STD_DEV,
+          VisionConstants.ROTATION_STD_DEV),
+        new VisionCamera(
+          drive::addVisionMeasurement,
+          drive::getPose,
+          new VisionIOCamera(VisionConstants.BACK_CAMERA_NAME),
+          2,
+          VisionConstants.TRANSLATION_STD_DEV,
+          VisionConstants.ROTATION_STD_DEV));
+      vision = new Vision(cameras);
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
@@ -123,7 +150,29 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
-        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
+        cameras = List.of(
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIOCamera(VisionConstants.FRONT_RIGHT_CAMERA_NAME),
+            0,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV),
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIOCamera(VisionConstants.FRONT_LEFT_CAMERA_NAME),
+            1,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV),
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIOCamera(VisionConstants.BACK_CAMERA_NAME),
+            2,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV));
+        vision = new Vision(cameras);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         climb = new Climb(new ClimbIO() {});
         break;
@@ -140,7 +189,29 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
-        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIO() {});
+        cameras = List.of(
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIO() {},
+            0,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV),
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIO() {},
+            1,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV),
+          new VisionCamera(
+            drive::addVisionMeasurement,
+            drive::getPose,
+            new VisionIO() {},
+            2,
+            VisionConstants.TRANSLATION_STD_DEV,
+            VisionConstants.ROTATION_STD_DEV));
+        vision = new Vision(cameras);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;
