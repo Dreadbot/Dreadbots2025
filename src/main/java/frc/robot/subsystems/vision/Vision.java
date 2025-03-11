@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.VisionObservation;
 import frc.robot.util.vision.VisionUtil;
+import frc.robot.subsystems.drive.DriveConstants;
 
 public class Vision extends SubsystemBase {
 	private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
@@ -22,6 +23,8 @@ public class Vision extends SubsystemBase {
 	private final VisionConsumer consumer;
 	private final PoseSupplier supplier;
 	private Pose2d lastVisionPose;
+	private VisionObservation lastGoodVisionDetection;
+	private VisionObservation lastBadVisionDetection;
 
 	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
 		this.io = io;
@@ -38,11 +41,21 @@ public class Vision extends SubsystemBase {
 		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
 
 		for(VisionObservation detection : inputs.detections) {
-			
+			if(lastGoodVisionDetection == null) {
+				lastGoodVisionDetection = detection;
+			}
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			if(detection.id() == 14 || detection.id() == 15 || detection.id() == 4 || detection.id() == 5 || tagDist > 5.0) {
 				rejectedPoses.add(detection.pose());
+				lastBadVisionDetection = detection;
+				continue;
+			}
+			double distanceBetweenPoses = detection.pose().getTranslation().getDistance(lastGoodVisionDetection.pose().getTranslation());
+			double timeBetweenPoses = (detection.timestamp() / 1_000_000.0) - (lastGoodVisionDetection.timestamp() / 1_000_000.0);
+			if(distanceBetweenPoses / timeBetweenPoses > DriveConstants.maxSpeedMetersPerSec) {
+				rejectedPoses.add(detection.pose());
+				lastBadVisionDetection = detection;
 				continue;
 			}
 			double stdDevFactor = Math.pow(tagDist, 2.0);
@@ -74,7 +87,11 @@ public static interface VisionConsumer {
 		Matrix<N3, N1> visionMeasurementStdDevs);
   }
   public Pose2d getLastVisionPose() {
-	return lastVisionPose;
+	if(lastGoodVisionDetection != null) {
+		return lastGoodVisionDetection.pose();
+	} else {
+		return lastBadVisionDetection.pose();
+	}
   }
   @FunctionalInterface
   public static interface PoseSupplier {
