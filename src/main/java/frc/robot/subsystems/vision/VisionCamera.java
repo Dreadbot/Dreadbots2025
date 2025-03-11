@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.subsystems.vision.VisionIO.VisionObservation;
+import frc.robot.subsystems.vision.VisionIO.VisionDetection;
 import frc.robot.util.vision.VisionUtil;
 
 public class VisionCamera {
@@ -21,7 +21,7 @@ public class VisionCamera {
 	private final PoseSupplier supplier;
     private double linearStdDev;
 	private double angularStdDev;
-    private Pose2d lastVisionPose;
+    private VisionDetection lastVisionObservation;
 
     public VisionCamera(VisionConsumer consumer, PoseSupplier supplier, VisionIO io, int index, double linearStdDev, double angularStdDev) {
         this.consumer = consumer;
@@ -30,7 +30,7 @@ public class VisionCamera {
         this.index = index;
         this.linearStdDev = linearStdDev;
 		this.angularStdDev = angularStdDev;
-		this.lastVisionPose = new Pose2d();
+		this.lastVisionObservation = new VisionDetection(new Pose2d(), 0, 0.0);
     }
 
     public void periodic() {
@@ -40,8 +40,8 @@ public class VisionCamera {
         ArrayList<Pose3d> tagPoses = new ArrayList<>();
 		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
 
-		for(VisionObservation detection : inputs.detections) {
-			lastVisionPose = detection.pose();
+		for(VisionDetection detection : inputs.detections) {
+			lastVisionObservation = detection;
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			boolean shouldRejectTag =
@@ -81,8 +81,8 @@ public class VisionCamera {
 			double timestampSeconds,
 			Matrix<N3, N1> visionMeasurementStdDevs);
 	}
-	public Pose2d getLastVisionPose() {
-		return lastVisionPose;
+	public VisionDetection getLastVisionObservation() {
+		return lastVisionObservation;
 	}
 	@FunctionalInterface
 	public static interface PoseSupplier {

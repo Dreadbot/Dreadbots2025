@@ -30,11 +30,11 @@ public class VisionIOCamera implements VisionIO{
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         VisionPosition[] currentPositions = visionPositions.get();
-        VisionObservation[] tmp = new VisionObservation[currentPositions.length];
+        VisionDetection[] tmp = new VisionDetection[currentPositions.length];
         if(currentPositions.length > 0) {
             for (var i = 0; i < currentPositions.length; i++) {
                 var currentPosition = currentPositions[i];
-                tmp[i] = new VisionObservation(
+                tmp[i] = new VisionDetection(
                     new Pose2d(
                         currentPosition.x, 
                         currentPosition.y, 
