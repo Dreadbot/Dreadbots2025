@@ -51,7 +51,7 @@ public class Vision extends SubsystemBase {
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
-				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
+				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 2.5;
 			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				lastVisionPose = detection.pose();

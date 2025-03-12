@@ -157,8 +157,7 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
     choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
     choreoAutoChooser.addCmd("Mid Barge C2 B1 High", autos::midBargeC2B1High);
-
-    //choreoAutoChooser.addRoutine("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
+    choreoAutoChooser.addCmd("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
     
 
 
@@ -236,7 +235,7 @@ public class RobotContainer {
     primaryController.y().onTrue(climb.climbSequence());
     primaryController
       .a()
-        .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
+        .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
     // primaryController
     //   .a()
     //     .onTrue(climb.init());
