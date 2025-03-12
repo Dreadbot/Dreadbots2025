@@ -22,12 +22,15 @@ public class Vision extends SubsystemBase {
 	private final VisionConsumer consumer;
 	private final PoseSupplier supplier;
 	private Pose2d lastVisionPose;
+	private double lastVisionTimestamp;
+
 
 	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
 		this.io = io;
 		this.consumer = consumer;
 		this.supplier = supplier;
 		this.lastVisionPose = new Pose2d();
+		this.lastVisionTimestamp = -1;
 	}
 
 	@Override
@@ -55,6 +58,7 @@ public class Vision extends SubsystemBase {
 			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				lastVisionPose = detection.pose();
+				lastVisionTimestamp = detection.timestamp() / 1_000_000.0;
 				continue;
 			}
 			double stdDevFactor = Math.pow(tagDist, 2.0);
@@ -72,6 +76,7 @@ public class Vision extends SubsystemBase {
 
 			consumer.accept(detection.pose(), delay, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 			lastVisionPose = detection.pose();
+			lastVisionTimestamp = detection.timestamp() / 1_000_000.0;
 		}
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
 		Logger.recordOutput("Vision/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
@@ -88,6 +93,9 @@ public static interface VisionConsumer {
   }
   public Pose2d getLastVisionPose() {
 	return lastVisionPose;
+  }
+  public double getLastVisionTimestamp() {
+	return lastVisionTimestamp;
   }
   @FunctionalInterface
   public static interface PoseSupplier {

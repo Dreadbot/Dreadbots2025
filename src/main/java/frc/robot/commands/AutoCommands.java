@@ -248,25 +248,25 @@ public class AutoCommands {
         return routine;
     }
 
-    public Command midProcessorE1F1High() {
+    public Command midProcessorE2F1High() {
         return Commands.sequence(
-            factory.resetOdometry("MidProcessor-E1F1", 0),
-            factory.trajectoryCmd("MidProcessor-E1F1", 0)
+            factory.resetOdometry("MidProcessor-E2F1", 0),
+            factory.trajectoryCmd("MidProcessor-E2F1", 0)
                 .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 .andThen(drive.stopDrive()),
-            factory.trajectoryCmd("MidProcessor-E1F1", 1)
+            factory.trajectoryCmd("MidProcessor-E2F1", 1)
                 .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(0.2),
-            factory.trajectoryCmd("MidProcessor-E1F1", 2)
+            factory.trajectoryCmd("MidProcessor-E2F1", 2)
                 .alongWith(Commands.waitSeconds(0.1)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
-                .alongWith(endEffector.intake())
+                .alongWith(endEffector.intake().until(endEffector::hasCoral))
                 .andThen(drive.stopDrive()),
             Commands.waitUntil(endEffector::hasCoral),
-            factory.trajectoryCmd("MidProcessor-E1F1", 3)
+            factory.trajectoryCmd("MidProcessor-E2F1", 3)
                 .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 .andThen(drive.stopDrive()),
-            factory.trajectoryCmd("MidProcessor-E1F1", 4)
+            factory.trajectoryCmd("MidProcessor-E2F1", 4)
                 .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(0.2)
         );
