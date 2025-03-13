@@ -124,44 +124,73 @@ public class AutoCommands {
     //     );
     // }
 
-    public Command midBargeC2B1High() {
+    public Command midBargeC1B1High() {
         return Commands.sequence(
-            factory.resetOdometry("MidBarge-C2B1", 0),
-            factory.trajectoryCmd("MidBarge-C2B1", 0)
-                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L3))
-                .andThen(drive.stopDrive()),
-            superstructure.requestSuperstructureState(SuperstructureState.L4),
-            factory.trajectoryCmd("MidBarge-C2B1", 1)
-                .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(0.3),
-            factory.trajectoryCmd("MidBarge-C2B1", 2)
-                .alongWith(Commands.waitSeconds(0.1)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
-                .andThen(drive.stopDrive()),
-            endEffector.intake().until(endEffector::hasCoral),
-            factory.trajectoryCmd("MidBarge-C2B1", 3)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
-                .andThen(drive.stopDrive()),
-            factory.trajectoryCmd("MidBarge-C2B1", 4)
+            factory.resetOdometry("MidBarge-C1B1", 0),
+            factory.trajectoryCmd("MidBarge-C1B1", 0)
                 .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 .andThen(drive.stopDrive()),
-            endEffector.outtake().withTimeout(0.3)
+            factory.trajectoryCmd("MidBarge-C1B1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.2),
+            factory.trajectoryCmd("MidBarge-C1B1", 2)
+                .alongWith(Commands.waitSeconds(0.1)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .alongWith(endEffector.intake().until(endEffector::hasCoral))
+                .andThen(drive.stopDrive()),
+            Commands.waitUntil(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C1B1", 3)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L3))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C1B1", 4)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.2)
         );
     }
 
-    public Command midProcessorE2F2FarPickup() {
+
+    public Command midBargeC1B1B2High() {
         return Commands.sequence(
-            factory.resetOdometry("MidProcessor-E2F2-FarPickup"), 
-            factory.trajectoryCmd("MidProcessor-E2F2-FarPickup", 0), // run first segment of path (from starting location to first scoring location)
-            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)), // run Scoring sequence (elevator and wrist to l4, outtake, back down to pickup)
-            endEffector.outtake().withTimeout(0.5),
-            superstructure.requestSuperstructureState(SuperstructureState.PICKUP).andThen(Commands.waitUntil(superstructure::isFinished)),
-            factory.trajectoryCmd("MidProcessor-E2F2-FarPickup", 1), // run second segment of path (from first scoring location to pickup location)
-            endEffector.intake().until(endEffector::hasCoral), // run intake until we have game piece
-            factory.trajectoryCmd("MidProcessor-E2F2-FarPickup", 2), // run third segment of path (from pickup location to second scoring location)
-            superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)), // run Scoring sequence (elevator and wrist to l4, outtake, back down to pickup)
-            endEffector.outtake().withTimeout(0.5),
-            superstructure.requestSuperstructureState(SuperstructureState.STOW)
+            factory.resetOdometry("MidBarge-C1B1B2", 0),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.15),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 2)
+                .alongWith(Commands.waitSeconds(0.25)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .alongWith(endEffector.intake().until(endEffector::hasCoral))
+                .andThen(drive.stopDrive()),
+            Commands.waitUntil(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 3)
+                .alongWith(
+                    Commands.waitSeconds(1.0)
+                    .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                )
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 4)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.15),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 5)
+                .alongWith(Commands.waitSeconds(0.25)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)))
+                .alongWith(endEffector.intake().until(endEffector::hasCoral))
+                .andThen(drive.stopDrive()),
+            Commands.waitUntil(endEffector::hasCoral),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 6)
+                .alongWith(
+                    Commands.waitSeconds(1.0)
+                    .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                )
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("MidBarge-C1B1B2", 7)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.15)
         );
     }
 
