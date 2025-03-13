@@ -25,21 +25,21 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.misc.AutoAlignUtil;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -165,7 +165,7 @@ public class DriveCommands {
   }
 
   public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
-    if(AutoAlignUtil.POIs.size() == 0) {
+    if(AutoAlignUtil.POIs.isEmpty()) {
       AutoAlignUtil.buildPOIList();
     }
     Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
@@ -173,9 +173,9 @@ public class DriveCommands {
     Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
 
     if(leftTrim.getAsBoolean()) {
-      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.LEFT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
     } else if(rightTrim.getAsBoolean()) {
-      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.REEF_BRANCH_OFFSET, Rotation2d.kZero));
+      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.RIGHT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
     }
     Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
     return closestPose;
@@ -365,6 +365,20 @@ public class DriveCommands {
                               + formatter.format(Units.metersToInches(wheelRadius))
                               + " inches");
                     })));
+  }
+
+  public static Command fullAutoAlignCommand(Drive drive, Vision vision, CommandXboxController controller) {
+    return driveToPosition(drive, 
+      () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())
+    )
+      .beforeStarting(
+        () -> {
+          Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs));
+          if((vision.getLastVisionTimestamp() - Timer.getFPGATimestamp()) < 0.5) {
+            drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
+          }
+        }
+    );
   }
 
   private static class WheelRadiusCharacterizationState {

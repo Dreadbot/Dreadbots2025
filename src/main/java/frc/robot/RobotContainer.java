@@ -29,6 +29,7 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
@@ -56,6 +57,7 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSparkMax;
 import frc.robot.util.misc.AutoAlignUtil;
+import frc.robot.util.vision.VisionUtil;
 import frc.robot.util.visualization.VisualizationManager;
 
 import org.littletonrobotics.junction.Logger;
@@ -103,7 +105,7 @@ public class RobotContainer {
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
       vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
-      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
+      slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
       //Boot up camera server
@@ -122,7 +124,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
         vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
-        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
+        slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         climb = new Climb(new ClimbIO() {});
         break;
 
@@ -152,12 +154,13 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Barge C2 Low", autos::midBargeC2Low);
     choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
-    choreoAutoChooser.addCmd("Mid Processor E1 Pickup High", autos::midProcessorE1PickupHigh);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
-    choreoAutoChooser.addCmd("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
     choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
+    choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
 
-
+    
 
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
@@ -188,6 +191,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //Cache April Tag
+    VisionUtil.getApriltagPose(1);
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -231,7 +237,7 @@ public class RobotContainer {
     primaryController.y().onTrue(climb.climbSequence());
     primaryController
       .a()
-        .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
+        .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
     // primaryController
     //   .a()
     //     .onTrue(climb.init());
@@ -250,7 +256,7 @@ public class RobotContainer {
 
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-        .alongWith(endEffector.intake().until(() -> endEffector.hasCoral() || Math.abs(wrist.joystickOverride.getAsDouble()) > 0.08)));
+        .alongWith(endEffector.intake().until(endEffector::hasCoral)));
     
     //intake / outtake
     secondaryController.leftBumper().whileTrue(endEffector.intake());
