@@ -30,7 +30,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.RobotState;
 import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.RobotState.CurrentAction;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -377,8 +379,12 @@ public class DriveCommands {
           if((vision.getLastVisionTimestamp() - Timer.getFPGATimestamp()) < 0.5) {
             drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
           }
+          RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);
         }
-    );
+    )
+      .finallyDo(() -> {
+        RobotState.getInstance().setRobotAction(CurrentAction.MANUAL_CONTROL);
+      });
   }
 
   private static class WheelRadiusCharacterizationState {

@@ -20,10 +20,12 @@ public class AutoAlignUtil {
 	private static double fieldSizeY = Units.feetToMeters(26.417);
 	public static ArrayList<Pose2d> POIs = new ArrayList<Pose2d>();
 	private static Alert createdPOIAlert = new Alert("Generated POI List!", AlertType.kInfo);
+	private static boolean generatedPoiList = false;
 	/**
 	 * This function generates all the POIs for the Auto align command, requires that we know which side of the field we are on, so needs to called at runtime
 	 */
 	public static void buildPOIList() {
+		POIs = new ArrayList<>();
 		Pose2d[] reefFaces = new Pose2d[6];
 		// Reef Auto Align Poses
 		Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
@@ -59,6 +61,7 @@ public class AutoAlignUtil {
 		POIs.add(processor);
 		Pose2d[] loggerPoses = POIs.toArray(new Pose2d[0]);
 		Logger.recordOutput("AutoAlign/GeneratedPOIs", Pose2d.struct, loggerPoses);
+		generatedPoiList = true;
 	}
 
 	/**

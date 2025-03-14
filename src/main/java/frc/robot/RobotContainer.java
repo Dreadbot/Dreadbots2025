@@ -234,7 +234,8 @@ public class RobotContainer {
      * Focuses on the coral pieces
      * Elevator / Wrist / Endeffector
      */
-    primaryController.y().onTrue(climb.climbSequence());
+    //toggles properly
+    primaryController.y().onTrue(climb.climb());
     primaryController
       .a()
         .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
@@ -295,8 +296,9 @@ public class RobotContainer {
     elevator.init();
   }
 
-  public void teleopInit(){
+  public void teleopInit() {
     elevator.init();
     climb.init().schedule();
+    AutoAlignUtil.createPOIListCommand().schedule();
   }
 }

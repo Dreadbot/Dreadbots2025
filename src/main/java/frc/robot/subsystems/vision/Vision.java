@@ -30,7 +30,7 @@ public class Vision extends SubsystemBase {
 		this.consumer = consumer;
 		this.supplier = supplier;
 		this.lastVisionPose = new Pose2d();
-		this.lastVisionTimestamp = -1;
+		this.lastVisionTimestamp = Double.POSITIVE_INFINITY;
 	}
 
 	@Override
