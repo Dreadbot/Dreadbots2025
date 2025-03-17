@@ -30,35 +30,15 @@ public class AutoAlignUtil {
 		// Reef Auto Align Poses
 		Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
 		Translation2d firstSide = new Translation2d(3.176810150146484, 4.026);
+		
 		for(int i = 0; i < 6; i++) {
 			Translation2d side = firstSide.rotateAround(reefCenter, Rotation2d.fromDegrees(60 * (i - 1)));
 			reefFaces[i] = getAlliancePOI(
 				new Pose2d(side, Rotation2d.fromDegrees(60 * (i - 1)))
 			);
 			POIs.add(reefFaces[i]);
-		}
-		// Station Pick up Poses, get alliance specifc position then mirror, less code
-		Pose2d leftFarPickup = getAlliancePOI(
-			new Pose2d(1.645, 7.504, Rotation2d.fromRadians(2.186))
-		);
-		Pose2d leftClosePickup = getAlliancePOI(
-			new Pose2d(0.584, 6.705, Rotation2d.fromRadians(2.186))
-		);
+		}		
 
-		Pose2d rightFarPickup = mirrorPose(leftFarPickup);
-		Pose2d rightClosePickup = mirrorPose(leftClosePickup);
-		// Processor
-
-		Pose2d processor = getAlliancePOI(
-			new Pose2d(5.970, 0.510, Rotation2d.fromRadians(Math.PI / 2))
-		);
-
-		//add poses to arraylist;
-		POIs.add(leftFarPickup);
-		POIs.add(leftClosePickup);
-		POIs.add(rightClosePickup);
-		POIs.add(rightFarPickup);
-		POIs.add(processor);
 		Pose2d[] loggerPoses = POIs.toArray(new Pose2d[0]);
 		Logger.recordOutput("AutoAlign/GeneratedPOIs", Pose2d.struct, loggerPoses);
 		generatedPoiList = true;
@@ -70,7 +50,7 @@ public class AutoAlignUtil {
 	 * @return The alliance specific POI
 	 */
 	public static Pose2d getAlliancePOI(Pose2d poi) {
-
+		
 		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			Translation2d rotatedPosition = new Translation2d(fieldSizeX - poi.getX(), fieldSizeY - poi.getY());
 			Rotation2d flippedRotation = poi.getRotation().plus(Rotation2d.kPi);
@@ -85,11 +65,11 @@ public class AutoAlignUtil {
 	 * @param pose
 	 * @return the mirrored psoe
 	 */
-	private static Pose2d mirrorPose(Pose2d pose) {
-		Translation2d mirroredTranslation = new Translation2d(pose.getX(), fieldSizeY - pose.getY());
-		Rotation2d mirroredRotation = pose.getRotation().unaryMinus(); // Geometry stuff I think 
-		return new Pose2d(mirroredTranslation, mirroredRotation);
-	}
+	// private static Pose2d mirrorPose(Pose2d pose) {
+	// 	Translation2d mirroredTranslation = new Translation2d(pose.getX(), fieldSizeY - pose.getY());
+	// 	Rotation2d mirroredRotation = pose.getRotation().unaryMinus(); // Geometry stuff I think 
+	// 	return new Pose2d(mirroredTranslation, mirroredRotation);
+	// }
 
 	public static Command createPOIListCommand() {
 		return Commands.runOnce(() -> {
