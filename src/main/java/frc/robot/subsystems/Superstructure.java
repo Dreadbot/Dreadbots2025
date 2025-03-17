@@ -27,9 +27,8 @@ public class Superstructure {
          */
         return Commands.either(
             wrist.setAngleDegrees(SuperstructureState.STOW.angle)
-                .andThen(Commands.waitUntil(wrist::atSetpoint))
                 .andThen(elevator.riseTo(level.height))
-                .andThen(Commands.waitUntil(elevator::atHeight))
+                .andThen(Commands.waitUntil(elevator::inSafeZone))
                 .andThen(wrist.setAngleDegrees(level.angle)),
             elevator.riseTo(level.height)
                 .andThen(wrist.setAngleDegrees(level.angle)),
