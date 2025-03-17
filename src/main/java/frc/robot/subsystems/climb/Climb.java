@@ -64,13 +64,13 @@ public class Climb extends SubsystemBase {
             .andThen(extendLock())
             .andThen(Commands.waitSeconds(0.5))
             .andThen(extendClimb()
-            .andThen(() -> {isClimbed = true;}));
+            .beforeStarting(() -> {isClimbed = true;}));
    }
 
    public Command init() {
     return retractLock()
         .andThen(retractClimb())
-        .andThen(Commands.waitSeconds(0.5))
+        .andThen(Commands.waitSeconds(0.2))
         .andThen(retractClaw())
         .andThen(() -> {isClimbed = false;});
    }
