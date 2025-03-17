@@ -36,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-2.214);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.522 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(-0.101);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(-1.002 + Math.PI);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.943 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(2.155);
 
   // Device CAN IDs
   public static final int pigeonCanId = 20; //not yet determined/ not needed;
@@ -62,7 +62,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(2.0);
+  public static final double wheelRadiusMeters = Units.inchesToMeters(1.88); // 1.88
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);

@@ -22,9 +22,9 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
 
     public SlapdownAlgaeIOSparkMax() {
         this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownAlgaeConstants.SLAPDOWNALGAE_DUTY_CYCLE_ENCODER), 360, 0); //Update code with the 0 and max angle
-        absoluteEncoder.setAssumedFrequency(975.6);
-        this.intakeMotor = new SparkMax(20, MotorType.kBrushless);
-        this.pivotMotor = new SparkFlex(18, MotorType.kBrushless);
+        absoluteEncoder.setAssumedFrequency(SlapdownAlgaeConstants.ENCODER_FREQUENCY);
+        this.intakeMotor = new SparkMax(SlapdownAlgaeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+        this.pivotMotor = new SparkFlex(SlapdownAlgaeConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
@@ -32,8 +32,7 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
             .idleMode(IdleMode.kBrake);
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotConfig
-            .idleMode(IdleMode.kBrake)
-            .inverted(true);
+            .idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

@@ -17,8 +17,8 @@ public class SlapdownAlgae extends SubsystemBase {
     private final SlapdownAlgaeIOInputsAutoLogged inputs = new SlapdownAlgaeIOInputsAutoLogged();
     private final SlapdownAlgaeIO io;
     public final PIDController pid = new PIDController(0.013, 0.0, 0);
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.0, 0.018);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(225, 225));
+    public final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.0, 0.023);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 

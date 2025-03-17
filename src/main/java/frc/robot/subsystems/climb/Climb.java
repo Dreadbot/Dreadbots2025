@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climb;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -11,7 +12,9 @@ public class Climb extends SubsystemBase {
     
     private ClimbIO io;
     private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
-    
+    // Annotation based logging! super easy
+    @AutoLogOutput
+    public boolean isClimbed = false; 
     public Climb(ClimbIO io) { 
         this.io = io;
     }
@@ -21,7 +24,6 @@ public class Climb extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Climb", inputs);
     }
-
     public Command extendClimb() {
          return runOnce(() -> {
             io.setClimbState(DoubleSolenoid.Value.kForward);
@@ -61,13 +63,23 @@ public class Climb extends SubsystemBase {
             .andThen(Commands.waitSeconds(0.5))
             .andThen(extendLock())
             .andThen(Commands.waitSeconds(0.5))
-            .andThen(extendClimb());
+            .andThen(extendClimb()
+            .andThen(() -> {isClimbed = true;}));
    }
 
    public Command init() {
     return retractLock()
         .andThen(retractClimb())
         .andThen(Commands.waitSeconds(0.5))
-        .andThen(retractClaw());
+        .andThen(retractClaw())
+        .andThen(() -> {isClimbed = false;});
+   }
+
+   public boolean getIsClimbed(){
+    return isClimbed;
+   }
+
+   public Command climb(){
+    return Commands.either(init(), climbSequence(), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
    }
 }

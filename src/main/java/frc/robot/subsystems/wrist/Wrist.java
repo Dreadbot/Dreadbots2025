@@ -23,7 +23,7 @@ public class Wrist extends SubsystemBase {
     private WristIO io;
     private final PIDController pid = new PIDController(0.025, 0.0, 0);
     private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     private double goalAngle = 0;
