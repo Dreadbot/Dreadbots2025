@@ -153,14 +153,10 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
-    choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    //choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
     choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
     choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
     choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
-
-    
-
-
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines
