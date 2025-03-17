@@ -28,8 +28,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.RobotState;
+import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.RobotState.CurrentAction;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.misc.AutoAlignUtil;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -37,11 +45,13 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
+  private static final double ANGLE_MAX_VELOCITY = 20.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
@@ -103,6 +113,75 @@ public class DriveCommands {
         drive);
   }
 
+  /**
+   * Drives to given Pose
+   */
+  public static Command driveToPosition(Drive drive, Supplier<Pose2d> position) {
+    ProfiledPIDController xController =
+        new ProfiledPIDController(
+            AutoAlignConstants.TRANSLATION_KP,
+            0.0,
+            AutoAlignConstants.TRANSLATION_KD,
+            new TrapezoidProfile.Constraints(AutoAlignConstants.TRANSLATION_ACCELERATION, AutoAlignConstants.TRANSLATION_ACCELERATION));
+    ProfiledPIDController yController =
+        new ProfiledPIDController(
+            AutoAlignConstants.TRANSLATION_KP,
+            0.0,
+            AutoAlignConstants.TRANSLATION_KD,
+            new TrapezoidProfile.Constraints(AutoAlignConstants.TRANSLATION_ACCELERATION, AutoAlignConstants.TRANSLATION_JERK));
+    ProfiledPIDController angleController =
+          new ProfiledPIDController(
+              AutoAlignConstants.ROTATION_KP,
+              0.0,
+              AutoAlignConstants.ROTATION_KD,
+              new TrapezoidProfile.Constraints(AutoAlignConstants.ROTATION_MAX_VELOCITY, AutoAlignConstants.ROTATION_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    return Commands.run(
+      () -> {
+        double xVelocity = xController.calculate(drive.getPose().getX(), position.get().getX());
+        double yVelocity = yController.calculate(drive.getPose().getY(), position.get().getY());
+
+        double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), position.get().getRotation().getRadians());
+
+        ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      xVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
+                      yVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
+                      omega);
+
+        boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
+
+        drive.runVelocity(
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  speeds,
+                  drive.getRotation())
+                );
+        
+    }, drive).beforeStarting(() -> {
+      xController.reset(drive.getPose().getX());
+      yController.reset(drive.getPose().getY());
+      angleController.reset(drive.getRotation().getRadians());
+    });
+  }
+
+  public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
+    if(AutoAlignUtil.POIs.isEmpty()) {
+      AutoAlignUtil.buildPOIList();
+    }
+    Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
+    Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
+    Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
+
+    if(leftTrim.getAsBoolean()) {
+      closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.LEFT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
+    } else if(rightTrim.getAsBoolean()) {
+      closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.RIGHT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
+    }
+    Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
+    return closestPose;
+  }
   /**
    * Field relative drive command using joystick for linear control and PID for angular control.
    * Possible use cases include snapping to an angle, aiming at a vision target, or controlling
@@ -288,6 +367,24 @@ public class DriveCommands {
                               + formatter.format(Units.metersToInches(wheelRadius))
                               + " inches");
                     })));
+  }
+
+  public static Command fullAutoAlignCommand(Drive drive, Vision vision, CommandXboxController controller) {
+    return driveToPosition(drive, 
+      () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())
+    )
+      .beforeStarting(
+        () -> {
+          Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs));
+          if((vision.getLastVisionTimestamp() - Timer.getFPGATimestamp()) < 0.5) {
+            drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
+          }
+          RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);
+        }
+    )
+      .finallyDo(() -> {
+        RobotState.getInstance().setRobotAction(CurrentAction.MANUAL_CONTROL);
+      });
   }
 
   private static class WheelRadiusCharacterizationState {

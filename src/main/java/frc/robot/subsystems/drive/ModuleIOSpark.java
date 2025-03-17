@@ -16,7 +16,6 @@ package frc.robot.subsystems.drive;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.util.misc.SparkUtil.*;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -28,7 +27,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -88,7 +86,7 @@ public class ModuleIOSpark implements ModuleIO {
             },
             MotorType.kBrushless);
     turnSpark =
-        new SparkMax(
+        new SparkFlex(
             switch (module) {
               case 0 -> frontLeftTurnCanId;
               case 1 -> frontRightTurnCanId;
@@ -104,7 +102,7 @@ public class ModuleIOSpark implements ModuleIO {
                     case 1 -> frontRightCanCoderId;
                     case 2 -> backLeftCanCoderId;
                     case 3 -> backRightCanCoderId;
-                    default ->0;
+                    default -> 0;
                 }
             );
     driveEncoder = driveSpark.getEncoder();
@@ -146,9 +144,6 @@ public class ModuleIOSpark implements ModuleIO {
             driveSpark.configure(
                 driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
-
-    var canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.withMagnetOffset(zeroRotation.getRotations());
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
     turnConfig

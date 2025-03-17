@@ -13,16 +13,19 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
 import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
@@ -32,10 +35,10 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbIOSim;
 import frc.robot.subsystems.climb.ClimbIOSolenoid;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
@@ -52,11 +55,10 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIONetworkTables;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
-import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.subsystems.wrist.WristIOSparkMax;
+import frc.robot.util.misc.AutoAlignUtil;
+import frc.robot.util.vision.VisionUtil;
 import frc.robot.util.visualization.VisualizationManager;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -75,6 +77,7 @@ public class RobotContainer {
   private final SlapdownAlgae slapdownAlgae;
   private final VisualizationManager vizManager;
   private final Superstructure superstructure;
+  private final AutoCommands autos;
 
   // Controller
   private final CommandXboxController primaryController = new CommandXboxController(0);
@@ -82,29 +85,30 @@ public class RobotContainer {
   private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  // private final LoggedDashboardChooser<Command> autoChooser;
+  private final AutoChooser choreoAutoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-
+        // Sim robot
         drive =
         new Drive(
-            new GyroIO() {},
+            new GyroIONavX(),
             new ModuleIOSpark(0),
             new ModuleIOSpark(1),
             new ModuleIOSpark(2),
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
-      vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+      vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
+      //Boot up camera server
+      CameraServer.startAutomaticCapture(0);
       break;
-        
-
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -116,10 +120,10 @@ public class RobotContainer {
                 new ModuleIOSim());
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
-        wrist = new Wrist(new WristIOSim());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIONetworkTables());
+        wrist = new Wrist(new WristIOSparkMax());
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
-        climb = new Climb(new ClimbIOSim());
+        climb = new Climb(new ClimbIO() {});
         break;
 
       default:
@@ -134,38 +138,42 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIO() {});
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;
     }
     vizManager = new VisualizationManager(elevator::getHeight, wrist::getAngle, slapdownAlgae::getAngle);
     superstructure = new Superstructure(elevator, wrist);
-
+    autos = new AutoCommands(drive, superstructure, endEffector);
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    choreoAutoChooser = new AutoChooser();
+    choreoAutoChooser.addCmd("Mid Barge C2 Low", autos::midBargeC2Low);
+    choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
+    choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
+    choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
+    //choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
+    choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
+    SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    try {
-        autoChooser.addDefaultOption("Choreo Test Auto", AutoBuilder.followPath(PathPlannerPath.fromChoreoTrajectory("Processor-A2-FarPickup")));
-    } catch(Exception e) {
-        autoInitFaliure.setText("Failed to Init Choreo Test Auto!");
-        autoInitFaliure.set(true);
-    }
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -177,6 +185,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //Cache April Tag
+    VisionUtil.getApriltagPose(1);
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -199,22 +210,32 @@ public class RobotContainer {
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
-    // controller
-    //     .b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //                 () ->
-    //                     drive.setPose(
-    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-    //                 drive)
-    //             .ignoringDisable(true));
+    primaryController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+                    drive)
+                .ignoringDisable(true));
+    primaryController
+      .back()
+        .onTrue(AutoAlignUtil.createPOIListCommand().ignoringDisable(true));
 
     /* 
      * Keybinds for the secondary controller
      * Focuses on the coral pieces
      * Elevator / Wrist / Endeffector
      */
-
+    //toggles properly
+    primaryController.y().onTrue(climb.climb());
+    primaryController
+      .a()
+        .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
+    // primaryController
+    //   .a()
+    //     .onTrue(climb.init());
     //Home
     secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
 
@@ -224,13 +245,17 @@ public class RobotContainer {
     secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
     secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
+    //knockout algae
+    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L2));
+    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L3));
+
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-        .alongWith(endEffector.intake()));
+        .alongWith(endEffector.intake().until(endEffector::hasCoral)));
     
     //intake / outtake
-    secondaryController.leftBumper().onTrue(endEffector.intake());
-    secondaryController.rightBumper().onTrue(endEffector.outtake());
+    secondaryController.leftBumper().whileTrue(endEffector.intake());
+    secondaryController.rightBumper().whileTrue(endEffector.outtake());
 
     //Reset elevator / wrist
     secondaryController.start().onTrue(elevator.requestZero());
@@ -238,16 +263,15 @@ public class RobotContainer {
 
     // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
 
-    //manual override buttons
-    elevator.setDefaultCommand(elevator.setJoystickOverride(() -> -secondaryController.getLeftY()));
-    wrist.setDefaultCommand(wrist.setJoystickOverride(() -> -secondaryController.getRightY()));
+    elevator.setJoystickSupplier(() -> -secondaryController.getLeftY());
+    wrist.setJoystickOverride(() -> -secondaryController.getRightY());
     
     //climb sequence
     primaryController.y().whileTrue(climb.climbSequence());
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    primaryController.x().whileTrue(slapdownAlgae.setAngleDegrees(-80).andThen(slapdownAlgae.intake()));
-    primaryController.b().whileTrue(slapdownAlgae.setAngleDegrees(80).andThen(slapdownAlgae.outtake()));
+    primaryController.rightTrigger().whileTrue(slapdownAlgae.intakeSequence());
+    primaryController.leftTrigger().whileTrue(slapdownAlgae.outtakeSequence());
     // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
     // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
@@ -258,14 +282,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return choreoAutoChooser.selectedCommand();
   }
 
   public void autonomousInit(){
     elevator.init();
   }
 
-  public void teleopInit(){
+  public void teleopInit() {
     elevator.init();
+    climb.init().schedule();
+    AutoAlignUtil.createPOIListCommand().schedule();
   }
 }

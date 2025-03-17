@@ -9,11 +9,13 @@ public class VisionPosition implements StructSerializable {
 
     public final double x;
     public final double y;
+    public final double r;
     public final int ID;
 
-    public VisionPosition(double x, double y, int ID) {
+    public VisionPosition(double x, double y, double r, int ID) {
         this.x = x;
         this.y = y;
+        this.r = r;
         this.ID = ID;
     }
 
@@ -34,26 +36,28 @@ public class VisionPosition implements StructSerializable {
 
         @Override
         public int getSize() {
-           return kSizeDouble * 2 + kSizeInt32;
+           return kSizeDouble * 3 + kSizeInt32;
         }
 
         @Override
         public String getSchema() {
-            return "double x;double y;int ID";
+            return "double x;double y;double r;int ID";
         }
 
         @Override
         public VisionPosition unpack(ByteBuffer bb) {
             double x = bb.getDouble();
             double y = bb.getDouble();
-            int ID = bb.getInt();
-            return new VisionPosition(x, y, ID);
+            double r = bb.getDouble();
+            int id = bb.getInt();
+            return new VisionPosition(x, y, r, id);
         }
 
         @Override
         public void pack(ByteBuffer bb, VisionPosition value) {
             bb.putDouble(value.x);
             bb.putDouble(value.y);
+            bb.putDouble(value.r);
             bb.putInt(value.ID);
         }
 

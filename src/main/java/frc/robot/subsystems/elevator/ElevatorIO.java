@@ -30,9 +30,4 @@ public class ElevatorIOInputs {
  public default boolean getBottomLimitSwitch() {
     return true;
 }
-
- public default boolean getTopLimitSwitch() {
-    return true;
-}
-
 }

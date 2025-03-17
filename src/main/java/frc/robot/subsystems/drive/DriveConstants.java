@@ -15,16 +15,17 @@ package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
-  public static final double maxSpeedMetersPerSec = 4.8;
+  public static final double maxSpeedMetersPerSec = 4.0;
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(30.0);
-  public static final double wheelBase = Units.inchesToMeters(30.0);
+  public static final double trackWidth = Units.inchesToMeters(25.0);
+  public static final double wheelBase = Units.inchesToMeters(25.0);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -35,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.943 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(2.155);
 
   // Device CAN IDs
   public static final int pigeonCanId = 20; //not yet determined/ not needed;
@@ -61,7 +62,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(2.0);
+  public static final double wheelRadiusMeters = Units.inchesToMeters(1.88); // 1.88
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -73,21 +74,21 @@ public class DriveConstants {
       (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
   // Drive PID configuration
-  public static final double driveKp = 0.0;
+  public static final double driveKp = 0.02;
   public static final double driveKd = 0.0;
-  public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKs = 0.18703;
+  public static final double driveKv = 0.11280;
   public static final double driveKt = driveMotorReduction / DCMotor.getNeoVortex(1).KtNMPerAmp;
-  public static final double driveSimP = 0.05;
+  public static final double driveSimP = 0.5;
   public static final double driveSimD = 0.0;
-  public static final double driveSimKs = 0.01189;
+  public static final double driveSimKs = 0.01191;
   public static final double driveSimKv = 0.11202;
 
   // Turn motor configuration
   public static final boolean turnInverted = true;
-  public static final int turnMotorCurrentLimit = 20;
+  public static final int turnMotorCurrentLimit = 35;
   public static final double turnMotorReduction = (150.0 / 7.0);
-  public static final DCMotor turnGearbox = DCMotor.getNEO(1);
+  public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);
 
   // Turn encoder configuration
   public static final boolean turnEncoderInverted = false;
@@ -95,14 +96,21 @@ public class DriveConstants {
   public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0 / turnMotorReduction; // RPM -> Rad/Sec
 
   // Turn PID configuration
-  public static final double turnKp = 2.0;
+  public static final double turnKp = 3.0;
   public static final double turnKd = 0.0;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
-  // PathPlanner configuration
+  //Path following PID configuration
+  public static final double xKp = 1.75;
+  public static final double xKd = 0.0;
+  public static final double yKp = 1.75;
+  public static final double yKd = 0.0;
+  public static final double rotationKp = 1.75;
+  public static final double rotationKd = 0.0;
+  // PathPlanner
   public static final double robotMassKg = 74.088;
   public static final double robotMOI = 6.883;
   public static final double wheelCOF = 1.2;

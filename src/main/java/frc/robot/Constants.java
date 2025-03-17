@@ -14,7 +14,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -37,41 +36,41 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = -7.0;
-    public static final double OUTAKE_VOLTAGE = 5.0;
+    public static final double INTAKE_VOLTAGE = 1.5;
+    public static final double OUTAKE_VOLTAGE = -5.0;
+    public static final double CORAL_THRESHOLD = 50.0;
+    public static final int MOTOR_ID = 16;
 
   }
   public static class ElevatorConstants {
-    // fix numbers later
-    public static final double RISE_VOLTAGE = 5.0;
-    public static final double DROP_VOLTAGE = -5.0;
     public static final double DCMOTOR_MASS = 2;
     public static final double ELEVATOR_MASS = Units.lbsToKilograms(15);
-    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.44); 
-    public static final double GEARING = 4;  // change to 5 for elevator
-    public static final double MIN_HEIGHT = Units.inchesToMeters(18);
-    public static final double MAX_HEIGHT = Units.inchesToMeters(70 + 18);
-    public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence
+    public static final double DRIVING_DRUM_RADIUS = Units.inchesToMeters(1.449); // Actual sprocket diameter
+    public static final double GEARING = 12;
+    public static final double MIN_HEIGHT = 0.627; 
+    public static final double MAX_HEIGHT = 2.137;
+    public static final double STARTING_HEIGHT = MIN_HEIGHT + Units.inchesToMeters(10); //simulate homing sequence ONLY FOR SIM
     public static final double END_EFFECTOR_MIN_HEIGHT = MIN_HEIGHT;
-    public static final int DUTY_CYCLE_ENCODER = 1;
+    public static final double ZEROING_VOLTAGE = -0.5;
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
     public static final double ELEVATOR_JOYSTICK_SLEW_VALUE = -0.00346;
-    public static final int MOTOR_ID = 3;
+    public static final int MOTOR_ID = 13;
   }
 
 
   public static class SlapdownAlgaeConstants {
-    public static final double INTAKE_VOLTAGE = -7.0;
+    public static final double INTAKE_VOLTAGE = -5.0;
     public static final double OUTAKE_VOLTAGE = 5.0;
-    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 0;
-    // public static final String SLAPDOWNALGAE_ENCODER_OFFSET = null;
-    // public static final String SLAPDOWNALGAE_ENCODER_SCALE = null;
-    // public static final String SLAPDOWNALGAE_IN_OUT_TAKE_MOTOR = null;
-    // public static final String SLAPDOWNALGAE_PIVOT_MOTOR = null;
-    // public static final String PIVOT_SLAPDOWNALGAE_MOTOR = null;
-    // public static final String INTAKE_SLAPDOWNALGAE_MOTOR = null;
-
-    public static final double MAX_ANGLE = 360;
-    public static final double ZERO_ANGLE = 0;
+    public static final int SLAPDOWNALGAE_DUTY_CYCLE_ENCODER = 8;
+    public static final double ENCODER_OFFSET = 108.125;
+    public static final double HOME_ANGLE_DEGREES = 0;
+    public static final double OUTTAKE_ANGLE_DEGREES = 3;
+    public static final double INTAKE_ANGLE_DEGREES = 60.0;
+    public static final double HOLD_ANGLE_DEGREES = 14.0;
+    public static final double MAX_ANGLE_DEGREES = 80.0;
+    public static final double ENCODER_FREQUENCY = 975.6;
+    public static final int INTAKE_MOTOR_ID = 20;
+    public static final int PIVOT_MOTOR_ID = 18;
 
     /* 
      * Taken from onshape in form m^2kg, 
@@ -82,18 +81,16 @@ public final class Constants {
   }
 
   public static class WristConstants {
-    //all filler values
     public static final double WRIST_ZERO = 0.0;
     //public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
     //public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
     //public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
     //public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
-    public static final int WRIST_ENCODER_OFFSET = 1;
-    public static final int WRIST_ENCODER_SCALE = 1;
-    public static final double WRIST_MAX_ANGLE = 90.0;
-    public static final double WRIST_MIN_VALUE = -90.0;
-    public static final double WRIST_JOYSTICK_SLEW_VALUE = -0.00346;
+    public static final double WRIST_ENCODER_OFFSET = 26.9;
+    public static final double WRIST_MAX_ANGLE = 360;
+    public static final double WRIST_JOYSTICK_SLEW_VALUE = 3;
+    public static final double WRIST_EXPECTED_ZERO = 0;
     //Start Angle in Degrees
     public static final double CORAL_POSITION_PICKUP = 35.0;
     public static final double CORAL_POSITION_L1 = 0.0;
@@ -103,14 +100,29 @@ public final class Constants {
     //End Angle in Degrees
     public static final double GEAR_REDUCTION = 1.0 / 150.0;
     /* 
-    * DANGER ZONE EXPLANATION!!!!!
+    * SAFE ZONE EXPLANATION!!!!!
     * With our robot layout, there is a crossbar on the first stage (we ony have 
     * to care about this when we are going to max height)
     * Because of this, there are a couple of specific situations in which we need to move the wrist FIRST, and then move elevator.
     * Most of the time we can move both at same time
     */ 
-    public static final double START_DANGER_ZONE = 15.0;
-    public static final double END_DANGER_ZONE = 90.0; // Basically starts at 15 degrees, and then can't rotate anymore
+    public static final double START_SAFE_ZONE = 0.0;
+    public static final double END_SAFE_ZONE = 106;
+
+  }
+
+  public static final class AutoAlignConstants {
+    public static final double TRANSLATION_KP = 0.5;
+    public static final double TRANSLATION_KD = 0.0;
+    public static final double TRANSLATION_VELOCITY = 3.5; // Meters/Sec
+    public static final double TRANSLATION_ACCELERATION = 3.5; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 3.0; // Meters/Sec^3
+    public static final double ROTATION_KP = 2.0;
+    public static final double ROTATION_KD = 0.0;
+    public static final double ROTATION_MAX_VELOCITY = 5.0;
+    public static final double ROTATION_MAX_ACCELERATION = 10.0;
+    public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
+    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0);
 
   }
 }

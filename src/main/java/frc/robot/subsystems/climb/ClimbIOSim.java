@@ -19,14 +19,14 @@ public class ClimbIOSim implements ClimbIO {
         inputs.extendedLock = lockingSolenoidSim.getOutput();
     };
 
-    @Override
-    public void setClimbEnabled(boolean setExtended) {
-        climbingSolenoidSim.setOutput(setExtended);
-    };
+    // @Override
+    // public void setClimbEnabled(boolean setExtended) {
+    //     climbingSolenoidSim.setOutput(setExtended);
+    // };
 
-    @Override
-    public void setLockEnabled(boolean setExtended) {
-        lockingSolenoidSim.setOutput(setExtended);
-    };
+    // @Override
+    // public void setLockEnabled(boolean setExtended) {
+    //     lockingSolenoidSim.setOutput(setExtended);
+    // };
 }
 

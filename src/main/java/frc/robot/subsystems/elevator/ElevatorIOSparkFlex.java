@@ -1,11 +1,13 @@
 package frc.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
-
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import edu.wpi.first.math.util.Units;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.ElevatorConstants;
@@ -15,12 +17,21 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     private final RelativeEncoder relativeEncoder; 
     private final double rotationsToMeters = ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI / ElevatorConstants.GEARING;
     private final double metersToRotations = 1 / rotationsToMeters;
-    DigitalInput topLimitSwitch = new DigitalInput(8);
-    DigitalInput bottomLimitSwitch = new DigitalInput(9);
+    private double volts = 0;
+    private double minPosition;
+    DigitalInput bottomLimitSwitch = new DigitalInput(ElevatorConstants.BOTTOM_LIMIT_SWITCH_ID);
     
     public ElevatorIOSparkFlex() {
         this.elevatorMotor = new SparkFlex(ElevatorConstants.MOTOR_ID, MotorType.kBrushless);
         this.relativeEncoder = elevatorMotor.getEncoder();
+        SparkFlexConfig config = new SparkFlexConfig();
+        config
+            .smartCurrentLimit(50)
+            .idleMode(IdleMode.kBrake)
+            .inverted(true)
+            .voltageCompensation(12.0)
+            .encoder.positionConversionFactor(rotationsToMeters);
+        this.elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // old code 
         // EncoderConfig encoderConf = new EncoderConfig();
@@ -33,7 +44,7 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.currentAmps = elevatorMotor.getOutputCurrent();
         inputs.voltage = elevatorMotor.getAppliedOutput() * elevatorMotor.getBusVoltage();
-        inputs.positionMeters = relativeEncoder.getPosition() * rotationsToMeters;
+        inputs.positionMeters = relativeEncoder.getPosition();
     } 
 
  @Override
@@ -42,17 +53,12 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     }
 
     @Override
-    public boolean getBottomLimitSwitch(){
-        return bottomLimitSwitch.get();
-    }
-
-    @Override
-    public boolean getTopLimitSwitch(){
-        return topLimitSwitch.get();
+    public boolean getBottomLimitSwitch() {
+        return !bottomLimitSwitch.get();
     }
 
     @Override 
-    public void setMinPosition(){
-        relativeEncoder.setPosition(Units.inchesToMeters(18) * metersToRotations);
+    public void setMinPosition() {
+        relativeEncoder.setPosition(ElevatorConstants.MIN_HEIGHT);
     }
 }

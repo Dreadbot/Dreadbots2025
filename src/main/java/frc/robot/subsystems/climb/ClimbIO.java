@@ -2,6 +2,8 @@ package frc.robot.subsystems.climb;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+
 public interface ClimbIO {
     
     @AutoLog
@@ -9,13 +11,14 @@ public interface ClimbIO {
 
         public boolean extendedClimb = false;
         public boolean extendedLock = false;
-        
-        }
+        public boolean extendedClaw = false;
+    }
     
- public default void updateInputs(ClimbIOInputs inputs) {};
+    public default void updateInputs(ClimbIOInputs inputs) {};
 
- public default void setLockEnabled(boolean setExtended) {};
+    public default void setClawEnabled(boolean setExtended) {};
+    public default void setLockState(DoubleSolenoid.Value value) {};
+    public default void setClimbState(DoubleSolenoid.Value value) {};
 
- public default void setClimbEnabled(boolean setExtended) {};
 
     }
