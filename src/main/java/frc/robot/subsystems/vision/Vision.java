@@ -23,6 +23,7 @@ public class Vision extends SubsystemBase {
 	private final PoseSupplier supplier;
 	private Pose2d lastVisionPose;
 	private double lastVisionTimestamp;
+	private boolean inAutoAlign = false;
 
 
 	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
@@ -55,6 +56,17 @@ public class Vision extends SubsystemBase {
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
 				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 2.5;
+
+			if(inAutoAlign){
+				shouldRejectTag = shouldRejectTag 
+				|| detection.id() == 1
+				|| detection.id() == 2
+				|| detection.id() == 3
+				|| detection.id() == 12
+				|| detection.id() == 13
+				|| detection.id() == 16;
+			}
+			
 			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				lastVisionPose = detection.pose();
@@ -81,6 +93,10 @@ public class Vision extends SubsystemBase {
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
 		Logger.recordOutput("Vision/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
 
+	}
+
+	public void setInAutoAlign(boolean inAutoAlign) {
+		this.inAutoAlign = inAutoAlign;
 	}
 
 
