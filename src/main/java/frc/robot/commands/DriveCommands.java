@@ -151,8 +151,6 @@ public class DriveCommands {
                       yVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
                       omega);
 
-        boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
-
         drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,

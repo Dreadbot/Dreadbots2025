@@ -16,9 +16,7 @@ public class ElevatorIOSparkFlex implements ElevatorIO {
     private final SparkFlex elevatorMotor;
     private final RelativeEncoder relativeEncoder; 
     private final double rotationsToMeters = ElevatorConstants.DRIVING_DRUM_RADIUS * 2 * Math.PI / ElevatorConstants.GEARING;
-    private final double metersToRotations = 1 / rotationsToMeters;
-    private double volts = 0;
-    private double minPosition;
+
     DigitalInput bottomLimitSwitch = new DigitalInput(ElevatorConstants.BOTTOM_LIMIT_SWITCH_ID);
     
     public ElevatorIOSparkFlex() {

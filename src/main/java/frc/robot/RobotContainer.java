@@ -17,10 +17,8 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import choreo.auto.AutoChooser;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -82,8 +80,7 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController primaryController = new CommandXboxController(0);
   private final CommandXboxController secondaryController = new CommandXboxController(1);
-  private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
-
+  
   // Dashboard inputs
   // private final LoggedDashboardChooser<Command> autoChooser;
   private final AutoChooser choreoAutoChooser;
@@ -158,6 +155,9 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
     choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+    // Configure the button bindings
+    configureButtonBindings();
+  }
 
     // Set up SysId routines
     // autoChooser.addOption(
@@ -174,9 +174,7 @@ public class RobotContainer {
     //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
     //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // Configure the button bindings
-    configureButtonBindings();
-  }
+    
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -272,8 +270,6 @@ public class RobotContainer {
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
     primaryController.rightTrigger().whileTrue(slapdownAlgae.intakeSequence());
     primaryController.leftTrigger().whileTrue(slapdownAlgae.outtakeSequence());
-    // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
-    // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
 
   /**
