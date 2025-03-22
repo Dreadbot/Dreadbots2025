@@ -231,7 +231,7 @@ public class RobotContainer {
      * Elevator / Wrist / Endeffector
      */
     //toggles properly
-    primaryController.y().onTrue(climb.climb());
+    primaryController.y().onTrue(climb.climb(primaryController));
     primaryController
       .a()
         .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));

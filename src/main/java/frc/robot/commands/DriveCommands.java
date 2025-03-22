@@ -380,12 +380,10 @@ public class DriveCommands {
             drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
           }
           RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);
-          vision.setInAutoAlign(true);
         }
     )
       .finallyDo(() -> {
         RobotState.getInstance().setRobotAction(CurrentAction.MANUAL_CONTROL);
-        vision.setInAutoAlign(false);
       });
   }
 

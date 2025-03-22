@@ -13,6 +13,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
+import frc.robot.RobotState.CurrentAction;
 import frc.robot.subsystems.vision.VisionIO.VisionObservation;
 import frc.robot.util.vision.VisionUtil;
 
@@ -23,8 +25,6 @@ public class Vision extends SubsystemBase {
 	private final PoseSupplier supplier;
 	private Pose2d lastVisionPose;
 	private double lastVisionTimestamp;
-	private boolean inAutoAlign = false;
-
 
 	public Vision(VisionConsumer consumer, PoseSupplier supplier, VisionIO io) {
 		this.io = io;
@@ -57,7 +57,7 @@ public class Vision extends SubsystemBase {
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
 				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 2.5;
 
-			if(inAutoAlign){
+			if(RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN){
 				shouldRejectTag = shouldRejectTag 
 				|| detection.id() == 1
 				|| detection.id() == 2
@@ -66,7 +66,7 @@ public class Vision extends SubsystemBase {
 				|| detection.id() == 13
 				|| detection.id() == 16;
 			}
-			
+
 			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				lastVisionPose = detection.pose();
@@ -93,10 +93,6 @@ public class Vision extends SubsystemBase {
 		Logger.recordOutput("Vision/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
 		Logger.recordOutput("Vision/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
 
-	}
-
-	public void setInAutoAlign(boolean inAutoAlign) {
-		this.inAutoAlign = inAutoAlign;
 	}
 
 
