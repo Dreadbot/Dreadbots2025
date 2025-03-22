@@ -23,12 +23,12 @@ public class VisionCamera {
 	private PoseSupplier supplier;
     private double linearStdDev;
 	private double angularStdDev;
-    private VisionDetection lastVisionObservation;
+    private VisionDetection lastVisionDetection;
 
     public VisionCamera(VisionIO io, int index) {
 		this.io = io;
         this.index = index;
-		this.lastVisionObservation = new VisionDetection(new Pose2d(), 1, 0.0);
+		this.lastVisionDetection = new VisionDetection(new Pose2d(), 1, 0.0);
 		this.linearStdDev =
 			switch (index) {
 				case 0 -> frontRightCameraLinearStdDevs;
@@ -53,7 +53,7 @@ public class VisionCamera {
 		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
 
 		for(VisionDetection detection : inputs.detections) {
-			lastVisionObservation = detection;
+			lastVisionDetection = detection;
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			boolean shouldRejectTag =
@@ -94,7 +94,7 @@ public class VisionCamera {
 			Matrix<N3, N1> visionMeasurementStdDevs);
 	}
 	public VisionDetection getLastVisionObservation() {
-		return lastVisionObservation;
+		return lastVisionDetection;
 	}
 	@FunctionalInterface
 	public static interface PoseSupplier {
