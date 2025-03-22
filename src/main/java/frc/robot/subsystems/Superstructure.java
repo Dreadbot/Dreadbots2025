@@ -27,9 +27,8 @@ public class Superstructure {
          */
         return Commands.either(
             wrist.setAngleDegrees(SuperstructureState.STOW.angle)
-                .andThen(Commands.waitUntil(wrist::atSetpoint))
                 .andThen(elevator.riseTo(level.height))
-                .andThen(Commands.waitUntil(elevator::atHeight))
+                .andThen(Commands.waitUntil(elevator::inSafeZone))
                 .andThen(wrist.setAngleDegrees(level.angle)),
             elevator.riseTo(level.height)
                 .andThen(wrist.setAngleDegrees(level.angle)),
@@ -48,7 +47,7 @@ public class Superstructure {
         L3(1.415, 65.6),
         L4(2.137, 49.0),
         STOW(0.627, 8.0),
-        PICKUP(0.84, 145.0),
+        PICKUP(0.87, 135.0),
         KNOCKOUT_L2(0.97, 90.0),
         KNOCKOUT_L3(1.38, 90.0);
         SuperstructureState(double height, double angle) {

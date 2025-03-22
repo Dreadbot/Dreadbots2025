@@ -143,6 +143,10 @@ public class Elevator extends SubsystemBase {
         return MathUtil.isNear(goal.position, inputs.positionMeters, 0.05); // 2cm tolerance
     }
 
+    public boolean inSafeZone() {
+        return inputs.positionMeters < 1.30;
+    }
+
     public void init() {
         voltage = 0;
     }

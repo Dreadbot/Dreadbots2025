@@ -199,13 +199,10 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Barge C2 High", autos::midBargeC2High);
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Middle D1 High", autos::midD2High);
-    choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
-    choreoAutoChooser.addCmd("Mid Barge C2 B1 High", autos::midBargeC2B1High);
-
-    //choreoAutoChooser.addRoutine("Mid Processor E1 F1 High", autos::midProcessorE1F1High);
-    
-
-
+    //choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
+    choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
+    choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines
@@ -277,10 +274,11 @@ public class RobotContainer {
      * Focuses on the coral pieces
      * Elevator / Wrist / Endeffector
      */
-    primaryController.y().onTrue(climb.climbSequence());
+    //toggles properly
+    primaryController.y().onTrue(climb.climb(primaryController));
     primaryController
       .a()
-        .whileTrue(DriveCommands.driveToPosition(drive, () -> DriveCommands.getAutoAlignPose(drive::getPose, primaryController.leftBumper(), primaryController.rightBumper())).beforeStarting(() -> Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs))));
+        .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
     // primaryController
     //   .a()
     //     .onTrue(climb.init());
@@ -338,8 +336,9 @@ public class RobotContainer {
     elevator.init();
   }
 
-  public void teleopInit(){
+  public void teleopInit() {
     elevator.init();
     climb.init().schedule();
+    AutoAlignUtil.createPOIListCommand().schedule();
   }
 }
