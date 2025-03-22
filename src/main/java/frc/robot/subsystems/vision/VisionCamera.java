@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import java.util.ArrayList;
 
 import org.littletonrobotics.junction.Logger;
@@ -17,20 +19,30 @@ public class VisionCamera {
     private final VisionIO io;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     private final int index;
-	private final VisionConsumer consumer;
-	private final PoseSupplier supplier;
+	private VisionConsumer consumer;
+	private PoseSupplier supplier;
     private double linearStdDev;
 	private double angularStdDev;
     private VisionDetection lastVisionObservation;
 
-    public VisionCamera(VisionConsumer consumer, PoseSupplier supplier, VisionIO io, int index, double linearStdDev, double angularStdDev) {
-        this.consumer = consumer;
-		this.supplier = supplier;
+    public VisionCamera(VisionIO io, int index) {
 		this.io = io;
         this.index = index;
-        this.linearStdDev = linearStdDev;
-		this.angularStdDev = angularStdDev;
-		this.lastVisionObservation = new VisionDetection(new Pose2d(), 0, 0.0);
+		this.lastVisionObservation = new VisionDetection(new Pose2d(), 1, 0.0);
+		this.linearStdDev =
+			switch (index) {
+				case 0 -> frontRightCameraLinearStdDevs;
+				case 1 -> frontLeftCameraLinearStdDevs;
+				case 2 -> backCameraLinearStdDevs;
+				default -> 1_000_000;
+			};
+		this.angularStdDev =
+			switch (index) {
+				case 0 -> frontRightCameraAngularStdDevs;
+				case 1 -> frontLeftCameraAngularStdDevs;
+				case 2 -> backCameraAngularStdDevs;
+				default -> 1_000_000;
+			};
     }
 
     public void periodic() {
@@ -87,5 +99,11 @@ public class VisionCamera {
 	@FunctionalInterface
 	public static interface PoseSupplier {
 		public Pose2d getPose();
+	}
+	public void setConsumer(VisionConsumer consumer) {
+		this.consumer = consumer;
+	}
+	public void setSupplier(PoseSupplier supplier) {
+		this.supplier = supplier;
 	}
 }

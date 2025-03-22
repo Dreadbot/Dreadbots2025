@@ -1,9 +1,15 @@
 package frc.robot.subsystems.vision;
 
 public final class VisionConstants {
-    public static final String FRONT_RIGHT_CAMERA_NAME = "cam0";
-    public static final String FRONT_LEFT_CAMERA_NAME = "cam1";
-    public static final String BACK_CAMERA_NAME = "cam2";
-    public static final double TRANSLATION_STD_DEV = 0.005;
-    public static final double ROTATION_STD_DEV = 100_000;
+    public static final String frontRightCameraName = "cam0";
+    public static final String frontLeftCameraName = "cam1";
+    public static final String backCameraName = "cam2";
+
+    public static final double backCameraLinearStdDevs = 0.005;
+    public static final double frontLeftCameraLinearStdDevs = 0.005;
+    public static final double frontRightCameraLinearStdDevs = 0.005;
+
+    public static final double backCameraAngularStdDevs = 100_000;
+    public static final double frontLeftCameraAngularStdDevs = 100_000;
+    public static final double frontRightCameraAngularStdDevs = 100_000;
 }

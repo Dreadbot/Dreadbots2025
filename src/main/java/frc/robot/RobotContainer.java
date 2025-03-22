@@ -111,27 +111,18 @@ public class RobotContainer {
       wrist = new Wrist(new WristIOSparkMax());
       cameras = List.of(
         new VisionCamera(
-          drive::addVisionMeasurement,
-          drive::getPose,
-          new VisionIOCamera(VisionConstants.FRONT_RIGHT_CAMERA_NAME),
-          0,
-          VisionConstants.TRANSLATION_STD_DEV,
-          VisionConstants.ROTATION_STD_DEV),
+          new VisionIOCamera(VisionConstants.frontRightCameraName), 
+          0),
         new VisionCamera(
-          drive::addVisionMeasurement,
-          drive::getPose,
-          new VisionIOCamera(VisionConstants.FRONT_LEFT_CAMERA_NAME),
-          1,
-          VisionConstants.TRANSLATION_STD_DEV,
-          VisionConstants.ROTATION_STD_DEV),
+          new VisionIOCamera(VisionConstants.frontLeftCameraName),
+          1),
         new VisionCamera(
-          drive::addVisionMeasurement,
-          drive::getPose,
-          new VisionIOCamera(VisionConstants.BACK_CAMERA_NAME),
-          2,
-          VisionConstants.TRANSLATION_STD_DEV,
-          VisionConstants.ROTATION_STD_DEV));
-      vision = new Vision(cameras);
+          new VisionIOCamera(VisionConstants.backCameraName),
+          2));
+      vision = new Vision(
+        cameras,
+        drive::addVisionMeasurement,
+        drive::getPose);
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
@@ -152,27 +143,18 @@ public class RobotContainer {
         wrist = new Wrist(new WristIOSparkMax());
         cameras = List.of(
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
-            new VisionIOCamera(VisionConstants.FRONT_RIGHT_CAMERA_NAME),
-            0,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV),
+            new VisionIOCamera(VisionConstants.frontRightCameraName), 
+            0),
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
-            new VisionIOCamera(VisionConstants.FRONT_LEFT_CAMERA_NAME),
-            1,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV),
+            new VisionIOCamera(VisionConstants.frontLeftCameraName),
+            1),
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
-            new VisionIOCamera(VisionConstants.BACK_CAMERA_NAME),
-            2,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV));
-        vision = new Vision(cameras);
+            new VisionIOCamera(VisionConstants.backCameraName),
+            2));
+        vision = new Vision(
+          cameras,
+          drive::addVisionMeasurement,
+          drive::getPose);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         climb = new Climb(new ClimbIO() {});
         break;
@@ -191,27 +173,18 @@ public class RobotContainer {
         wrist = new Wrist(new WristIO() {});
         cameras = List.of(
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
             new VisionIO() {},
-            0,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV),
+            0),
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
             new VisionIO() {},
-            1,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV),
+            1),
           new VisionCamera(
-            drive::addVisionMeasurement,
-            drive::getPose,
             new VisionIO() {},
-            2,
-            VisionConstants.TRANSLATION_STD_DEV,
-            VisionConstants.ROTATION_STD_DEV));
-        vision = new Vision(cameras);
+            2));
+        vision = new Vision(
+          cameras,
+          drive::addVisionMeasurement,
+          drive::getPose);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;
