@@ -89,9 +89,9 @@ public class VisionCamera {
 			tagPoses.add(tagPose);
 
 			// std dev scaling goes here
-			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/VisionPose" , detection.pose());
-			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/tagPoseLen", tagPoses.size());
-			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/VisionPose" , detection.pose());
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/tagPoseLen", tagPoses.size());
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
 			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
 		}
