@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import frc.robot.RobotState;
+import frc.robot.RobotState.CurrentAction;
 import frc.robot.subsystems.vision.VisionIO.VisionDetection;
 import frc.robot.util.vision.VisionUtil;
 
@@ -67,6 +69,17 @@ public class VisionCamera {
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
 				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
+
+			if(RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN){
+				shouldRejectTag = shouldRejectTag 
+				|| detection.id() == 1
+				|| detection.id() == 2
+				|| detection.id() == 3
+				|| detection.id() == 12
+				|| detection.id() == 13
+				|| detection.id() == 16;
+			}
+			
 			if(shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				continue;
