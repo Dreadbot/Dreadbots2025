@@ -10,12 +10,12 @@ import frc.robot.subsystems.vision.VisionCamera.VisionConsumer;
 import frc.robot.subsystems.vision.VisionIO.VisionDetection;
 
 public class Vision extends SubsystemBase {
-	private VisionDetection lastVisionObservation;
+	private VisionDetection lastVisionDetection;
 	private final List<VisionCamera> cameras;
 
 	public Vision(List<VisionCamera> cameras, VisionConsumer consumer, PoseSupplier supplier) {
 		this.cameras = cameras;
-		this.lastVisionObservation = new VisionDetection(new Pose2d(), 0, 0.0);;
+		this.lastVisionDetection = new VisionDetection(new Pose2d(), 0, 0.0);;
 		for (VisionCamera camera : cameras) {
 			camera.setConsumer(consumer);
 			camera.setSupplier(supplier);
@@ -24,19 +24,23 @@ public class Vision extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		ArrayList<VisionDetection> lastVisionObservations = new ArrayList<VisionDetection>();
+		ArrayList<VisionDetection> lastVisionDetections = new ArrayList<VisionDetection>();
 		for (VisionCamera camera : cameras) {
 			camera.periodic();
-			lastVisionObservations.add(camera.getLastVisionObservation());
+			lastVisionDetections.add(camera.getLastVisionObservation());
 		}
-		for (VisionDetection observation : lastVisionObservations) {
-			if (observation.timestamp() > lastVisionObservation.timestamp()) {
-				lastVisionObservation = observation;
+		for (VisionDetection observation : lastVisionDetections) {
+			if (observation.timestamp() > lastVisionDetection.timestamp()) {
+				lastVisionDetection = observation;
 			}
 		}
 	}
 
 	public Pose2d getLastVisionPose() {
-		return lastVisionObservation.pose();
+		return lastVisionDetection.pose();
+	}
+
+	public VisionDetection getLastVisionDetection() {
+		return lastVisionDetection;
 	}
 }
