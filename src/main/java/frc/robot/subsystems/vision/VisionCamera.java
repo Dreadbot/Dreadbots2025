@@ -76,14 +76,14 @@ public class VisionCamera {
 			tagPoses.add(tagPose);
 
 			// std dev scaling goes here
-			Logger.recordOutput("Vision/VisionPose" + Integer.toString(index), detection.pose());
-			Logger.recordOutput("Vision/tagPoseLen" + Integer.toString(index), tagPoses.size());
-			Logger.recordOutput("Vision/PoseTimestamp" + Integer.toString(index), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
+			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/VisionPose" , detection.pose());
+			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/tagPoseLen", tagPoses.size());
+			Logger.recordOutput("Vision/Cam/" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
 
 			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
 		}
-		Logger.recordOutput("Vision/TagPoses" + Integer.toString(index), tagPoses.toArray(new Pose3d[tagPoses.size()]));
-		Logger.recordOutput("Vision/RejectedPoses" + Integer.toString(index), rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
+		Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
+		Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
     }
 
 	@FunctionalInterface
