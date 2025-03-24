@@ -4,9 +4,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Climb extends SubsystemBase {
     
@@ -58,19 +60,22 @@ public class Climb extends SubsystemBase {
         io.setClawEnabled(false);
     });
    }
-   public Command climbSequence() {
+   public Command climbSequence(CommandXboxController controller) {
         return extendClaw()
             .andThen(Commands.waitSeconds(0.5))
             .andThen(extendLock())
             .andThen(Commands.waitSeconds(0.5))
             .andThen(extendClimb()
-            .andThen(() -> {isClimbed = true;}));
+            .andThen(() -> {controller.setRumble(RumbleType.kBothRumble, .5);})
+            .andThen(Commands.waitSeconds(1))
+            .andThen(() -> {controller.setRumble(RumbleType.kBothRumble, 0);})
+            .beforeStarting(() -> {isClimbed = true;}));
    }
 
    public Command init() {
     return retractLock()
         .andThen(retractClimb())
-        .andThen(Commands.waitSeconds(0.5))
+        .andThen(Commands.waitSeconds(0.2))
         .andThen(retractClaw())
         .andThen(() -> {isClimbed = false;});
    }
@@ -79,7 +84,7 @@ public class Climb extends SubsystemBase {
     return isClimbed;
    }
 
-   public Command climb(){
-    return Commands.either(init(), climbSequence(), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
+   public Command climb(CommandXboxController controller){
+    return Commands.either(init(), climbSequence(controller), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
    }
 }

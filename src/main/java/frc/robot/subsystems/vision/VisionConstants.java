@@ -1,13 +1,15 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-
 public final class VisionConstants {
-    public static final String FRONT_CAMERA_NAME = "azathoth";
-    public static final double TRANSLATION_STD_DEV = 0.005;
-    public static final double ROTATION_STD_DEV = 100_000;
-    public static final double TIMESTAMP_OFFSET = 1.0 / 50.0;
+    public static final String frontRightCameraName = "cam0";
+    public static final String frontLeftCameraName = "cam1";
+    public static final String backCameraName = "cam2";
+
+    public static final double backCameraLinearStdDevs = 0.005;
+    public static final double frontLeftCameraLinearStdDevs = 0.005;
+    public static final double frontRightCameraLinearStdDevs = 0.005;
+
+    public static final double backCameraAngularStdDevs = 100_000;
+    public static final double frontLeftCameraAngularStdDevs = 100_000;
+    public static final double frontRightCameraAngularStdDevs = 100_000;
 }

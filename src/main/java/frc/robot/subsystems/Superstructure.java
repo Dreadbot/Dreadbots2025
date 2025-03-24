@@ -47,7 +47,7 @@ public class Superstructure {
         L3(1.415, 65.6),
         L4(2.137, 49.0),
         STOW(0.627, 8.0),
-        PICKUP(0.84, 145.0),
+        PICKUP(0.87, 135.0),
         KNOCKOUT_L2(0.97, 90.0),
         KNOCKOUT_L3(1.38, 90.0);
         SuperstructureState(double height, double angle) {
