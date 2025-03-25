@@ -28,6 +28,24 @@ public class VisionUtil {
     }
 
     /**
+     * Returns whether the ID is not a reef ID
+     * @param id ID of tag
+     * @return Indicates whether ID is not reef ID or is
+     */
+
+    public static boolean isNotReefId(int id) {
+        return id == 1
+        || id == 2
+        || id == 3
+        || id == 4
+        || id == 5
+        || id == 12
+        || id == 13
+        || id == 14
+        || id == 15
+        || id == 16;
+    }
+    /**
      * Finds global pose given the world axes offset and ID of the tag
      * @param offset World axes offset
      * @param tagId ID of tag

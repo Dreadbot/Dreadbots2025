@@ -70,17 +70,11 @@ public class VisionCamera {
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
 				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
 
-			if(RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN){
-				shouldRejectTag = shouldRejectTag 
-				|| detection.id() == 1
-				|| detection.id() == 2
-				|| detection.id() == 3
-				|| detection.id() == 12
-				|| detection.id() == 13
-				|| detection.id() == 16;
+			if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) { // If we are auto aligning, or this cam is the back cam, reject every non barge tags 
+				shouldRejectTag = shouldRejectTag || VisionUtil.isNotReefId(detection.id());
 			}
 			
-			if(shouldRejectTag) {
+			if (shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				continue;
 			}
