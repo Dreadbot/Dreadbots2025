@@ -36,9 +36,9 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = 1.5;
-    public static final double OUTAKE_VOLTAGE = -5.0;
-    public static final double CORAL_THRESHOLD = 50.0;
+    public static final double INTAKE_VOLTAGE = -12.0;
+    public static final double OUTAKE_VOLTAGE = 7.0;
+    public static final double CORAL_THRESHOLD = 5700;
     public static final int MOTOR_ID = 16;
 
   }

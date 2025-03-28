@@ -48,8 +48,9 @@ public class Superstructure {
         L4(2.137, 49.0),
         STOW(0.627, 8.0),
         PICKUP(0.87, 135.0),
-        KNOCKOUT_L2(0.97, 90.0),
-        KNOCKOUT_L3(1.38, 90.0);
+        PLUCK_L2(0.813, 96.0),
+        PLUCK_L3(1.221, 96.0),
+        BARGE(2.137, 149.0);
         SuperstructureState(double height, double angle) {
             this.height = height;
             this.angle = angle;

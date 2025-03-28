@@ -39,6 +39,8 @@ import edu.wpi.first.math.util.Units;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
  * Module IO implementation for Spark Flex drive motor controller, Spark Max turn motor controller,
  * and duty cycle absolute encoder.
@@ -66,7 +68,10 @@ public class ModuleIOSpark implements ModuleIO {
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
+  private int moduleID;
+
   public ModuleIOSpark(int module) {
+    moduleID = module;
     zeroRotation =
         switch (module) {
           case 0 -> frontLeftZeroRotation;
@@ -115,7 +120,8 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(driveMotorCurrentLimit)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .closedLoopRampRate(0.001);
     driveConfig
         .encoder
         .positionConversionFactor(driveEncoderPositionFactor)
@@ -125,6 +131,8 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .minOutput(-2.0)
+        .maxOutput(2.0) // uped open ramp rate default is 1.0
         .pidf(
             driveKp, 0.0,
             driveKd, 0.0);
@@ -246,6 +254,7 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
     double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
+    Logger.recordOutput("Modules/Module" + Integer.toString(moduleID) + "/FeedForward" , ffVolts);
     driveController.setReference(
         velocityRadPerSec,
         ControlType.kVelocity,
