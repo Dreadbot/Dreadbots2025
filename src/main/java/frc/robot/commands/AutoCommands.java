@@ -69,6 +69,45 @@ public class AutoCommands {
         );
     }
 
+    public Command midD1High() {
+        return Commands.sequence(
+            factory.resetOdometry("Middle-D1", 0),
+            factory.trajectoryCmd("Middle-D1", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D1", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.2),
+            factory.trajectoryCmd("Middle-D1", 2)
+                .alongWith(Commands.waitSeconds(0.6).andThen(superstructure.requestSuperstructureState(SuperstructureState.STOW)))
+                .andThen(drive.stopDrive())
+        );
+    }
+
+    public Command midD2HighD() {
+        return Commands.sequence(
+            factory.resetOdometry("Middle-D2D", 0),
+            factory.trajectoryCmd("Middle-D2D", 0)
+                .alongWith(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D2D", 1)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(0.2),
+            factory.trajectoryCmd("Middle-D2D", 2)
+                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D2D", 3)
+                .alongWith(endEffector.startIntake())
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D2D", 4)
+                .alongWith(Commands.waitSeconds(1.0).andThen(superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)).andThen(superstructure.requestSuperstructureState(SuperstructureState.BARGE))))
+                .andThen(drive.stopDrive()),
+            factory.trajectoryCmd("Middle-D2D", 5)
+                .andThen(drive.stopDrive()),
+            endEffector.outtake().withTimeout(1.0)
+        );
+    }
+
     public Command midProcessorE1High() {
         return Commands.sequence(
             factory.resetOdometry("MidProcessor-E1", 0),
@@ -259,7 +298,7 @@ public class AutoCommands {
             factory.resetOdometry("Middle-D2",0),
             factory.trajectoryCmd("Middle-D2",0),
             superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)),
-            endEffector.outtake().withTimeout(.5),
+            endEffector.outtake().withTimeout(.2),
             superstructure.requestSuperstructureState(SuperstructureState.STOW)
         );
     }

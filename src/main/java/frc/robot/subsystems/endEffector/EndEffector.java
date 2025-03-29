@@ -35,6 +35,13 @@ public class EndEffector extends SubsystemBase {
             () -> { io.runVoltage(0.0); isIntaking = false; }
         );
     }
+
+    public Command startIntake() {
+        return runOnce(
+            () -> io.runVoltage(EndEffectorConstants.INTAKE_VOLTAGE)
+        );
+    }
+
     public Command outtake() {
         return startEnd(
             () -> { io.runVoltage(EndEffectorConstants.OUTAKE_VOLTAGE); hasGamepiece = false; },
