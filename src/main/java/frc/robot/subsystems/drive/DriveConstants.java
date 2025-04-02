@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.0;
-  public static final double odometryFrequency = 100.0; // Hz
+  public static final double odometryFrequency = 200.0; // Hz
   public static final double trackWidth = Units.inchesToMeters(25.0);
   public static final double wheelBase = Units.inchesToMeters(25.0);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
@@ -62,7 +62,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 60;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.88); // 1.88
+  public static final double wheelRadiusMeters = Units.inchesToMeters(2.00); // 1.88
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -108,7 +108,7 @@ public class DriveConstants {
   public static final double xKd = 0.0;
   public static final double yKp = 2.0;
   public static final double yKd = 0.0;
-  public static final double rotationKp = 1.75;
+  public static final double rotationKp = 2.0;
   public static final double rotationKd = 0.0;
   // PathPlanner
   public static final double robotMassKg = 74.088;

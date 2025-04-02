@@ -43,11 +43,11 @@ public class Superstructure {
     //Height, Angle (degrees)
     public static enum SuperstructureState {
         L1(0.634, 110.0),
-        L2(0.996, 65.6),
-        L3(1.415, 65.6),
+        L2(0.985, 65.6),
+        L3(1.370, 65.6),
         L4(2.137, 49.0),
         STOW(0.627, 8.0),
-        PICKUP(0.87, 135.0),
+        PICKUP(0.874, 133.9),
         PLUCK_L2(0.813, 96.0),
         PLUCK_L3(1.221, 96.0),
         BARGE(2.137, 149.0);

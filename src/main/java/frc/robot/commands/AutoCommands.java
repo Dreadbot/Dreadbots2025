@@ -266,7 +266,7 @@ public class AutoCommands {
             Commands.waitUntil(endEffector::hasCoral),
             factory.trajectoryCmd("MidProcessor-E2F1F2", 6)
                 .alongWith(
-                    Commands.waitSeconds(1.0)
+                    Commands.waitSeconds(0.7)
                     .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
                 )
                 .andThen(drive.stopDrive()),
@@ -376,7 +376,7 @@ public class AutoCommands {
                 .andThen(drive.stopDrive()),
             Commands.waitUntil(endEffector::hasCoral),
             factory.trajectoryCmd("MidProcessor-E2F1", 3)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.L4))
+                .alongWith(Commands.waitSeconds(1.0).andThen(superstructure.requestSuperstructureState(SuperstructureState.L4)))
                 .andThen(drive.stopDrive()),
             factory.trajectoryCmd("MidProcessor-E2F1", 4)
                 .andThen(drive.stopDrive()),

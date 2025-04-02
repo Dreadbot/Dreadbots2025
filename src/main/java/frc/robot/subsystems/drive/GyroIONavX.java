@@ -21,15 +21,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import java.util.Queue;
 
+import org.littletonrobotics.junction.Logger;
+
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(NavXComType.kUSB1, (byte) odometryFrequency);
+  private final AHRS navX = new AHRS(NavXComType.kUSB1, (int) odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
   public GyroIONavX() {
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getAngle);
+    Logger.recordOutput("Gyro/Debug/fullScaleRange", navX.getGyroFullScaleRangeDPS());
   }
 
   @Override

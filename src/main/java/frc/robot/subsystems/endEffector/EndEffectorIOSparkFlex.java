@@ -7,18 +7,22 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.EndEffectorConstants;
 
 public class EndEffectorIOSparkFlex implements EndEffectorIO{
     private final SparkFlex motor;
+    private final DigitalInput beakBreak;
     private double volts;
 
     public EndEffectorIOSparkFlex(){
         this.motor = new SparkFlex(EndEffectorConstants.MOTOR_ID, MotorType.kBrushless);
+        this.beakBreak = new DigitalInput(EndEffectorConstants.BEAM_BREAK_ID);
         SparkFlexConfig config = new SparkFlexConfig();
         config
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(50);
+            .smartCurrentLimit(50)
+            .voltageCompensation(12.0);
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.volts = 0.0;
@@ -28,6 +32,7 @@ public class EndEffectorIOSparkFlex implements EndEffectorIO{
        inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
        inputs.currentAmps = motor.getOutputCurrent();
        inputs.RPM = motor.getEncoder().getVelocity();
+       inputs.beamBreakTriggered = !beakBreak.get();
     }
 
     public void runVoltage(double volts){

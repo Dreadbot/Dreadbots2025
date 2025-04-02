@@ -295,8 +295,8 @@ public class RobotContainer {
     secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
     //Pluck algae / Barge
-    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2));
-    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L3));
+    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2).alongWith(endEffector.startAlgaeIntake()));
+    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L3).alongWith(endEffector.startAlgaeIntake()));
     secondaryController.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)).andThen(superstructure.requestSuperstructureState(SuperstructureState.BARGE)));
 
     //intake sequence

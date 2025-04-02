@@ -63,6 +63,10 @@ public class VisionCamera {
 				|| detection.id() == 15 
 				|| detection.id() == 4 
 				|| detection.id() == 5
+				|| detection.id() == 12
+				|| detection.id() == 13
+				|| detection.id() == 1
+				|| detection.id() == 2
 				|| tagDist > 5.0
 				|| detection.pose().getX() < 0.0
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
@@ -85,9 +89,9 @@ public class VisionCamera {
 			// std dev scaling goes here
 			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/VisionPose" , detection.pose());
 			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/tagPoseLen", tagPoses.size());
-			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - inputs.visionDelay);
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET));
 
-			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - inputs.visionDelay, VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
+			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET), VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
 		}
 		Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
 		Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));

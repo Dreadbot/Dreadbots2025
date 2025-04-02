@@ -36,10 +36,14 @@ public final class Constants {
     REPLAY
   }
   public static class EndEffectorConstants {
-    public static final double INTAKE_VOLTAGE = -12.0;
+    public static final double INTAKE_VOLTAGE = -7.0; //-12.0
+    public static final double ALGAE_INTAKE_VOLTAGE = -12.0;
     public static final double OUTAKE_VOLTAGE = 7.0;
-    public static final double CORAL_THRESHOLD = 5700;
+    public static final double CORAL_THRESHOLD_RPM = 6000;
+    public static final double CORAL_THRESHOLD_AMPS = 24;
+    public static final double INTAKING_THRESHOLD = 6200;
     public static final int MOTOR_ID = 16;
+    public static final int BEAM_BREAK_ID = 9;
 
   }
   public static class ElevatorConstants {
@@ -115,8 +119,8 @@ public final class Constants {
     public static final double TRANSLATION_KP = 0.5;
     public static final double TRANSLATION_KD = 0.0;
     public static final double TRANSLATION_VELOCITY = 3.5; // Meters/Sec
-    public static final double TRANSLATION_ACCELERATION = 3.5; // Meters/Sec^2
-    public static final double TRANSLATION_JERK = 3.0; // Meters/Sec^3
+    public static final double TRANSLATION_ACCELERATION = 3.0; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 2.8; // Meters/Sec^3
     public static final double ROTATION_KP = 2.0;
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 5.0;

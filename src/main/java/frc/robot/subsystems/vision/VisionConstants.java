@@ -12,4 +12,6 @@ public final class VisionConstants {
     public static final double backCameraAngularStdDevs = 100_000;
     public static final double frontLeftCameraAngularStdDevs = 100_000;
     public static final double frontRightCameraAngularStdDevs = 100_000;
+
+    public static final double DELAY_OFFSET = 0.0; // One loop cycle
 }
