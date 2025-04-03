@@ -3,6 +3,8 @@ package frc.robot.util.misc;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
+import choreo.Choreo;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,11 +27,13 @@ public class AutoAlignUtil {
 	 * This function generates all the POIs for the Auto align command, requires that we know which side of the field we are on, so needs to called at runtime
 	 */
 	public static void buildPOIList() {
+
 		POIs = new ArrayList<>();
 		Pose2d[] reefFaces = new Pose2d[6];
+
 		// Reef Auto Align Poses
 		Translation2d reefCenter = new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
-		Translation2d firstSide = new Translation2d(3.176810150146484, 4.026);
+		Translation2d firstSide = new Translation2d(2.906, 4.026);
 		for(int i = 0; i < 6; i++) {
 			Translation2d side = firstSide.rotateAround(reefCenter, Rotation2d.fromDegrees(60 * (i - 1)));
 			reefFaces[i] = getAlliancePOI(
