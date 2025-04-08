@@ -24,7 +24,7 @@ public class EndEffector extends SubsystemBase {
         Logger.recordOutput("EndEffector/HasCoral", hasCoral());
         Logger.recordOutput("EndEffector/IsIntaking", isIntaking);
 
-        if(inputs.RPM > EndEffectorConstants.CORAL_THRESHOLD) {
+        if(Math.abs(inputs.RPM) > EndEffectorConstants.CORAL_THRESHOLD) { // Use of Math.abs to make logic make sense
             isIntaking = true;
         }
     }
@@ -43,7 +43,7 @@ public class EndEffector extends SubsystemBase {
     }
     
     public boolean hasCoral() {
-        if((inputs.RPM < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
+        if((Math.abs(inputs.RPM) < EndEffectorConstants.CORAL_THRESHOLD) && isIntaking) {
             isIntaking = false;
             hasGamepiece = true;
             return true;

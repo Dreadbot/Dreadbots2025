@@ -13,24 +13,24 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import org.littletonrobotics.junction.Logger;
+
+import choreo.auto.AutoChooser;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
-import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SuperstructureState;
 import frc.robot.subsystems.climb.Climb;
@@ -50,9 +50,15 @@ import frc.robot.subsystems.endEffector.EndEffector;
 import frc.robot.subsystems.endEffector.EndEffectorIO;
 import frc.robot.subsystems.endEffector.EndEffectorIOSim;
 import frc.robot.subsystems.endEffector.EndEffectorIOSparkFlex;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgae;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIO;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSim;
+import frc.robot.subsystems.slapdownAlgae.SlapdownAlgaeIOSparkMax;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionCamera;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIONetworkTables;
+import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSparkMax;
@@ -70,6 +76,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final List<VisionCamera> cameras;
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
@@ -102,7 +109,20 @@ public class RobotContainer {
             new ModuleIOSpark(3));
       endEffector = new EndEffector(new EndEffectorIOSparkFlex());
       wrist = new Wrist(new WristIOSparkMax());
-      vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
+      cameras = List.of(
+        new VisionCamera(
+          new VisionIOCamera(VisionConstants.frontRightCameraName), 
+          0),
+        new VisionCamera(
+          new VisionIOCamera(VisionConstants.frontLeftCameraName),
+          1),
+        new VisionCamera(
+          new VisionIOCamera(VisionConstants.backCameraName),
+          2));
+      vision = new Vision(
+        cameras,
+        drive::addVisionMeasurement,
+        drive::getPose);
       slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSparkMax());
       elevator = new Elevator(new ElevatorIOSparkFlex());
       climb = new Climb(new ClimbIOSolenoid());
@@ -121,7 +141,20 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         wrist = new Wrist(new WristIOSparkMax());
-        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIONetworkTables());
+        cameras = List.of(
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.frontRightCameraName), 
+            0),
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.frontLeftCameraName),
+            1),
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.backCameraName),
+            2));
+        vision = new Vision(
+          cameras,
+          drive::addVisionMeasurement,
+          drive::getPose);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIOSim());
         climb = new Climb(new ClimbIO() {});
         break;
@@ -138,7 +171,20 @@ public class RobotContainer {
         endEffector = new EndEffector(new EndEffectorIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
-        vision = new Vision(drive::addVisionMeasurement, drive::getPose, new VisionIO() {});
+        cameras = List.of(
+          new VisionCamera(
+            new VisionIO() {},
+            0),
+          new VisionCamera(
+            new VisionIO() {},
+            1),
+          new VisionCamera(
+            new VisionIO() {},
+            2));
+        vision = new Vision(
+          cameras,
+          drive::addVisionMeasurement,
+          drive::getPose);
         slapdownAlgae = new SlapdownAlgae(new SlapdownAlgaeIO() {});
         climb = new Climb(new ClimbIO() {});
         break;
@@ -157,6 +203,8 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
     choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
     choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
+    choreoAutoChooser.addCmd("Mid Processor E2 F1 F2 High", autos::midProcessorE2F1F2High);
+
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
 
     // Set up SysId routines
@@ -185,7 +233,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //Cache April Tag
+    // Cache April Tag Map
     VisionUtil.getApriltagPose(1);
 
     // Default command, normal field-relative drive
@@ -229,7 +277,7 @@ public class RobotContainer {
      * Elevator / Wrist / Endeffector
      */
     //toggles properly
-    primaryController.y().onTrue(climb.climb());
+    primaryController.y().onTrue(climb.climb(primaryController));
     primaryController
       .a()
         .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
@@ -245,9 +293,10 @@ public class RobotContainer {
     secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
     secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
 
-    //knockout algae
-    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L2));
-    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.KNOCKOUT_L3));
+    //Pluck algae / Barge
+    secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2));
+    secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L3));
+    secondaryController.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)).andThen(superstructure.requestSuperstructureState(SuperstructureState.BARGE)));
 
     //intake sequence
     secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)

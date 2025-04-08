@@ -61,7 +61,7 @@ public class DriveConstants {
 
 
   // Drive motor configuration
-  public static final int driveMotorCurrentLimit = 50;
+  public static final int driveMotorCurrentLimit = 60;
   public static final double wheelRadiusMeters = Units.inchesToMeters(1.88); // 1.88
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
@@ -104,9 +104,9 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   //Path following PID configuration
-  public static final double xKp = 1.75;
+  public static final double xKp = 2.0; //1.75
   public static final double xKd = 0.0;
-  public static final double yKp = 1.75;
+  public static final double yKp = 2.0;
   public static final double yKd = 0.0;
   public static final double rotationKp = 1.75;
   public static final double rotationKd = 0.0;
