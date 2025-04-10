@@ -9,13 +9,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import frc.robot.Constants.WristConstants;
 
 public class Wrist extends SubsystemBase {
     
@@ -26,9 +24,6 @@ public class Wrist extends SubsystemBase {
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    private double goalAngle = 0;
-    private double startAngle;
-    private State desiredWristState;
     public DoubleSupplier joystickOverride;
     public double voltage;
 
@@ -91,22 +86,9 @@ public class Wrist extends SubsystemBase {
     public Command setAtZero() {
         return runOnce(
             () -> {
-                startAngle = WristConstants.WRIST_ZERO;
             } );
     }
     
-    /*  public void move(double Volts) {
-        if((inputs.leftBottomSwitch || inputs.rightBottomSwitch) && Volts < 0) {
-            Volts = 0;
-        }
-
-        if((inputs.leftTopSwitch || inputs.rightTopSwitch) && Volts > 0) {
-            Volts = 0;
-        }
-        io.runVoltage(Volts);
-    }
-    */
-
     public double getAngle() {
         return inputs.rotationDegrees;
     }
@@ -114,6 +96,7 @@ public class Wrist extends SubsystemBase {
     public boolean atSetpoint() {
         return MathUtil.isNear(goal.position, inputs.rotationDegrees, 4.0); // 4.0 degrees
     }
+
     /**
      * Gets if the Wrist is in danger zone, see START_SAFE_ZONE for more information.
      * @return True of false whether we are in danger zone or not.

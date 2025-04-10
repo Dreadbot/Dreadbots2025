@@ -24,8 +24,6 @@ public class EndEffectorIOSparkFlex implements EndEffectorIO{
             .smartCurrentLimit(50)
             .voltageCompensation(12.0);
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        this.volts = 0.0;
     }
 
     public void updateInputs(EndEffectorIOInputs inputs){
@@ -37,6 +35,5 @@ public class EndEffectorIOSparkFlex implements EndEffectorIO{
 
     public void runVoltage(double volts){
         motor.setVoltage(volts);
-        this.volts = volts;
     }
 }

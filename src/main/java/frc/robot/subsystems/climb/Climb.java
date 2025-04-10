@@ -62,16 +62,21 @@ public class Climb extends SubsystemBase {
    }
    public Command climbSequence(CommandXboxController controller) {
         return extendClaw()
-            .andThen(Commands.waitSeconds(0.5))
+            .beforeStarting(() -> {isClimbed = true;})
+            .andThen(Commands.waitSeconds(0.25))
             .andThen(extendLock())
-            .andThen(Commands.waitSeconds(0.5))
-            .andThen(extendClimb()
-            .andThen(() -> {controller.setRumble(RumbleType.kBothRumble, .5);})
+            .andThen(Commands.waitSeconds(0.25))
+            .andThen(extendClimb())
+            .andThen(Commands.runOnce(() -> {controller.setRumble(RumbleType.kBothRumble, .5);}))
             .andThen(Commands.waitSeconds(1))
-            .andThen(() -> {controller.setRumble(RumbleType.kBothRumble, 0);})
-            .beforeStarting(() -> {isClimbed = true;}));
+            .andThen(Commands.runOnce((() -> {controller.setRumble(RumbleType.kBothRumble, 0);})));
+            
    }
 
+   public Command lockSequence() {
+    return extendClaw()
+        .beforeStarting(() -> {isClimbed = true;});
+   }
    public Command init() {
     return retractLock()
         .andThen(retractClimb())
@@ -84,7 +89,7 @@ public class Climb extends SubsystemBase {
     return isClimbed;
    }
 
-   public Command climb(CommandXboxController controller){
-    return Commands.either(init(), climbSequence(controller), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
+   public Command lock(){
+    return Commands.either(init(), lockSequence(), () -> getIsClimbed()); // Declimbs if climbed, climbs if not climbed
    }
 }

@@ -63,7 +63,8 @@ public class SlapdownAlgae extends SubsystemBase {
         setpoint = profile.calculate(0.02, setpoint, goal);
         io.runPivotVoltage(
             pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity) // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
+            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
+            // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
         ); 
     }
 

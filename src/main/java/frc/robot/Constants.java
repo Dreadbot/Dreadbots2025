@@ -86,10 +86,10 @@ public final class Constants {
 
   public static class WristConstants {
     public static final double WRIST_ZERO = 0.0;
-    public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
-    public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
-    public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
-    public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
+    //public static final int TOP_LEFT_LIMIT_SWITCH_ID = 0;
+    //public static final int BOTTOM_LEFT_LIMIT_SWITCH_ID = 0;
+    //public static final int TOP_RIGHT_LIMIT_SWITCH_ID = 0;
+    //public static final int BOTTOM_RIGHT_LIMIT_SWITCH_ID = 0;
     public static final int WRIST_DUTY_CYCLE_ENCODER = 1;
     public static final double WRIST_ENCODER_OFFSET = 26.9;
     public static final double WRIST_MAX_ANGLE = 360;
@@ -102,7 +102,7 @@ public final class Constants {
     public static final double CORAL_POSITION_L3 = -55.0;
     public static final double CORAL_POSITION_L4 = -40.0;
     //End Angle in Degrees
-
+    public static final double GEAR_REDUCTION = 1.0 / 150.0;
     /* 
     * SAFE ZONE EXPLANATION!!!!!
     * With our robot layout, there is a crossbar on the first stage (we ony have 
@@ -119,14 +119,14 @@ public final class Constants {
     public static final double TRANSLATION_KP = 0.5;
     public static final double TRANSLATION_KD = 0.0;
     public static final double TRANSLATION_VELOCITY = 3.5; // Meters/Sec
-    public static final double TRANSLATION_ACCELERATION = 3.0; // Meters/Sec^2
-    public static final double TRANSLATION_JERK = 2.8; // Meters/Sec^3
+    public static final double TRANSLATION_ACCELERATION = 3.5; // Meters/Sec^2
+    public static final double TRANSLATION_JERK = 3.5; // Meters/Sec^3
     public static final double ROTATION_KP = 2.0;
     public static final double ROTATION_KD = 0.0;
-    public static final double ROTATION_MAX_VELOCITY = 5.0;
-    public static final double ROTATION_MAX_ACCELERATION = 10.0;
+    public static final double ROTATION_MAX_VELOCITY = 10.0;
+    public static final double ROTATION_MAX_ACCELERATION = 20.0;
     public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
-    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0);
+    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
 
   }
 }

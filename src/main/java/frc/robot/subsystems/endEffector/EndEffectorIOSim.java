@@ -10,15 +10,12 @@ public class EndEffectorIOSim implements EndEffectorIO {
 
     private final DCMotorSim motorSim;
     private final double rollerWheelMOI = 0.5 * Units.lbsToKilograms(0.12) * Units.inchesToMeters(1.5) * Units.inchesToMeters(1.5);
-    private double volts;
-
     public EndEffectorIOSim() {
         this.motorSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
             DCMotor.getNeoVortex(1)
             
         );
-        volts = 0.0;
     }
 
     @Override
@@ -36,6 +33,5 @@ public class EndEffectorIOSim implements EndEffectorIO {
     @Override
     public void runVoltage(double volts) {
         motorSim.setInputVoltage(volts);
-        this.volts = volts;
     }
 }

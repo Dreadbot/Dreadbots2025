@@ -151,8 +151,6 @@ public class DriveCommands {
                       yVelocity * AutoAlignConstants.TRANSLATION_VELOCITY,
                       omega);
 
-        boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
-
         drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,
@@ -370,8 +368,16 @@ public class DriveCommands {
   }
 
   public static Command fullAutoAlignCommand(Drive drive, Vision vision, CommandXboxController controller) {
-    return driveToPosition(drive, 
+    return Commands.sequence(
+      driveToPosition(
+      drive, 
       () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper())
+      )
+      //   .until(() -> drive.nearPose(DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper()))),
+      // driveToPosition(
+      //   drive, 
+      //   () -> DriveCommands.getAutoAlignPose(drive::getPose, controller.leftBumper(), controller.rightBumper()).plus(new Transform2d(0.276, 0, Rotation2d.kZero))
+      // )
     )
       .beforeStarting(
         () -> {

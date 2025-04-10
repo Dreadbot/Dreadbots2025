@@ -80,8 +80,8 @@ public class RobotContainer {
   private final EndEffector endEffector;
   private final Elevator elevator;
   private final Wrist wrist;
-  private final SlapdownAlgae slapdownAlgae;
   private final Climb climb;
+  private final SlapdownAlgae slapdownAlgae;
   private final VisualizationManager vizManager;
   private final Superstructure superstructure;
   private final AutoCommands autos;
@@ -89,8 +89,7 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController primaryController = new CommandXboxController(0);
   private final CommandXboxController secondaryController = new CommandXboxController(1);
-  private final Alert autoInitFaliure = new Alert("Failed to load Auto Paths!", AlertType.kError);
-
+  
   // Dashboard inputs
   // private final LoggedDashboardChooser<Command> autoChooser;
   private final AutoChooser choreoAutoChooser;
@@ -207,6 +206,9 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E2 F1 F2 High", autos::midProcessorE2F1F2High);
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+    // Configure the button bindings
+    configureButtonBindings();
+  }
 
     // Set up SysId routines
     // autoChooser.addOption(
@@ -223,9 +225,7 @@ public class RobotContainer {
     //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
     //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // Configure the button bindings
-    configureButtonBindings();
-  }
+    
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -270,7 +270,12 @@ public class RobotContainer {
                 .ignoringDisable(true));
     primaryController
       .back()
-        .onTrue(AutoAlignUtil.createPOIListCommand().ignoringDisable(true));
+        .onTrue(Commands.runOnce(
+          () ->
+              drive.setPose(
+                  new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation())),
+          drive)
+      .ignoringDisable(true));
 
     /* 
      * Keybinds for the secondary controller
@@ -278,7 +283,8 @@ public class RobotContainer {
      * Elevator / Wrist / Endeffector
      */
     //toggles properly
-    primaryController.y().onTrue(climb.climb(primaryController));
+    primaryController.x().onTrue(climb.lock());
+    primaryController.y().onTrue(climb.climbSequence(primaryController));
     primaryController
       .a()
         .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
@@ -315,16 +321,11 @@ public class RobotContainer {
 
     elevator.setJoystickSupplier(() -> -secondaryController.getLeftY());
     wrist.setJoystickOverride(() -> -secondaryController.getRightY());
-    
-    // Elevator buttons
-    // controller.x().onTrue(elevator.riseTo(Units.inchesToMeters(65)));
-    // controller.y().onTrue(elevator.riseTo(Units.inchesToMeters(0)));
+
 
     //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
     primaryController.rightTrigger().whileTrue(slapdownAlgae.intakeSequence());
     primaryController.leftTrigger().whileTrue(slapdownAlgae.outtakeSequence());
-    // controller.povUp().toggleOnTrue(slapdownAlgae.setAngleDegrees(90));
-    // controller.povDown().toggleOnTrue(slapdownAlgae.setAngleDegrees(0));  
   }
 
   /**

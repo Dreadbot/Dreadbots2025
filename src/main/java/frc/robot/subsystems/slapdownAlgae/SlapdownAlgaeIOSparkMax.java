@@ -48,6 +48,8 @@ public class SlapdownAlgaeIOSparkMax implements SlapdownAlgaeIO {
             inputs.pivotAppliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
             inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
             inputs.pivotTemperature = pivotMotor.getMotorTemperature();
+
+            inputs.pivotRotationDegrees = absoluteEncoder.get();
         }
 
         @Override
