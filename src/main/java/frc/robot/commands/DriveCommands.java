@@ -382,7 +382,7 @@ public class DriveCommands {
       .beforeStarting(
         () -> {
           Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs));
-          if((vision.getLastVisionDetection().timestamp() - Timer.getFPGATimestamp()) < 0.5) {
+          if((Math.abs(vision.getLastVisionDetection().timestamp() - Timer.getTimestamp())) < 0.25) {
             drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
           }
           RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);

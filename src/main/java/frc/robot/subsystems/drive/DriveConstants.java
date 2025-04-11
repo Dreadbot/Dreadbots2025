@@ -108,7 +108,7 @@ public class DriveConstants {
   public static final double xKd = 0.0;
   public static final double yKp = 2.0;
   public static final double yKd = 0.0;
-  public static final double rotationKp = 2.0;
+  public static final double rotationKp = 2.5;
   public static final double rotationKd = 0.0;
   // PathPlanner
   public static final double robotMassKg = 74.088;
