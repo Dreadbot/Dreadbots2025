@@ -30,7 +30,7 @@ public class EndEffectorIOSparkFlex implements EndEffectorIO{
        inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
        inputs.currentAmps = motor.getOutputCurrent();
        inputs.RPM = motor.getEncoder().getVelocity();
-       inputs.beamBreakTriggered = !beakBreak.get();
+       inputs.beamBreakTriggered = beakBreak.get();
     }
 
     public void runVoltage(double volts){
