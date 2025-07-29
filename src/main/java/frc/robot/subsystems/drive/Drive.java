@@ -200,6 +200,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
     Logger.recordOutput("SwerveStates/Acceleration", accelerationStates);
+    Logger.recordOutput("Logger/FrontLeftWheelRot",modules[0].getPositionMeters());
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       // Get module force for use in feedforward calculations

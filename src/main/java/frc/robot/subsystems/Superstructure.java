@@ -48,7 +48,7 @@ public class Superstructure {
         L4(2.137, 49.0),
         STOW(0.627, 8.0),
         PICKUP(0.874, 133.9),
-        PLUCK_L2(0.833, 96.0), // 0.813
+        PLUCK_L2(0.86, 96.0), // 0.813
         PLUCK_L3(1.241, 96.0), // 1.22, trying 2cm increase
         BARGE(2.137, 149.0);
         SuperstructureState(double height, double angle) {

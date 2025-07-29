@@ -199,11 +199,13 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Mid Processor E1 High", autos::midProcessorE1High);
     choreoAutoChooser.addCmd("Middle D2 High", autos::midD2High);
     choreoAutoChooser.addCmd("Middle D2 High D Barge", autos::midD2HighD);
-    //choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
+    choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
     choreoAutoChooser.addCmd("Mid Barge C1 B1 High", autos::midBargeC1B1High);
     choreoAutoChooser.addCmd("Mid Processor E2 F1 High", autos::midProcessorE2F1High);
     choreoAutoChooser.addCmd("Mid Barge C1 B1 B2 High", autos::midBargeC1B1B2High);
     choreoAutoChooser.addCmd("Mid Processor E2 F1 F2 High", autos::midProcessorE2F1F2High);
+    choreoAutoChooser.addCmd("StraightLine", autos::StraightLine);
+    choreoAutoChooser.addCmd("StraightLineBack", autos::StraightLineBack);
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
     // Configure the button bindings
@@ -260,14 +262,14 @@ public class RobotContainer {
 
     // Reset gyro to 0° when B button is pressed
     primaryController
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+      .start()
+        .onTrue(Commands.runOnce(
+          () ->
+              drive.setPose(
+                  new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+          drive)
+      .ignoringDisable(true));
+    
     primaryController
       .back()
         .onTrue(Commands.runOnce(

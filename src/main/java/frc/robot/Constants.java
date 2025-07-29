@@ -125,8 +125,10 @@ public final class Constants {
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 10.0;
     public static final double ROTATION_MAX_ACCELERATION = 20.0;
-    public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0); // Comp Settings: Left 11.5 Right 11.5
-    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
+    //public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0); // Comp Settings: Left 11.5 Right 11.5
+    //public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
+    public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(17.0 / 2.0);
+    public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(9.0 / 2.0);
 
   }
 }

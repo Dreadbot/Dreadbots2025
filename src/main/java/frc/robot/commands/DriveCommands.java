@@ -381,11 +381,11 @@ public class DriveCommands {
     )
       .beforeStarting(
         () -> {
+          RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);
           Logger.recordOutput("Drive/AutoAlign/POIPose", drive.getPose().nearest(AutoAlignUtil.POIs));
           if((Math.abs(vision.getLastVisionDetection().timestamp() - Timer.getTimestamp())) < 0.25) {
             drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), drive.getRotation()));
           }
-          RobotState.getInstance().setRobotAction(CurrentAction.AUTO_ALIGN);
         }
     )
       .finallyDo(() -> {

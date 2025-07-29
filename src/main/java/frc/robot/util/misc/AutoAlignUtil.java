@@ -53,7 +53,7 @@ public class AutoAlignUtil {
 	 * @return The alliance specific POI
 	 */
 	public static Pose2d getAlliancePOI(Pose2d poi) {
-		
+		// make second statement == OTHERWISE IT FLIPS ALLIANCE REEFS
 		if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
 			Translation2d rotatedPosition = new Translation2d(fieldSizeX - poi.getX(), fieldSizeY - poi.getY());
 			Rotation2d flippedRotation = poi.getRotation().plus(Rotation2d.kPi);

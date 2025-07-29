@@ -94,7 +94,7 @@ public class AutoCommands {
                 .andThen(drive.stopDrive()),
             endEffector.outtake().withTimeout(0.2),
             factory.trajectoryCmd("Middle-D2D", 2)
-                .andThen(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2))
+                .alongWith(Commands.waitSeconds(0.75).andThen(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2)))
                 .andThen(drive.stopDrive()),
             factory.trajectoryCmd("Middle-D2D", 3)
                 .alongWith(endEffector.startIntake())
@@ -419,6 +419,20 @@ public class AutoCommands {
         return Commands.sequence(
             factory.resetOdometry("WheelRadiCalibration"),
             factory.trajectoryCmd("WheelRadiCalibration")
+        );
+    }
+
+    public Command StraightLine(){
+        return Commands.sequence(
+            factory.resetOdometry("StraightLine"),
+            factory.trajectoryCmd("StraightLine")
+        );
+    }
+
+    public Command StraightLineBack(){
+        return Commands.sequence(
+            factory.resetOdometry("StraightLineBack"),
+            factory.trajectoryCmd("StraightLineBack")
         );
     }
 }
